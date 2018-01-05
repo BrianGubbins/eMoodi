@@ -1,0 +1,23 @@
+{
+  "name": "emoodi",
+  "version": "1.0.0",
+  "description": "MEAN stack FYP",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app"
+  },
+  "dependencies": {
+    "bcryptjs": "*",
+    "body-parser": "*",
+    "bootstrap": "^4.0.0-beta.3",
+    "cors": "*",
+    "express": "*",
+    "jsonwebtoken": "*",
+    "mongoose": "*",
+    "passport": "*",
+    "passport-jwt": "*"
+  },
+  "author": "Brian Gubbins",
+  "license": "ISC"
+}
