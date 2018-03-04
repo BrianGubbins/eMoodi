@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
+const Mood = require('../models/mood');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
@@ -61,6 +62,28 @@ router.post('/authenticate', (req, res, next) => {
 // Profile
 router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     res.json({user: req.user});
+});
+
+
+router.post('/mood', (req, res, next) => {
+  console.log("user route");
+  let newMood = new Mood({
+    userId: req.body.userId,
+    date: req.body.date,
+    weather: req.body.weather,
+    sleep: req.body.sleep,
+    diet: req.body.diet,
+    exercise: req.body.exercise,
+    moodData: req.body.moodData
+  });
+
+  Mood.addMood(newMood, (err, user) => {
+    if(err){
+      res.json({success: false, msg:'Failed to register user'});
+    } else {
+      res.json({success: true, msg:'User registered'});
+    }
+  });
 });
 
 module.exports = router;

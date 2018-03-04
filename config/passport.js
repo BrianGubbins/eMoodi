@@ -13,9 +13,9 @@ module.exports = function(passport){
         return done(err, false);
       }
 
-      if(user){
+      if(user){ // if there is a user we pass it along
         return done(null, user);
-      } else {
+      } else { // if not we pass along false
         return done(null, false);
       }
     });
