@@ -100,7 +100,7 @@ webpackEmptyContext.id = 526;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(614);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(654);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__environments_environment__ = __webpack_require__(655);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__app_app_module__ = __webpack_require__(645);
 
 
@@ -120,9 +120,9 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dyna
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(156);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(882);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(885);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_jwt__ = __webpack_require__(659);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_jwt__ = __webpack_require__(660);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_jwt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_angular2_jwt__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -141,7 +141,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.isDev = true; // Change to false before deployment
+        this.isDev = false; // Change to false before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
@@ -234,8 +234,8 @@ var AppComponent = (function () {
     AppComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-root',
-            template: __webpack_require__(868),
-            styles: [__webpack_require__(860)]
+            template: __webpack_require__(870),
+            styles: [__webpack_require__(861)]
         }), 
         __metadata('design:paramtypes', [])
     ], AppComponent);
@@ -255,19 +255,20 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(83);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(644);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_navbar_navbar_component__ = __webpack_require__(650);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_login_login_component__ = __webpack_require__(649);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_register_register_component__ = __webpack_require__(652);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_navbar_navbar_component__ = __webpack_require__(651);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_login_login_component__ = __webpack_require__(650);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__components_register_register_component__ = __webpack_require__(653);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__components_home_home_component__ = __webpack_require__(647);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__components_dashboard_dashboard_component__ = __webpack_require__(646);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__ = __webpack_require__(651);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_local_forecast_local_forecast_component__ = __webpack_require__(648);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__ = __webpack_require__(652);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_local_forecast_local_forecast_component__ = __webpack_require__(649);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_validate_service__ = __webpack_require__(343);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_auth_service__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_weather_service__ = __webpack_require__(344);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages__ = __webpack_require__(112);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__ = __webpack_require__(653);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__ = __webpack_require__(654);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__components_inputs_inputs_component__ = __webpack_require__(648);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -296,12 +297,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var appRoutes = [
     { path: '', component: __WEBPACK_IMPORTED_MODULE_9__components_home_home_component__["a" /* HomeComponent */] },
     { path: 'register', component: __WEBPACK_IMPORTED_MODULE_8__components_register_register_component__["a" /* RegisterComponent */] },
     { path: 'login', component: __WEBPACK_IMPORTED_MODULE_7__components_login_login_component__["a" /* LoginComponent */] },
     { path: 'dashboard', component: __WEBPACK_IMPORTED_MODULE_10__components_dashboard_dashboard_component__["a" /* DashboardComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] },
-    { path: 'profile', component: __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__["a" /* ProfileComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] }
+    { path: 'profile', component: __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__["a" /* ProfileComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] },
+    { path: 'input', component: __WEBPACK_IMPORTED_MODULE_18__components_inputs_inputs_component__["a" /* InputsComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] }
 ];
 var AppModule = (function () {
     function AppModule() {
@@ -316,7 +319,8 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_9__components_home_home_component__["a" /* HomeComponent */],
                 __WEBPACK_IMPORTED_MODULE_10__components_dashboard_dashboard_component__["a" /* DashboardComponent */],
                 __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__["a" /* ProfileComponent */],
-                __WEBPACK_IMPORTED_MODULE_12__components_local_forecast_local_forecast_component__["a" /* LocalForecastComponent */]
+                __WEBPACK_IMPORTED_MODULE_12__components_local_forecast_local_forecast_component__["a" /* LocalForecastComponent */],
+                __WEBPACK_IMPORTED_MODULE_18__components_inputs_inputs_component__["a" /* InputsComponent */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -341,7 +345,7 @@ var AppModule = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(660);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js__ = __webpack_require__(661);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_chart_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_chart_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__ = __webpack_require__(112);
@@ -368,12 +372,34 @@ var DashboardComponent = (function () {
         this.dates = [];
     }
     // ctx: any;
+    DashboardComponent.prototype.ngOnInit = function () {
+        this.chart1 = true;
+        this.chart2 = false;
+    };
     DashboardComponent.prototype.ngAfterViewInit = function () {
-        var mood = [{ currentMood: 1, time: Date.now() },
-            { currentMood: 1, time: Date.now() + (1000 * 60 * 60 * 24) },
+        var mood = [
+            { currentMood: 1, time: Date.now() },
+            { currentMood: 3, time: Date.now() },
+            { currentMood: 4, time: Date.now() },
+            { currentMood: 3, time: Date.now() + (1000 * 60 * 60 * 24) },
+            { currentMood: 5, time: Date.now() + (1000 * 60 * 60 * 24) },
+            { currentMood: 3, time: Date.now() + (1000 * 60 * 60 * 24) },
             { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
+            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
+            { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
+            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
+            { currentMood: 5, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
             { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
-            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) }];
+            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
+            { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
+            { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
+            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
+            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
+            { currentMood: 5, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
+            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) },
+            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) },
+            { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) }
+        ];
         for (var key in mood) {
             this.moods.push(mood[key].currentMood);
             var jsdate = new Date(mood[key].time);
@@ -381,7 +407,7 @@ var DashboardComponent = (function () {
         }
         var canvas = document.getElementById('myChart');
         var ctx = canvas.getContext("2d");
-        var myChart = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
+        this.myChart = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
             "type": "line",
             "data": {
                 "labels": this.dates,
@@ -392,7 +418,23 @@ var DashboardComponent = (function () {
                     }]
             },
             options: {
-                responsive: false
+                responsive: true
+            }
+        });
+        var canvas1 = document.getElementById('myChart1');
+        var ctx1 = canvas1.getContext("2d");
+        var myChart1 = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
+            "type": "line",
+            "data": {
+                "labels": this.dates,
+                "datasets": [{
+                        "label": "Your Mood2", "data": this.moods,
+                        "fill": false,
+                        "borderColor": "rgb(75, 192, 192)"
+                    }]
+            },
+            options: {
+                responsive: true
             }
         });
     };
@@ -426,11 +468,24 @@ var DashboardComponent = (function () {
             }
         });
     };
+    DashboardComponent.prototype.chart = function (number) {
+        if (number == 1) {
+            this.moods.push(5);
+            this.dates.push(Date.now() + ((1000 * 60 * 60 * 24) * 4));
+            this.myChart.update();
+            this.chart1 = true;
+            this.chart2 = false;
+        }
+        if (number == 2) {
+            this.chart1 = false;
+            this.chart2 = true;
+        }
+    };
     DashboardComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-dashboard',
-            template: __webpack_require__(869),
-            styles: [__webpack_require__(861)]
+            template: __webpack_require__(871),
+            styles: [__webpack_require__(862)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"]) === 'function' && _b) || Object])
     ], DashboardComponent);
@@ -468,8 +523,8 @@ var HomeComponent = (function () {
     HomeComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-home',
-            template: __webpack_require__(870),
-            styles: [__webpack_require__(862)]
+            template: __webpack_require__(872),
+            styles: [__webpack_require__(863)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object])
     ], HomeComponent);
@@ -485,8 +540,43 @@ var HomeComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InputsComponent; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var InputsComponent = (function () {
+    function InputsComponent() {
+    }
+    InputsComponent.prototype.ngOnInit = function () {
+    };
+    InputsComponent = __decorate([
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-inputs',
+            template: __webpack_require__(873),
+            styles: [__webpack_require__(864)]
+        }), 
+        __metadata('design:paramtypes', [])
+    ], InputsComponent);
+    return InputsComponent;
+}());
+//# sourceMappingURL=C:/Users/brian/Desktop/FYP/eMoodi/angular-src/src/inputs.component.js.map
+
+/***/ }),
+
+/***/ 649:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_weather_service__ = __webpack_require__(344);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__(881);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__(884);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LocalForecastComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -546,8 +636,8 @@ var LocalForecastComponent = (function () {
     LocalForecastComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'local-forecast',
-            template: __webpack_require__(871),
-            styles: [__webpack_require__(863)]
+            template: __webpack_require__(874),
+            styles: [__webpack_require__(865)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_weather_service__["a" /* WeatherService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_weather_service__["a" /* WeatherService */]) === 'function' && _a) || Object])
     ], LocalForecastComponent);
@@ -558,7 +648,7 @@ var LocalForecastComponent = (function () {
 
 /***/ }),
 
-/***/ 649:
+/***/ 650:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -614,8 +704,8 @@ var LoginComponent = (function () {
     LoginComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-login',
-            template: __webpack_require__(872),
-            styles: [__webpack_require__(864)]
+            template: __webpack_require__(875),
+            styles: [__webpack_require__(866)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"]) === 'function' && _c) || Object])
     ], LoginComponent);
@@ -626,7 +716,7 @@ var LoginComponent = (function () {
 
 /***/ }),
 
-/***/ 650:
+/***/ 651:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -669,8 +759,8 @@ var NavbarComponent = (function () {
     NavbarComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-navbar',
-            template: __webpack_require__(873),
-            styles: [__webpack_require__(865)]
+            template: __webpack_require__(876),
+            styles: [__webpack_require__(867)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"]) === 'function' && _c) || Object])
     ], NavbarComponent);
@@ -681,7 +771,7 @@ var NavbarComponent = (function () {
 
 /***/ }),
 
-/***/ 651:
+/***/ 652:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -734,8 +824,8 @@ var ProfileComponent = (function () {
     ProfileComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-profile',
-            template: __webpack_require__(874),
-            styles: [__webpack_require__(866)]
+            template: __webpack_require__(877),
+            styles: [__webpack_require__(868)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__angular_router__["b" /* Router */]) === 'function' && _b) || Object])
     ], ProfileComponent);
@@ -746,7 +836,7 @@ var ProfileComponent = (function () {
 
 /***/ }),
 
-/***/ 652:
+/***/ 653:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -813,8 +903,8 @@ var RegisterComponent = (function () {
     RegisterComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-register',
-            template: __webpack_require__(875),
-            styles: [__webpack_require__(867)]
+            template: __webpack_require__(878),
+            styles: [__webpack_require__(869)]
         }), 
         __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_validate_service__["a" /* ValidateService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_validate_service__["a" /* ValidateService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */]) === 'function' && _b) || Object, (typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__["FlashMessagesService"]) === 'function' && _c) || Object, (typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */]) === 'function' && _d) || Object])
     ], RegisterComponent);
@@ -825,7 +915,7 @@ var RegisterComponent = (function () {
 
 /***/ }),
 
-/***/ 653:
+/***/ 654:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -870,7 +960,7 @@ var AuthGuard = (function () {
 
 /***/ }),
 
-/***/ 654:
+/***/ 655:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -886,7 +976,7 @@ var environment = {
 
 /***/ }),
 
-/***/ 858:
+/***/ 859:
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -1143,15 +1233,8 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 858;
+webpackContext.id = 859;
 
-
-/***/ }),
-
-/***/ 860:
-/***/ (function(module, exports) {
-
-module.exports = ""
 
 /***/ }),
 
@@ -1179,88 +1262,109 @@ module.exports = ""
 /***/ 864:
 /***/ (function(module, exports) {
 
-module.exports = "body {\r\n  padding-top: 40px;\r\n  padding-bottom: 40px;\r\n  background-color: #eee;\r\n}\r\n\r\n.form-signin {\r\n  max-width: 330px;\r\n  padding: 15px;\r\n  margin: 0 auto;\r\n}\r\n.form-signin .form-signin-heading,\r\n.form-signin .checkbox {\r\n  margin-bottom: 10px;\r\n}\r\n.form-signin .checkbox {\r\n  font-weight: 400;\r\n}\r\n.form-signin .form-control {\r\n  position: relative;\r\n  box-sizing: border-box;\r\n  height: auto;\r\n  padding: 10px;\r\n  font-size: 16px;\r\n}\r\n.form-signin .form-control:focus {\r\n  z-index: 2;\r\n}\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n  margin-bottom: 10px;\r\n}"
+module.exports = ""
 
 /***/ }),
 
 /***/ 865:
 /***/ (function(module, exports) {
 
-module.exports = "\r\n.navbar {\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }"
+module.exports = ""
 
 /***/ }),
 
 /***/ 866:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = "body {\r\n  padding-top: 40px;\r\n  padding-bottom: 40px;\r\n  background-color: #eee;\r\n}\r\n\r\n.form-signin {\r\n  max-width: 330px;\r\n  padding: 15px;\r\n  margin: 0 auto;\r\n}\r\n.form-signin .form-signin-heading,\r\n.form-signin .checkbox {\r\n  margin-bottom: 10px;\r\n}\r\n.form-signin .checkbox {\r\n  font-weight: 400;\r\n}\r\n.form-signin .form-control {\r\n  position: relative;\r\n  box-sizing: border-box;\r\n  height: auto;\r\n  padding: 10px;\r\n  font-size: 16px;\r\n}\r\n.form-signin .form-control:focus {\r\n  z-index: 2;\r\n}\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n  margin-bottom: 10px;\r\n}"
 
 /***/ }),
 
 /***/ 867:
 /***/ (function(module, exports) {
 
-module.exports = "body {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n  \r\n  .form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n  .form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n  .form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n  .form-signin .form-control {\r\n    position: relative;\r\n    box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n  .form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n  .form-signin input[type=\"name\"],input[type=\"username\"] ,input[type=\"email\"],input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }"
+module.exports = "\r\n.navbar {\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }"
 
 /***/ }),
 
 /***/ 868:
 /***/ (function(module, exports) {
 
-module.exports = "<app-navbar></app-navbar>\n<div class=\"container\">\n  <flash-messages></flash-messages>\n  <router-outlet></router-outlet>\n</div>"
+module.exports = ""
 
 /***/ }),
 
 /***/ 869:
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n  <canvas id=\"myChart\" width=\"1200\" height=\"600\"></canvas>\n  <button (click)=\"onRegisterSubmit()\">Try It</button>\n\n</div>\n\n"
+module.exports = "body {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n  \r\n  .form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n  .form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n  .form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n  .form-signin .form-control {\r\n    position: relative;\r\n    box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n  .form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n  .form-signin input[type=\"name\"],input[type=\"username\"] ,input[type=\"email\"],input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }"
 
 /***/ }),
 
 /***/ 870:
 /***/ (function(module, exports) {
 
-module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Express Backend</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Angular-CLI</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>JWT Tokens</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
+module.exports = "<app-navbar></app-navbar>\n<div class=\"container\">\n  <flash-messages></flash-messages>\n  <router-outlet></router-outlet>\n</div>"
 
 /***/ }),
 
 /***/ 871:
 /***/ (function(module, exports) {
 
-module.exports = "<h1>\n  <i class=\"wi wi-barometer\"></i> Your Local Weather Forecast\n</h1>\n\n<p>Current Position: {{ lat }} / {{ lng }} </p>\n\n<button (click)=\"getForecast()\">Get Forecast</button>\n\n<h1>Seven Day Forecast</h1>\n\n<div *ngIf=\"forecast\" class=\"columns\"> \n    <div *ngFor=\"let day of forecast.daily.data\" class=\"column\">\n\n        <i [class]=\"weatherIcon(day.icon)\"></i>\n        <h3>{{ day.time * 1000 | date: 'MMM d'  }}</h3>\n        <p>{{ day.summary }}</p>\n\n    </div>\n </div>\n\n <div *ngIf=\"forecast\">\n   {{ forecast.daily.data[0].time}}\n </div>"
+module.exports = "<div class=\"chart-container\" style=\"position: relative;\" [hidden]=\"!chart1\">\n  <canvas id=\"myChart\" width=\"1000\" height=\"500\"></canvas>\n  <button (click)=\"onRegisterSubmit()\">Try It</button>\n</div>\n\n<div>\n  <canvas [hidden]=\"!chart2\" id=\"myChart1\" width=\"600\" height=\"300\"></canvas>\n</div>\n\n\n<button (click)=\"chart(1)\">chart 1</button>\n<button (click)=\"chart(2)\">chart 2</button>\n\n"
 
 /***/ }),
 
 /***/ 872:
 /***/ (function(module, exports) {
 
-module.exports = "<!-- <h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form> -->\n\n\n<div class=\"container\" (submit)=\"onLoginSubmit()\">\n    <form class=\"form-signin\">\n      <h2 class=\"form-signin-heading\">Please Login</h2>\n      <input type=\"username\"  class=\"form-control\" placeholder=\"Username\" required autofocus [(ngModel)]=\"username\" name=\"username\">\n      <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required [(ngModel)]=\"password\" name=\"password\">\n      <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Login</button>\n    </form>\n</div>\n"
+module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Express Backend</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Angular-CLI</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>JWT Tokens</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
 
 /***/ }),
 
 /***/ 873:
 /***/ (function(module, exports) {
 
-module.exports = "<!--<nav class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n      </div>\n      <div id=\"navbar\" class=\"collapse navbar-collapse\">\n        <ul class=\"nav navbar-nav navbar-left\">\n          <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/']\">Home</a></li>\n        </ul>\n\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/dashboard']\">Dashboard</a></li>\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/profile']\">Profile</a></li>\n\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/login']\">Login</a></li>\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/register']\">Register</a></li>\n          <li *ngIf=\"authService.loggedIn()\"><a (click)=\"onLogoutClick()\" href=\"#\">Logout</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n-->\n\n\n\n<nav class=\"navbar navbar-expand-md navbar-dark bg-dark\">\n  <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#emoodiNavbar\" aria-controls=\"emoodiNavbar\"\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n    <span class=\"navbar-toggler-icon\"></span>\n  </button>\n\n  <div class=\"collapse navbar-collapse\" id=\"emoodiNavbar\">\n    <div class=\"navbar-nav mr-auto\">\n      <li class=\"nav-item\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/']\">Home</a>\n      </li>\n\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/dashboard']\">Dashboard</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/profile']\">Profile</a>\n      </li>\n    </div>\n      <div class=\"navbar-nav ml-auto\">\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/login']\">Login</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/register']\">Register</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\">\n        <a class=\"nav-link\" (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n      </li>\n\n    </div>\n  </div>\n</nav>\n"
+module.exports = "<p>\n  inputs works!\n</p>\n"
 
 /***/ }),
 
 /***/ 874:
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"user\">\n    <h2 class=\"page-header\">{{user.name}}</h2>\n    <ul class=\"list-group\">\n      <li class=\"list-group-item\">Username: {{user.username}}</li>\n      <li class=\"list-group-item\">Email: {{user.email}}</li>\n    </ul>\n\n    <p>Click the button to get your coordinates.</p>\n\n<button (click)=\"getLocation()\">Try It</button>\n{{location}}\n<local-forecast></local-forecast>\n  </div>"
+module.exports = "<h1>\n  <i class=\"wi wi-barometer\"></i> Your Local Weather Forecast\n</h1>\n\n<p>Current Position: {{ lat }} / {{ lng }} </p>\n\n<button (click)=\"getForecast()\">Get Forecast</button>\n\n<h1>Seven Day Forecast</h1>\n\n<div *ngIf=\"forecast\" class=\"columns\"> \n    <div *ngFor=\"let day of forecast.daily.data\" class=\"column\">\n\n        <i [class]=\"weatherIcon(day.icon)\"></i>\n        <h3>{{ day.time * 1000 | date: 'MMM d'  }}</h3>\n        <p>{{ day.summary }}</p>\n\n    </div>\n </div>\n\n <div *ngIf=\"forecast\">\n   {{ forecast.daily.data[0].time}}\n </div>"
 
 /***/ }),
 
 /***/ 875:
 /***/ (function(module, exports) {
 
+module.exports = "<!-- <h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form> -->\n\n\n<div class=\"container\" (submit)=\"onLoginSubmit()\">\n    <form class=\"form-signin\">\n      <h2 class=\"form-signin-heading\">Please Login</h2>\n      <input type=\"username\"  class=\"form-control\" placeholder=\"Username\" required autofocus [(ngModel)]=\"username\" name=\"username\">\n      <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required [(ngModel)]=\"password\" name=\"password\">\n      <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Login</button>\n    </form>\n</div>\n"
+
+/***/ }),
+
+/***/ 876:
+/***/ (function(module, exports) {
+
+module.exports = "<!--<nav class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n      </div>\n      <div id=\"navbar\" class=\"collapse navbar-collapse\">\n        <ul class=\"nav navbar-nav navbar-left\">\n          <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/']\">Home</a></li>\n        </ul>\n\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/dashboard']\">Dashboard</a></li>\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/profile']\">Profile</a></li>\n\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/login']\">Login</a></li>\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/register']\">Register</a></li>\n          <li *ngIf=\"authService.loggedIn()\"><a (click)=\"onLogoutClick()\" href=\"#\">Logout</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n-->\n\n\n\n<nav class=\"navbar navbar-expand-md navbar-dark bg-dark\">\n  <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#emoodiNavbar\" aria-controls=\"emoodiNavbar\"\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n    <span class=\"navbar-toggler-icon\"></span>\n  </button>\n\n  <div class=\"collapse navbar-collapse\" id=\"emoodiNavbar\">\n    <div class=\"navbar-nav mr-auto\">\n      <li class=\"nav-item\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/']\">Home</a>\n      </li>\n\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/dashboard']\">Dashboard</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/profile']\">Profile</a>\n      </li>\n    </div>\n      <div class=\"navbar-nav ml-auto\">\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/login']\">Login</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/register']\">Register</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\">\n        <a class=\"nav-link\" (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n      </li>\n\n    </div>\n  </div>\n</nav>\n"
+
+/***/ }),
+
+/***/ 877:
+/***/ (function(module, exports) {
+
+module.exports = "<div *ngIf=\"user\">\n    <h2 class=\"page-header\">{{user.name}}</h2>\n    <ul class=\"list-group\">\n      <li class=\"list-group-item\">Username: {{user.username}}</li>\n      <li class=\"list-group-item\">Email: {{user.email}}</li>\n    </ul>\n\n    <p>Click the button to get your coordinates.</p>\n\n<button (click)=\"getLocation()\">Try It</button>\n{{location}}\n<local-forecast></local-forecast>\n  </div>"
+
+/***/ }),
+
+/***/ 878:
+/***/ (function(module, exports) {
+
 module.exports = "<div>\n    <form class=\"form-signin\" (submit)=\"onRegisterSubmit()\">\n      <h2 class=\"form-signin-heading\">Please Register</h2>\n      \n      <input type=\"name\" class=\"form-control\" placeholder=\"Name\" required autofocus [(ngModel)]=\"name\" name=\"name\">\n      <input type=\"username\" class=\"form-control\" placeholder=\"Username\" required [(ngModel)]=\"username\" name=\"username\">\n      <input type=\"email\" id=\"inputEmail\" class=\"form-control\" placeholder=\"Email address\" required [(ngModel)]=\"email\" name=\"email\" class=\"form-control\">\n      <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required [(ngModel)]=\"password\" name=\"password\">\n     \n      <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Register</button>\n    </form>\n</div>\n"
 
 /***/ }),
 
-/***/ 918:
+/***/ 921:
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(527);
@@ -1268,5 +1372,5 @@ module.exports = __webpack_require__(527);
 
 /***/ })
 
-},[918]);
+},[921]);
 //# sourceMappingURL=main.bundle.map
