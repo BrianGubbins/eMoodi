@@ -141,7 +141,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var AuthService = (function () {
     function AuthService(http) {
         this.http = http;
-        this.isDev = false; // Change to false before deployment
+        this.isDev = true; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
@@ -304,7 +304,8 @@ var appRoutes = [
     { path: 'login', component: __WEBPACK_IMPORTED_MODULE_7__components_login_login_component__["a" /* LoginComponent */] },
     { path: 'dashboard', component: __WEBPACK_IMPORTED_MODULE_10__components_dashboard_dashboard_component__["a" /* DashboardComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] },
     { path: 'profile', component: __WEBPACK_IMPORTED_MODULE_11__components_profile_profile_component__["a" /* ProfileComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] },
-    { path: 'input', component: __WEBPACK_IMPORTED_MODULE_18__components_inputs_inputs_component__["a" /* InputsComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] }
+    { path: 'input', component: __WEBPACK_IMPORTED_MODULE_18__components_inputs_inputs_component__["a" /* InputsComponent */], canActivate: [__WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__["a" /* AuthGuard */]] },
+    { path: '**', redirectTo: '' }
 ];
 var AppModule = (function () {
     function AppModule() {
@@ -552,9 +553,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 var InputsComponent = (function () {
+    // private LOGO = require("src/app/assets/emojis/5.png");
     function InputsComponent() {
+        this.UserID = (JSON.parse(localStorage.getItem('user'))).id;
+        this.date = Date.now;
+        this.weather = {
+            cloudCover: 0.7,
+            rain: 60,
+            temp: 3,
+            summary: "shitty enuf" };
     }
     InputsComponent.prototype.ngOnInit = function () {
+        console.log(this.UserID);
+        $('img').click(function () {
+            $('.selected').removeClass('selected');
+            $(this).addClass('selected');
+        });
+    };
+    InputsComponent.prototype.reset = function () {
+        this.mood = null;
+        this.sleep = null;
+        this.diet = null;
+        this.exercise = null;
+        $('.btn-group :radio').prop('checked', false);
+        $('.btn-group .active').removeClass('active');
+        $('.selected').removeClass('selected');
+    };
+    InputsComponent.prototype.setMood = function (mood) {
+        this.mood = mood;
+    };
+    InputsComponent.prototype.setDiet = function (diet) {
+        this.diet = diet;
+        // console.log(num);
+    };
+    InputsComponent.prototype.setExercise = function (exercise) {
+        this.exercise = exercise;
+        // console.log(num);
+    };
+    InputsComponent.prototype.onInfoSubmit = function () {
+        var mood = {
+            userId: this.UserID,
+            date: Date.now,
+            weather: this.weather,
+            sleep: this.sleep,
+            diet: this.diet,
+            exercise: this.exercise,
+            moodData: { currentMood: this.mood, time: Date.now() },
+        };
+        console.log(mood);
     };
     InputsComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -1262,7 +1308,7 @@ module.exports = ""
 /***/ 864:
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = "input.hideRadio {\r\n    visibility:hidden;\r\n}\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n  \r\n  img.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    box-shadow: 0 0 22px 6px #007bff;\r\n}\r\n\r\n  ul.moods li {\r\n    width: 212px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n\r\n  .form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n  .form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n  .form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n  .form-signin .form-control {\r\n    position: relative;\r\n    box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n  .form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n  .form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\n  \r\n  btn.btn-lg{\r\nborder: 2px;\r\n  }"
 
 /***/ }),
 
@@ -1325,7 +1371,7 @@ module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"con
 /***/ 873:
 /***/ (function(module, exports) {
 
-module.exports = "<p>\n  inputs works!\n</p>\n"
+module.exports = "\n    <script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div>\n\n    <ul class=\"moods\">\n  <h2 align= \"center\">How are you feeling</h2>\n  <br>\n      \n        <li>\n            <a (click)=\"setMood(1)\"><img class=\"logo\" src=\"assets/emojis/1.png\" /></a>\n        </li><li>\n            <a (click)=\"setMood(2)\"><img class=\"logo\" src=\"assets/emojis/2.png\" /></a>\n        </li>\n        <li>\n            <a (click)=\"setMood(3)\"><img class=\"logo\" src=\"assets/emojis/3.png\" /></a>\n        </li><li>\n            <a (click)=\"setMood(4)\"><img class=\"logo\" src=\"assets/emojis/4.png\" /></a>\n        </li>\n        <li>\n            <a (click)=\"setMood(5)\"><img class=\"logo\" src=\"assets/emojis/5.png\" /></a>\n        </li>\n    </ul>\n\n    <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n            <h3 align= \"center\">How much sleep did you get last night ?</h3>\n            <input type=\"number\" min=\"0\" required class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n         \n          <br>\n\n          <h3 align= \"center\">What was your diet like today ?</h3>\n        <br>          \n        <div class=\"btn-group\" data-toggle=\"buttons\">\n          <label (click)= \"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n            <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"  > Poor\n          </label>\n          <label (click)= \"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n            <input type=\"radio\" class=\"hideRadio\"> Fair\n          </label>\n          <label (click)= \"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n            <input type=\"radio\" class=\"hideRadio\"  > Good\n          </label>\n        </div>\n\n        <br>\n        <br>\n\n          <h3 align= \"center\">How was your level of exercise today ?</h3>\n        <br>          \n        <div class=\"btn-group\" data-toggle=\"buttons\">\n          <label (click)= \"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n            <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\" > Poor\n          </label>\n          <label (click)= \"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n            <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n          </label>\n          <label (click)= \"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n            <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n          </label> \n         </div>\n\n        <br>\n        <br>\n        <br>        \n    <div style= \"float:right\">\n         <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n         <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n    </div>\n    </form>\n</div>\n"
 
 /***/ }),
 
