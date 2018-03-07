@@ -66,7 +66,6 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
 
 
 router.post('/mood', (req, res, next) => {
-  console.log("user route");
   let newMood = new Mood({
     userId: req.body.userId,
     date: req.body.date,
@@ -83,6 +82,19 @@ router.post('/mood', (req, res, next) => {
     } else {
       res.json({success: true, msg:'User registered'});
     }
+  });
+});
+
+router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  console.log("userroutegetmood");
+  
+  Mood.getMood( '5a9f741fdc448219b4f25184', (err, mood) => {
+    if(err){
+      return done(err, false);
+    }
+    else{
+      res.json({mood: mood});
+    } 
   });
 });
 
