@@ -24,15 +24,19 @@
   </script> -->
 
   <link rel="manifest" href="/manifest.json" />
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-<script>
-  var OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-    OneSignal.init({
-      appId: "7b9403c7-4187-477b-91f0-a6eb31406031",
+  <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+  <script>
+    var OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      OneSignal.init({
+        appId: "7b9403c7-4187-477b-91f0-a6eb31406031",
+        autoRegister: false,
+        notifyButton: {
+          enable: true,
+        },
+      });
     });
-  });
-</script>
+  </script>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
