@@ -86,9 +86,9 @@ router.post('/mood', (req, res, next) => {
 });
 
 router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
-  console.log("userroutegetmood");
   
-  Mood.getMood( '5a9f741fdc448219b4f25184', (err, mood) => {
+  let id = '\"' + req.user._id + '\"';
+  Mood.getMood( req.user._id, (err, mood) => {
     if(err){
       return done(err, false);
     }

@@ -15,7 +15,7 @@ const MoodSchema = mongoose.Schema({
     weather:{
         cloudCover: Number,
         rain: Number,
-        uvIndex: Number,
+        temp: Number,
         summary: String
     },
     sleep:{
@@ -40,7 +40,11 @@ module.exports.addMood= function(newMood, callback){
 }
 
 module.exports.getMood= function(id, callback){
-    Mood.findById(id,callback);
+    Mood.find(
+        { userId: id },
+        callback
+        
+    )
 }
 
 // module.exports.addMood= function(newMood, callback){
