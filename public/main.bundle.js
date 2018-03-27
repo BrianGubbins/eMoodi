@@ -1,6 +1,6 @@
 webpackJsonp([1,4],{
 
-/***/ 229:
+/***/ 163:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88,6 +88,7 @@ var ValidateService = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_jwt__ = __webpack_require__(662);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_jwt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_angular2_jwt__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__weather_service__ = __webpack_require__(163);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -102,9 +103,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AuthService = (function () {
-    function AuthService(http) {
+    function AuthService(http, weatherServ) {
         this.http = http;
+        this.weatherServ = weatherServ;
         this.isDev = true; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
@@ -148,11 +151,70 @@ var AuthService = (function () {
         this.user = null;
         localStorage.clear();
     };
+    AuthService.prototype.setWeather = function () {
+        var _this = this;
+        // var lat;
+        // var lng;
+        var weatherFormat;
+        // if (navigator.geolocation) {
+        //   console.log("hello");
+        //   navigator.geolocation.getCurrentPosition(position => {
+        //     lat = position.coords.latitude;
+        //     lng = position.coords.longitude;
+        //     console.log("hello");
+        //     this.weatherServ.currentForecast(lat, lng).subscribe(weather => {
+        //       console.log("hello");
+        //       var forecast = weather;
+        //       weatherFormat = {
+        //         cloudCover: forecast.daily.data[0].cloudCover,
+        //         rain: forecast.daily.data[0].precipProbability,
+        //         temp: forecast.daily.data[0].temperatureMax,
+        //         summary: forecast.daily.data[0].summary
+        //       }
+        //     },
+        //       err => {
+        //         console.log(err);
+        //         return false;
+        //       });
+        //   });
+        // } else {
+        //   /// default coords
+        //   lat = 40.73;
+        //   lng = -73.93;
+        // }
+        this.weatherServ.currentForecast(40, -72).subscribe(function (weather) {
+            console.log("hello");
+            var forecast = weather;
+            weatherFormat = {
+                cloudCover: forecast.daily.data[0].cloudCover,
+                rain: forecast.daily.data[0].precipProbability,
+                temp: forecast.daily.data[0].temperatureMax,
+                summary: forecast.daily.data[0].summary
+            };
+            var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
+            headers.append('Content-Type', 'application/json');
+            var ep = _this.prepEndpoint('users/addweather');
+            return _this.http.post(ep, weatherFormat, { headers: headers })
+                .map(function (res) { return res.json(); })
+                .subscribe(function (data) {
+                if (data.success) {
+                    console.log('weather added');
+                }
+                else {
+                    console.log('error');
+                }
+            });
+            // console.log(weatherFormat);
+        }, function (err) {
+            console.log(err);
+            return false;
+        });
+        console.log(weatherFormat);
+    };
     AuthService.prototype.setMood = function (mood) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
         headers.append('Content-Type', 'application/json');
         var ep = this.prepEndpoint('users/mood');
-        console.log("auth");
         return this.http.post(ep, mood, { headers: headers })
             .map(function (res) { return res.json(); });
     };
@@ -175,10 +237,10 @@ var AuthService = (function () {
     };
     AuthService = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__angular_http__["Http"]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__weather_service__["a" /* WeatherService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_4__weather_service__["a" /* WeatherService */]) === 'function' && _b) || Object])
     ], AuthService);
     return AuthService;
-    var _a;
+    var _a, _b;
 }());
 //# sourceMappingURL=C:/Users/brian/Desktop/FYP/eMoodi/angular-src/src/auth.service.js.map
 
@@ -272,7 +334,7 @@ var AppComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__components_local_forecast_local_forecast_component__ = __webpack_require__(651);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__services_validate_service__ = __webpack_require__(344);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__services_auth_service__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_weather_service__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__services_weather_service__ = __webpack_require__(163);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_angular2_flash_messages__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__guards_auth_guard__ = __webpack_require__(656);
@@ -457,35 +519,6 @@ var DashboardComponent = (function () {
             }
         });
     };
-    // onRegisterSubmit() {
-    //   const User = JSON.parse(localStorage.getItem('user'));
-    //   const mood = {
-    //     userId: User.id,
-    //     date: Date.now,
-    //     weather: {
-    //       cloudCover: 0.7,
-    //       rain: 60,
-    //       uvIndex: 2,
-    //       summary: "shitty enuf"
-    //     },
-    //     sleep: 8,
-    //     diet: "fair",
-    //     exercise: "fair",
-    //     moodData: [{ currMood: 1, date: Date.now() },
-    //     { currMood: 1, date: Date.now() + (1000 * 60 * 60 * 24) },
-    //     { currMood: 4, date: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
-    //     { currMood: 3, date: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
-    //     { currMood: 2, date: Date.now() + ((1000 * 60 * 60 * 24) * 4) }]
-    //   }
-    //   // create user mood
-    //   this.authService.setMood(mood).subscribe(data => {
-    //     if (data.success) {
-    //       this.flashMessage.show('You are now registered and can log in', { cssClass: 'alert-success', timeout: 3000 });
-    //     } else {
-    //       this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
-    //     }
-    //   });
-    // }
     DashboardComponent.prototype.chart = function (number) {
         if (number == 1) {
             this.moods.push(5);
@@ -538,6 +571,9 @@ var HomeComponent = (function () {
     }
     HomeComponent.prototype.ngOnInit = function () {
     };
+    HomeComponent.prototype.getForecast = function () {
+        this.authService.setWeather();
+    };
     HomeComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-home',
@@ -562,7 +598,7 @@ var HomeComponent = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__ = __webpack_require__(85);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_weather_service__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_weather_service__ = __webpack_require__(163);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_do__ = __webpack_require__(509);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_do__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InputsComponent; });
@@ -607,22 +643,6 @@ var InputsComponent = (function () {
             this.lat = 40.73;
             this.lng = -73.93;
         }
-        function weatherFormatting() {
-            var _this = this;
-            this.weatherServ.currentForecast(this.lat, this.lng).subscribe(function (weather) {
-                _this.forecast = weather;
-                _this.weatherFormat = {
-                    cloudCover: _this.forecast.daily.data[0].cloudCover,
-                    rain: _this.forecast.daily.data[0].precipProbability,
-                    temp: _this.forecast.daily.data[0].temperatureMax,
-                    summary: _this.forecast.daily.data[0].summary
-                };
-                return (_this.weatherFormat);
-            }, function (err) {
-                console.log(err);
-                return false;
-            });
-        }
     };
     InputsComponent.prototype.reset = function () {
         this.mood = null;
@@ -643,39 +663,64 @@ var InputsComponent = (function () {
         this.exercise = exercise;
     };
     InputsComponent.prototype.onInfoSubmit = function () {
+        // this.weatherServ.currentForecast(this.lat, this.lng).subscribe(weather => {
+        //   this.forecast = weather;
+        //   var weatherFormat = {
+        //     cloudCover: this.forecast.daily.data[0].cloudCover,
+        //     rain: this.forecast.daily.data[0].precipProbability,
+        //     temp: this.forecast.daily.data[0].temperatureMax,
+        //     summary: this.forecast.daily.data[0].summary
+        // }
         var _this = this;
-        this.weatherServ.currentForecast(this.lat, this.lng).subscribe(function (weather) {
-            _this.forecast = weather;
-            var weatherFormat = {
-                cloudCover: _this.forecast.daily.data[0].cloudCover,
-                rain: _this.forecast.daily.data[0].precipProbability,
-                temp: _this.forecast.daily.data[0].temperatureMax,
-                summary: _this.forecast.daily.data[0].summary
-            };
-            console.log(_this.forecast);
-            var moodInfo = {
-                userId: _this.UserID,
-                date: Date.now,
-                weather: weatherFormat,
-                sleep: _this.sleep,
-                diet: _this.diet,
-                exercise: _this.exercise,
-                moodData: [{ currMood: _this.mood, date: Date.now() }]
-            };
-            _this.authService.setMood(moodInfo).subscribe(function (data) {
-                if (data.success) {
-                    _this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
-                }
-                else {
-                    _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
-                }
-            });
-            console.log(moodInfo);
-            _this.router.navigate(['dashboard']);
-        }, function (err) {
-            console.log(err);
-            return false;
+        // console.log(this.forecast);
+        // const moodInfo = {
+        //   userId: this.UserID,
+        //   date: Date.now,
+        //   weather: weatherFormat,
+        //   sleep: this.sleep,
+        //   diet: this.diet,
+        //   exercise: this.exercise,
+        //   moodData: [{ currMood: this.mood, date: Date.now() }]
+        // }
+        // this.authService.setMood(moodInfo).subscribe(data => {
+        //   if (data.success) {
+        //     this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
+        //   } else {
+        //     this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
+        //   }
+        // });
+        // console.log(moodInfo);
+        // this.router.navigate(['dashboard']);
+        // },
+        // err => {
+        //   console.log(err);
+        //   return false;
+        // });
+        var weatherFormat = {
+            cloudCover: 4,
+            rain: 4,
+            temp: 4,
+            summary: "this.forecast.daily.data[0].summary"
+        };
+        var moodInfo = {
+            userId: this.UserID,
+            date: Date.now,
+            weather: weatherFormat,
+            sleep: this.sleep,
+            diet: this.diet,
+            exercise: this.exercise,
+            moodData: [{ currMood: this.mood, date: Date.now() }]
+        };
+        this.authService.setMood(moodInfo).subscribe(function (data) {
+            if (data.success) {
+                _this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
+            }
+            else {
+                _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
+            }
         });
+        console.log(moodInfo);
+        this.router.navigate(['dashboard']);
     };
     InputsComponent = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -697,7 +742,7 @@ var InputsComponent = (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_weather_service__ = __webpack_require__(229);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_weather_service__ = __webpack_require__(163);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__(509);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LocalForecastComponent; });
@@ -735,7 +780,7 @@ var LocalForecastComponent = (function () {
         var _this = this;
         this.weather.currentForecast(this.lat, this.lng).subscribe(function (weather) {
             _this.forecast = weather;
-            console.log(_this.forecast);
+            // console.log(this.forecast);
         }, function (err) {
             console.log(err);
             return false;
@@ -922,7 +967,6 @@ var ProfileComponent = (function () {
         var _this = this;
         this.authService.getProfile().subscribe(function (profile) {
             _this.user = profile.user;
-            //  console.log(this.user);
         }, function (err) {
             console.log(err);
             return false;
@@ -1431,7 +1475,7 @@ module.exports = "<button (click)=\"chart(1)\" class=\"btn btn-lg btn-primary\">
 /***/ 875:
 /***/ (function(module, exports) {
 
-module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Express Backend</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Angular-CLI</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>JWT Tokens</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
+module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n<!-- <button (click)=\"getForecast()\">Get Forecast</button> -->\n\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Express Backend</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Angular-CLI</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>JWT Tokens</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
 
 /***/ }),
 

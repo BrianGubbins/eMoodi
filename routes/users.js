@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const User = require('../models/user');
 const Mood = require('../models/mood');
+const Weather = require('../models/weather');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 
@@ -64,26 +65,61 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
     res.json({user: req.user});
 });
 
+router.post('/addweather', (req, res, next) => {
+  
+  console.log("userWeather");
+
+  let weatherDaily = new Weather({
+    cloudCover: req.body.cloudCover,
+    rain:  req.body.rain,
+    temp: req.body.temp,
+    summary:  req.body.summary
+  });
+
+
+//   let weatherDaily = new Weather({
+//     cloudCover: 4,
+//     rain: 4,
+//     temp: 4,
+//     summary: "this.forecast.daily.data[0].summary"
+// });
+
+  Weather.newWeather(weatherDaily, (err, user) => {
+    if(err){
+      res.json({success: false, msg:'Failed to add weather'});
+    } else {
+      res.json({success: true, msg:'weather created'});
+    }
+  });
+});
+
 
 router.post('/mood', (req, res, next) => {
+  console.log("hello2");
+
   let newMood = new Mood({
     userId: req.body.userId,
     date: req.body.date,
-    weather: req.body.weather,
     sleep: req.body.sleep,
     diet: req.body.diet,
     exercise: req.body.exercise,
     moodData: req.body.moodData
   });
 
+  console.log(newMood)
+
   Mood.addMood(newMood, (err, user) => {
     if(err){
+      console.log(user);
       res.json({success: false, msg:'Failed to register user'});
     } else {
+      console.log(user);
       res.json({success: true, msg:'User registered'});
     }
   });
 });
+
+
 
 router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
   

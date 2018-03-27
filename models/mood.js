@@ -10,40 +10,63 @@ const MoodSchema = mongoose.Schema({
     },
     date: {
         type: Date,
-        default : Date.now
+        default: Date.now
     },
-    weather:{
-        cloudCover: Number,
-        rain: Number,
-        temp: Number,
-        summary: String
-    },
-    sleep:{
+    sleep: {
         type: Number,
     },
     diet: {
-        type: String, 
+        type: String,
     },
     exercise: {
-        type: String, 
+        type: String,
     },
-    moodData: [{ 
-        currMood: Number, 
-        date: Date 
+    moodData: [{
+        currMood: Number,
+        date: Date
     }]
 });
 
 const Mood = module.exports = mongoose.model('Mood', MoodSchema);
 
-module.exports.addMood= function(newMood, callback){
-    newMood.save(callback);
+module.exports.addMood = function (newMood, callback) {
+
+    var start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    var end = new Date();
+    end.setHours(23, 59, 59, 999);
+
+    Mood.update({
+            date: {
+                $gte: start,
+                $lt: end
+            },
+            userId: newMood.userId
+        }, {
+            $setOnInsert: {
+                userId: newMood.userId,
+                date: newMood.date,
+                sleep: newMood.sleep,
+                diet: newMood.diet,
+                exercise: newMood.exercise
+            },
+            $push: {
+                moodData: newMood.moodData[0]
+            }
+        }, {
+            upsert: true
+        },
+        callback)
+
 }
 
-module.exports.getMood= function(id, callback){
-    Mood.find(
-        { userId: id },
+module.exports.getMood = function (id, callback) {
+    Mood.find({
+            userId: id
+        },
         callback
-        
+
     )
 }
 
