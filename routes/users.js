@@ -13,7 +13,11 @@ router.post('/register', (req, res, next) => {
       name: req.body.name,
       email: req.body.email,
       username: req.body.username,
-      password: req.body.password
+      password: req.body.password,
+      gender: req.body.gender,
+      weight: req.body.weight,
+      height: req.body.height,
+      bmi: req.body.bmi
     });
   
     User.addUser(newUser, (err, user) => {
@@ -50,7 +54,9 @@ router.post('/authenticate', (req, res, next) => {
               id: user._id,
               name: user.name,
               username: user.username,
-              email: user.email
+              email: user.email,
+              weight: user.weight,
+              height: user.height
             }
           });
         } else {
@@ -120,7 +126,6 @@ router.post('/mood', (req, res, next) => {
 });
 
 
-
 router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
   
   let id = '\"' + req.user._id + '\"';
@@ -129,7 +134,7 @@ router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res,
       return done(err, false);
     }
     else{
-      res.json({mood: mood});
+      res.json(mood);
     } 
   });
 });

@@ -18,6 +18,22 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String, 
         required: true
+    },
+    gender: {
+        type: String, 
+        required: true
+    },
+    height: {
+        type: Number, 
+        required: true
+    },
+    weight: {
+        type: Number, 
+        required: true
+    },
+    bmi: {
+        type: Number, 
+        required: true
     }
 });
 
@@ -33,6 +49,7 @@ module.exports.getUserByUsername= function(username, callback){
 }
 
 module.exports.addUser = function(newUser, callback){
+    console.log(newUser);
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.password, salt, (err, hash) => {
         if(err) throw err;
