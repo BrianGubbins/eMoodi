@@ -444,7 +444,7 @@ module.exports = ""
 /***/ "./src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">chart 1</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">chart 2</button>\n<a routerLink=\"/input\"><button class=\"btn btn-lg btn-primary\" > Add Info</button></a>\n\n\n<div class=\"container\" style=\"position: relative;\" [hidden]=\"!chart1\">\n  <canvas id=\"myChart\" width=\"1000\" height=\"500\"></canvas>\n</div>\n\n<div>\n  <canvas [hidden]=\"!chart2\" id=\"myChart1\" width=\"1000\" height=\"500\"></canvas>\n</div>\n\n"
+module.exports = "<div class=\"text-center\">\n<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">Mood</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n<a routerLink=\"/input\"><button class=\"btn btn-lg btn-primary\" > Add Info</button></a>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart1\">\n  <canvas id=\"myChart\"></canvas>\n</div>\n\n<div>\n  <canvas [hidden]=\"!chart2\" id=\"myChart1\" width=\"1000\" height=\"500\"></canvas>\n</div>\n\n"
 
 /***/ }),
 
@@ -503,6 +503,7 @@ var DashboardComponent = (function () {
                         var jsdate = new Date(moodDocs[i].moodData[j].date);
                         _this.dates.push(jsdate.toLocaleTimeString('en', { month: 'long', day: 'numeric' }));
                         _this.myChart.update();
+                        _this.myChart1.update();
                         console.log(_this.moods);
                         console.log(_this.dates);
                     }
@@ -550,17 +551,25 @@ var DashboardComponent = (function () {
                     }]
             },
             options: {
-                responsive: true
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 6
+                            }
+                        }]
+                }
             }
         });
         var canvas1 = document.getElementById('myChart1');
         var ctx1 = canvas1.getContext("2d");
-        var myChart1 = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
+        this.myChart1 = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
             "type": "line",
             "data": {
                 "labels": this.dates,
                 "datasets": [{
-                        "label": "Your Sleep", "data": [6, 7, 9, 7, 6, 8, 6, 5, 6, 8, 9, 7, 10, 7, 5, 4, 7, 8, 6, 9, 9],
+                        "label": "Your Sleep", "data": [6, 7, 9, 7, 6, 8],
                         "fill": false,
                         "borderColor": "rgb(75, 192, 192)"
                     }]
@@ -610,7 +619,7 @@ module.exports = ""
 /***/ "./src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n\n<!-- <button (click)=\"getForecast()\">Get Forecast</button> -->\n\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Express Backend</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Angular-CLI</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>JWT Tokens</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
+module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n\n<!-- <button (click)=\"getForecast()\">Get Forecast</button> -->\n\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Mood Tracking</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Diet Suggestions</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Exercise Suggestions</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -632,6 +641,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+// import {nodeSchedule} from 'node-schedule';
+var cron = __webpack_require__("./node_modules/node-schedule/lib/schedule.js");
+// cron.scheduleJob('*/1 * * * *', function(){
+//   console.log('The answer to life, the universe, and everything!');
+// });
 var HomeComponent = (function () {
     function HomeComponent(authService) {
         this.authService = authService;
@@ -660,14 +674,14 @@ var HomeComponent = (function () {
 /***/ "./src/app/components/inputs/inputs.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "input.hideRadio {\r\n    visibility:hidden;\r\n}\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\nul.moods li {\r\n    width: 210px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
+module.exports = "input.hideRadio {\r\n    visibility:hidden;\r\n}\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\nul.moods li {\r\n    padding: 0px 25px 0px 25px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
 
 /***/ }),
 
 /***/ "./src/app/components/inputs/inputs.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div>\n\n  <ul class=\"moods\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n    <br>\n\n    <div style=\"float:right\">\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
+module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div class= \"text-center\">\n  <ul class=\"moods col-md-12\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n    <br>\n\n    <div style=\"float:right\">\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
 
 /***/ }),
 
@@ -1187,17 +1201,471 @@ var RegisterComponent = (function () {
 
 /***/ }),
 
+/***/ "./src/app/components/suggestion/exercises.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return exercises; });
+var exercises = {
+    "Chest Exercises": [{
+            level: 1,
+            name: "Jumping Jacks",
+            description: "Start with your feet together and your arms by your sides, then jump up with your feet apart and your hands overhead. <br><br> Return to the start position then do the next rep This exercise provides a full-body workout and works all your large muscle groups"
+        },
+        {
+            level: 1,
+            name: "Incline Push-Ups",
+            description: "Start in the regular push-up position but with your hands elevated on a chair or bench <br><br> Then Push your body up and down using your arm strength <br><br> Remember to keep your body straight"
+        },
+        {
+            level: 1,
+            name: "Knee Push-Ups",
+            description: "Start in the regular push-up position, then let your knees touch the floor and raise your feet up off the floor <br><br> Next push your body up and down"
+        },
+        {
+            level: 1,
+            name: "Push-Ups",
+            description: "Lay prone on the ground with arms supporting your body <br><br> Keep your body straight while raising and lowering your body with your arms <br><br> This exercise works the chest, shoulders, triceps, back and legs"
+        },
+        {
+            level: 1,
+            name: "Wide Arm Push-Ups",
+            description: "Start in the regular push-up position but with your hands spread wider than your shoulders <br><br> Then push your body up and down <br><br> Remember to keep your body straight"
+        },
+        {
+            level: 1,
+            name: "Box Push-Ups",
+            description: "Start on all fours with your knees under your butt and your hands directly under your shoulders <br><br> Bend your elbows and do a push-up <br><br>  Return to the start position and repeat"
+        },
+        {
+            level: 2,
+            name: "Hindu Push-Ups",
+            description: "Start with your hands and feet touching the floor, body bent and butt up in an upside down V shape <br><br> Then bend your elbows to bring your body towards the floor <br><br> When your body is close to the floor, raise your upper body up as far as possible. Then return to the original position and repeat"
+        },
+        {
+            level: 1,
+            name: "Cobra Stretch",
+            description: "Lie down on your stomach and bend your elbows with your hands beneath your shoulders <br><br> Then push your chest up off the ground as far as possible <br><br> Hold this position for the specified duration",
+        },
+        {
+            level: 1,
+            name: "Chest Stretch",
+            description: "Find a doorway, take a lunge position in the doorway with your arms on the doorframe and your elbows a little lower than your shoulders, then slowly bring your chest forward <br><br> Hold for the specified duration. Then slowly come out of it, bring your arms down and do a couple of shoulder rolls <br><br>  Don’t pull your head forward and keep your neck relaxed",
+        },
+        {
+            level: 2,
+            name: "Staggered Push-Ups",
+            description: "Start in the regular push-up position, but with one hand in front of the other <br><br> The do a push-up and switch the other hand in front <br><br> Remember to keep your body straight"
+        },
+        {
+            level: 2,
+            name: "Push-Up and Rotation",
+            description: "Start in the push-up position. Then go down for a push-up and as you come up, rotate your upper body and extend your right arm upwards <br><br> Repeat the exercise with the other arm. It’s a great exercise for the chest, shoulders arms and core"
+        },
+        {
+            level: 2,
+            name: "Decline Push-Ups",
+            description: "Start on all fours with your knees under your butt and your hands under your shoulders <br><br> Then elevate your feet on a chair or bench and push your body up and down mainly using your arm strength <br><br> Remember to keep your body straight"
+        },
+        {
+            level: 2,
+            name: "Shoulder Stretch",
+            description: "Place one arm across your body, parallel to the ground, then use the other arm to pull the parallel arm toward your chest. Hold this position, switch arms and repeat the exercise <br><br> Keep the inside arm straight during the exercise"
+        },
+        {
+            level: 3,
+            name: "Arm Circles",
+            description: "Stand on the floor with your arms extended straight out to the sides at shoulder height <br><br> Move your arms forward in circles and then move them backwards"
+        },
+        {
+            level: 3,
+            name: "Burpees",
+            description: "Stand with your feet shoulder width apart then put your hands on the ground and kick your feet backward. Do a quick push-up and then jump"
+        },
+        {
+            level: 3,
+            name: "Diamond Push-Ups",
+            description: "Start on all fours with your knees under your butt and your hands under your shoulders <br><br> Make a diamond shape with your forefingers and thumbs together directly under your face, then push your body up and down <br><br> Remember to keep your body straight"
+        },
+        {
+            level: 3,
+            name: "Spiderman Push-Ups",
+            description: "Start in the regular push-up position. When lowering your torso downward, bend and lift one leg to the side <br><br> Then return to the start position and switch to the other leg <br><br> Remember to keep your body straight"
+        }
+    ],
+    "Ab Exercises": [
+        {
+            level: 1,
+            name: "Jumping Jacks",
+            description: "Start with your feet together and your arms by your sides, then jump up with your feet apart and your hands overhead. <br><br> Return to the start position then do the next rep This exercise provides a full-body workout and works all your large muscle groups"
+        },
+        {
+            level: 1,
+            name: "Abdominal Crunches",
+            description: "Lie down on your back with your knees bent and your arms stretched forward <br><br> The lift your upper body off the floor. Hold for a few seconds and slowly return <br><br> If primarily works the rectus abdominis muscle and the obliques"
+        },
+        {
+            level: 1,
+            name: "Russian Twist",
+            description: "Sit on the floor with your knees bent, feet lifted a little and back tilted backwards <br><br> Then hold your hands together and twist from side to side"
+        },
+        {
+            level: 1,
+            name: "Mountain Climber",
+            description: "Start in the push-up position. Bend your right knee towards your chest and keep your left leg straight, then quickly switch from one leg to the other <br><br> This exercise strengthens multiple muscle groups"
+        },
+        {
+            level: 1,
+            name: "Heel Touch",
+            description: "Lie on the ground with your legs bent and your arms by your sides <br><br> Slightly lift your upper body off the floor and make your hands alternately reach your heels"
+        },
+        {
+            level: 1,
+            name: "Leg Raises",
+            description: "Lie down on your back and put your hands beneath your hips for support <br><br> The lift your legs up until they form a right angle with the floor <br><br> Slowly bring your legs back down and repeat the exercise"
+        },
+        {
+            level: 1,
+            name: "Plank",
+            description: "Lie on the floor with your toes and forearms on the ground. Keep your body straight and hold this position for the specified duration or as long as you can <br><br> This exercise strengthens the abdomen back and shoulders"
+        },
+        {
+            level: 1,
+            name: "Spine Lumbar Twist Stretch",
+            description: "Lie on your back with your legs extended <br><br> Lift your left leg up and use your right hand to pull your left knee to the right, but keep your other arm extended to the side on the floor <br><br> Hold this position for the specified duration <br><br> Repeat using your right leg for the same amount of time "
+        },
+        {
+            level: 2,
+            name: "Crossover Crunch",
+            description: "Lie on your back with your knees bent and your hands behind your ears <br><br> Raise and twist your torso so your right elbow moves to meet your left knee <br><br> Repeat with the other side"
+        },
+        {
+            level: 2,
+            name: "Side Bridges",
+            description: "Lie on your right side. Put your right elbow directly under your shoulders and put your left hand on your waist. Place your left leg on your right leg <br><br> Raise your hips upwards, hold for 2-4 seconds, then go back to the start position. Repeat this exercise for the specified repetitions <br><br> Repeat whole exercise starting this time on your left side"
+        },
+        {
+            level: 2,
+            name: "Butt Bridge",
+            description: "Lie on your back with knees bent and feet flat on the floor. Put your arms flat at your sides <br><br> Then lift your butt up and down"
+        },
+        {
+            level: 2,
+            name: "Bicycle Crunches ",
+            description: "Lie on the floor with your hands behind your ears. Raise your knees and legs off the ground. Bring your right elbow towards your left knee, then your left elbow towards your right knee <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "V-UP",
+            description: "Lie on your back with your arms and legs extended and your legs squeezed together <br><br> Raise your upper body and legs, use your arms to touch your toes, then go back to the start position and repeat the exercise for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Side Plank",
+            description: "Lie on your right side with your forearm supporting your body. Hold your body in a straight line for the specified duration or as long as you can <br><br> Repeat the exercise this time starting on your left side <br><br> This exercise targets the abdominal muscles and obliques"
+        }
+    ],
+    "Arm Exercises": [
+        {
+            level: 1,
+            name: "Jumping Jacks",
+            description: "Start with your feet together and your arms by your sides, then jump up with your feet apart and your hands overhead. <br><br> Return to the start position then do the next rep This exercise provides a full-body workout and works all your large muscle groups"
+        },
+        {
+            level: 1,
+            name: "Arm Raises",
+            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration"
+        },
+        {
+            level: 1,
+            name: "Side Arm Raise",
+            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout"
+        },
+        {
+            level: 1,
+            name: "Triceps Dip",
+            description: "For the start position, sit on a chair. Then move your hip off the chair with your hands holding the edge of the chair <br><br> Slowly bend and stretch your arms to make your body go up and down <br><br> Repeat for the given repetitions <br><br> This is a great exercise for the triceps"
+        },
+        {
+            level: 1,
+            name: "Arm Circles",
+            description: "Stand on the floor with your arms extended straight out to the sides at shoulder heoght <br><br> Move your arms clockwise in circles as fast as you can for the specified duration <br><br> Repeat but instead move your arms counter clockwise <br><br> This is a great exercise for the deltoid muscle"
+        },
+        {
+            level: 1,
+            name: "Chest Press Pulse",
+            description: "Hold your forearms together at shoulder height and bend your elbows with your hands together to make an L shape, then lift your forearms up and down <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Leg Barbell Curl",
+            description: "Stand against a wall. Lift your right leg up, lean forward and grab underneath your right ankle with your left hand <br><br> Bring the ankle up towards the shoulder as much as you can, then lower and repeat <br><br> Do the same with your left leg and right arm for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Diagonal Plank",
+            description: "Start in the straight arm plank position. Lift your right arm and left leg until they are parallel with the ground. Return to the start position and repeat with the other side <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Punches",
+            description: "Stand with your legs shoulder width apart and your knees bent slightly. Bend your elbows and clench your fists in front of your face <br><br> Begin throwing left and right punches for as long as the specified duration"
+        },
+        {
+            level: 2,
+            name: "Inchworms",
+            description: "Start with your feet shoulder width apart <br><br> Bend your body and walk your hands in front of you for as far as you can, then walk your hands back <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Wall Push-Ups",
+            description: "Stand in front of a wall one big step away from it. Then put your hands out straight towards the wall and lean against it <br><br> Slowly bend your elbows and press your upper body towards the wall. Push back and repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Triceps Stretch",
+            description: "Put your left hand on your back, over your left shoulder. Use your right hand to grab your left elbow and gently pull it <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm"
+        },
+        {
+            level: 1,
+            name: "Standing Biceps Stretch",
+            description: "Stand with your left arm close to a wall. Extend your left arm and put your left hand on the wall, then gently turn your body to the right until you feel a stretch along your bicep <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm"
+        },
+        {
+            level: 2,
+            name: "Military Push-Ups",
+            description: "Start in a push-up position with your hands directly under your shoulders and feet no more than 12 inches apart <br><br> Bend your elbows and lower your body until your upper arms are parallel to the floor. Stay in this position for one second and then push your body back to the starting position and repeat for the given repetitions <br><br> Make sure to keep your elbows close to your body during the exercise"
+        },
+        {
+            level: 2,
+            name: "Floor Tricep Dips",
+            description: "Sit on the floor with your knees bent and feet flat on the floor. Put your hands beneath your shoulders with your fingers pointing towards your hips <br><br> Lift your hips off the floor then bend and extend your elbows to lower and lift your hips for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Skipping Without Rope",
+            description: "Place your arms at your sides and pretend to hold a skipping rope handle in each hand <br><br> Jump and alternately land on the balls of your feet, rotating your wrists at the same time as you were spinning the rope <br><br> Repeat for the specified duration"
+        },
+        {
+            level: 2,
+            name: "Arm Scissors",
+            description: "Stand upright with your feet shoulder width apart <br><br> Stretch your arms in front of you at shoulder height with one arm overlapping the other in the shape of an X, then spread them apart <br><br> Switch arms and repeat for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Shoulder Gators",
+            description: "Stand upright with your hands beside your ears and elbows facing each side. Rotate your elbows until both of them are facing the front"
+        },
+        {
+            level: 3,
+            name: "Doorway Curls",
+            description: "Stand in a doorway. Grasp the doorframe using your left hand and put your feet close to the bottom of the door <br><br> Extend your left arm and lean back, then pull the doorframe with your hand and come back up to the starting position <br><br> Repeat for your right arm <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Modified Push-Up Low Hold",
+            description: "Start in the standard push-up position but with your feet shoulder-width apart and knees on the ground <br><br> Lower your body until your elbows are at 90 degrees <br><br> Hold this position for the specified duration"
+        }
+    ],
+    "Shoulder and Back Exercises": [
+        {
+            level: 1,
+            name: "Arm Raises",
+            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration"
+        },
+        {
+            level: 1,
+            name: "Side Arm Raise",
+            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout"
+        },
+        {
+            level: 1,
+            name: "Jumping Jacks",
+            description: "Start with your feet together and your arms by your sides, then jump up with your feet apart and your hands overhead. <br><br> Return to the start position then do the next rep This exercise provides a full-body workout and works all your large muscle groups"
+        },
+        {
+            level: 1,
+            name: "Rhomboid Pulls",
+            description: "Stand with your feet shoulder width apart <br><br> Raise your arms parallel to the ground and bend your elbows. Pull your elbows back and squeeze your shoulder blades <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Cat Cow Pose",
+            description: "Start on all fours with your knees under your butt and your hands directly under your shoulders <br><br> Then take a breath and make your belly fall down, shoulders roll back and head come up towards the ceiling <br><br> As you exhale, curve your back upwardand let your head come down <br><br> Repeat this over the specified duration"
+        },
+        {
+            level: 1,
+            name: "Prone Tricep Push-Ups",
+            description: "Lie on your stomach with your hands underneath your shoulders and your elbows bent <br><br> Slightly raise your chest up and then go back to the start position <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Reclined Rhomboid Squeezes",
+            description: "Sit with your knees bent. Slightly lean your upper body back <br><br> Stretch your arms in front of you then pull your elbows back to make your elbows at a 90 degree angle and squeeze your shoulder blades <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Tricep Kickbacks",
+            description: "Lean forward, bend your knees and your elbows <br><br> Extend your arms behind you and squeeze your triceps, making sure your arms are parallel to the grounf when extending them <br><br> Go back to the start position and repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Hip Hinge",
+            description: "Stand upright with your feet shoulder width apart <br><br> Sit your hips back and bend your upper body while keeping your upper body straight, then slowly go back to the start position and repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Hover Push-Up",
+            description: "Start in a push-up position. Lower yourself and then shift your body to the left and then to the right before rising back up the the starting position <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Swimmer and Superman",
+            description: "Lie on your stomach with your arms extended straight overhead. Alternately lift your opposite arm and leg <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Childs Pose",
+            description: "Start with your knees and hands on the floor. Put your hands a little forward, widen your knees and put your toes together. Take a breath, then exhale and sit back. Try to make your butt touch your heels. Relax your elbows, make your forehead touch the floor and try to lower your chest close to the floor. Hold this position for the duration specified <br><br> Keep your arms stretched forward as you sit back. Make sure there is enough space between your shoulders and your ears during the exercise"
+        },
+        {
+            level: 3,
+            name: "Hyperextension",
+            description: "Lie down on your stomach with your toes touching the floor and your chin on your hand <br><br> Raise your chest up as high as possible off the floor. Hold this position for a few seconds and then go back to the start position <br><br> Repeat for the specified duration"
+        },
+        {
+            level: 3,
+            name: "Pike Push-Ups",
+            description: "Start with your hands and feet on the floor. Put your hands shoulder width apart. Bend your body and lift your hips up in an upside down V shape <br><br> Bend your elbows and bring your head close to the floor. Push your body back and repeat the exercise for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Reverse Push-Ups",
+            description: "Start in the regular push-up position <br><br> Lower your body down then bend your knees and move your hips backward with your arms straight <br><br> Go back to the push-up position and repeat for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Supine Push-Up",
+            description: "Lie on your back with your feet flat on the floor and your arms bent on two sides <br><br> Push your chest up as far as you can and then slowly go back to the start position <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Reverse Snow Angels",
+            description: "Lie on your stomach with your arms to your sides <br><br> Lift your arms up and extend them over your head to touch your thumbs. Then slowly bring them back <br><br> Repeat for the given repetitions"
+        }
+    ],
+    "Leg Exercises": [{
+            level: 1,
+            name: "Side Hop",
+            description: "Stand on the floor, put your hands in front of you and hop side to side for the specified duration"
+        },
+        {
+            level: 1,
+            name: "Squats",
+            description: "Stand with your feet shoulder width apart and your arms stretched forward, then lowers your body until your thighs are parallel with the floor <br><br> Your knees should be extended in the same direction as your toes. Return to the start position and do the next rep <br><br> This works the thighs, hips, buttocks, quads, hamstrings and lower body"
+        },
+        {
+            level: 1,
+            name: "Side-Lying leg lift",
+            description: "Lie down on your side with your head rested on your right arm. Lift your upper leg up and return to the start position <br><br> Make sure your left leg goes straight up and down during the exercise. Repeat for the given repetitions <br><br> Repeat for your other side "
+        },
+        {
+            level: 1,
+            name: "Backward Lunge",
+            description: "Stand with your feet shoulder width apart and your hands on your hips <br><br> Take a big step backward with your right leg and lower your body until your left thigh is parallel to the floor. Return and repeat with the other side for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Donkey Kicks",
+            description: "Start on all fours with your knees under your butt and your hands under your shoulders <br><br> Then lift your left leg and squeeze your butt as much as you can. Go back to the start position and repeat for the given repetitions <br><br> Repeat with your right leg"
+        },
+        {
+            level: 1,
+            name: "Quad Stretch",
+            description: "Stand with your left hand on the wall. Bend your right left and grasp your ankle or toes to bring your right calf close to your right thigh, hold this position for 30 seconds <br><br> Repeat for your left leg"
+        },
+        {
+            level: 1,
+            name: "knee To Chest Stretch",
+            description: "Lie on the floor with your legs extended. Lift your left knee up and grab it with both hands <br><br> Pull your left knee towards your chest as much as you can while keeping your right leg straight on the ground. Hold this position for a few seconds and repeat for the specified duration <br><br> Repeat for your right leg"
+        },
+        {
+            level: 1,
+            name: "Wall calf raises",
+            description: "Stand straight with your hands on the wall and feet shoulder width apart <br><br> Lift your heels and stand on yout toes. Then drop your heels down <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 1,
+            name: "Calf Stretch",
+            description: "Stand one big step away in front of a wall. Step forward with your left foot and push the wall with your hands <br><br> Make sure your right leg is fully extended and you can feel the right calf stretching. Hold this for a few seconds and repeat for the specified duration <br><br> Repeat for the left calf"
+        },
+        {
+            level: 1,
+            name: "Lunges",
+            description: "Stand with your feet shoulder width apart and your hands on your hips <br><br> Take a big step forward with your right leg and lower your body until your left thigh is parallel to the floor. Return and repeat with the other side for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Side Leg Circles",
+            description: "Lie on your left side with your head resting on your right hand <br><br> Then lift your left leg and rotate your foot as if you were drawing a circle shape with it. Repeat for the given repetitions <br><br> Repeat for your right leg"
+        },
+        {
+            level: 2,
+            name: "Sumo Squat",
+            description: "Stand with your feet 6-12 inches apart. Stretch your arms in front of you <br><br> Lower your body until your thighs are parallel to the floor. Return to the starting position and repeat for the given repetitions"
+        },
+        {
+            level: 2,
+            name: "Wall Sit",
+            description: "Start with your back against the wall, then slide down until your knees are at a 90 degree angle <br><br> Keep your back against the wall with your hands and arms away from your legs. Hold the position for the specified duration"
+        },
+        {
+            level: 2,
+            name: "Single Leg Calf Hop",
+            description: "Stand straight with your left leg lifted. Then Hop up and down on your right foot. Repeat for the given repetitions <br><br> Repeat the exercise hopping on your left foot"
+        },
+        {
+            level: 3,
+            name: "Curtsy Lunges",
+            description: "Stand straight up. Then step back with your left leg to the right and bend your knees at the same time <br><br> Go back to the start position and switch to the other side <br><br> Repeat for the given repetitions"
+        },
+        {
+            level: 3,
+            name: "Jumping Squats",
+            description: "Start in the squat position, then jump up using your abdominal muscles for strength <br><br> Repeat for the given repetitions "
+        },
+        {
+            level: 3,
+            name: "Glute Kick Back",
+            description: "Start on all fours with your knees under your butt and your hands directly under your shoulders <br><br> Then kick your left leg back until it is parallel to the ground. Repeat this for the given repetitions <br><br> Repeat for your right leg "
+        },
+        {
+            level: 3,
+            name: "Lying Butterfly Stretch",
+            description: "Lie on the floor with your feet together. Open your knees to the sides and hold for the specified duration"
+        },
+        {
+            level: 3,
+            name: "Leaning Stretcher Raises",
+            description: "Stand a big step away from the wall, put your hands on the wall and lean on it <br><br> Lift your heels as high as you can and then lower them down <br><br> Repeat for the given repetitions"
+        }
+    ]
+};
+//# sourceMappingURL=C:/Users/brian/Desktop/FYP/eMoodi/angular-src/src/exercises.js.map
+
+/***/ }),
+
 /***/ "./src/app/components/suggestion/suggestion.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n.panel-pricing:hover {\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n}\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n"
+module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n}\r\n\r\n.jumbotron-heading{\r\n  padding-bottom: 35px;\r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n          box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n/* .panel-pricing:hover {\r\n  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n} */\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n"
 
 /***/ }),
 
 /***/ "./src/app/components/suggestion/suggestion.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n<button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n<button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<section class =\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n        <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n          <!-- item -->\n          <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n            <div class=\"panel panel-pricing rounded\">\n              <div class=\"panel-heading\">\n                    <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n                </div>\n              <div class=\"panel-body text-center\">\n                    <h4>\n                            <a href=\"{{recipe.url}}\" target=\"_blank\">\n                              {{recipe.label}}\n                            </a>\n                    </h4>\n              </div>\n              <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n                    <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n                            {{ingredient.text}}</li>                 \n              </ul>\n            </div>\n            </div>\n          </div>\n        </div>\n\n</section>\n\n<section class =\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\" *ngIf=\"recipes\">\n        <div class=\"container\">\n              <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n        \n              </div>\n      \n      </section>\n\n      <section class =\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\" *ngIf=\"recipes\">\n            <div class=\"container\">\n                  <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n             \n                  </div>\n          \n          </section>"
+module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  <button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n        <div class=\"panel panel-pricing rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n  </div>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; x10</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n\n  </div>\n\n</section>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n        <!-- {{modalDetails.description}} -->\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
 
 /***/ }),
 
@@ -1208,7 +1676,9 @@ module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForec
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SuggestionComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_recipe_service__ = __webpack_require__("./src/app/services/recipe.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_do__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/do.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_do__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/do.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__exercises__ = __webpack_require__("./src/app/components/suggestion/exercises.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1221,28 +1691,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var SuggestionComponent = (function () {
-    function SuggestionComponent(recipeService) {
+    function SuggestionComponent(recipeService, authService) {
         this.recipeService = recipeService;
+        this.authService = authService;
+        this.modalDetails = { title: "", description: "" };
         this.recipes = [];
         this.diet = true;
         this.exercise = false;
         this.sleep = false;
+        this.allExercises = [];
     }
     SuggestionComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.recipeService.getRecipes().subscribe(function (recipeResults) {
-            if (recipeResults.hits.length > 0) {
-                for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
-                    _this.recipes.push(recipeResults.hits[i].recipe);
-                }
+        this.authService.getProfile().subscribe(function (profile) {
+            var user = profile.user;
+            var bmi = 18;
+            if (bmi < 18.5) {
+                console.log("You are too thin.");
+                _this.getExerciseSuggestions(2);
+            }
+            if (bmi > 18.5 && bmi < 25) {
+                console.log("You are healthy.");
+                _this.getExerciseSuggestions(3);
+            }
+            if (bmi > 25) {
+                console.log("You are overweight.");
+                _this.getExerciseSuggestions(1);
             }
         }, function (err) {
             console.log(err);
             return false;
         });
+        // this.recipeService.getRecipes().subscribe(recipeResults => {
+        //   if (recipeResults.hits.length > 0) {
+        //     for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
+        //       this.recipes.push(recipeResults.hits[i].recipe);
+        //     }
+        //   }
+        // },
+        //   err => {
+        //     console.log(err);
+        //     return false;
+        //   });
     };
     SuggestionComponent.prototype.suggestion = function (type) {
+        console.log(type);
         switch (type) {
             case "diet":
                 this.diet = true;
@@ -1261,16 +1757,39 @@ var SuggestionComponent = (function () {
                 break;
         }
     };
+    SuggestionComponent.prototype.modalSettings = function (exTitle, exDescription) {
+        this.modalDetails.title = exTitle;
+        this.modalDetails.description = exDescription;
+    };
+    SuggestionComponent.prototype.getExerciseSuggestions = function (level) {
+        var _this = this;
+        Object.keys(__WEBPACK_IMPORTED_MODULE_4__exercises__["a" /* exercises */]).forEach(function (key) {
+            var exercises = __WEBPACK_IMPORTED_MODULE_4__exercises__["a" /* exercises */][key].filter(function (ex) { return ex.level <= level; });
+            var finalExercises = [];
+            for (var i = 0; i < 5; i++) {
+                var index = Math.floor(Math.random() * exercises.length);
+                var exercise = exercises[index];
+                exercises.splice(index, 1); // This removes the picked element from the array
+                finalExercises.push(exercise);
+            }
+            console.log(finalExercises);
+            var newExercises = {
+                name: key,
+                exercises: finalExercises
+            };
+            _this.allExercises.push(newExercises);
+        });
+    };
     SuggestionComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-suggestion',
             template: __webpack_require__("./src/app/components/suggestion/suggestion.component.html"),
             styles: [__webpack_require__("./src/app/components/suggestion/suggestion.component.css")]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_recipe_service__["a" /* RecipeService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_recipe_service__["a" /* RecipeService */]) === 'function' && _a) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_recipe_service__["a" /* RecipeService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_recipe_service__["a" /* RecipeService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2__services_auth_service__["a" /* AuthService */]) === 'function' && _b) || Object])
     ], SuggestionComponent);
     return SuggestionComponent;
-    var _a;
+    var _a, _b;
 }());
 //# sourceMappingURL=C:/Users/brian/Desktop/FYP/eMoodi/angular-src/src/suggestion.component.js.map
 
@@ -1658,6 +2177,13 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 
 module.exports = __webpack_require__("./src/main.ts");
 
+
+/***/ }),
+
+/***/ 1:
+/***/ (function(module, exports) {
+
+/* (ignored) */
 
 /***/ })
 
