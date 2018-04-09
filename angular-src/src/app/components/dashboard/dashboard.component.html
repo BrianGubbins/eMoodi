@@ -1,0 +1,20 @@
+<div class="text-center">
+<button (click)="chart('mood')" class="btn btn-lg btn-primary">Mood</button>
+<button (click)="chart('sleep')" class="btn btn-lg btn-primary">Sleep</button>
+<button (click)="chart('exerciseDiet')" class="btn btn-lg btn-primary">Exercise/Diet</button>
+<a routerLink="/input"><button class="btn btn-lg btn-primary" > Add Info</button></a>
+</div>
+
+<div class="container" width="1000" height="500" [hidden]="!chart1">
+  <canvas id="moodGraph"></canvas>
+</div>
+
+<div class="container" width="1000" height="500" [hidden]="!chart2">
+  <canvas id="sleepGraph"></canvas>
+</div>
+
+<div class="container" width="1000" height="500" [hidden]="!chart3">
+  <canvas id="exerciseDiet"></canvas>
+</div>
+
+<br>

@@ -1,0 +1,92 @@
+<div class="text-center">
+  <!-- <button (click)="getForecast()">Get Recipes</button> -->
+  <button (click)="suggestion('diet')" class="btn btn-lg btn-primary">Diet</button>
+  <button (click)="suggestion('exercise')" class="btn btn-lg btn-primary">Exercise</button>
+  <button (click)="suggestion('sleep')" class="btn btn-lg btn-primary">Sleep</button>
+</div>
+
+<!-- recipe suggestions -->
+<section class="jumbotron text-center" id="plans" [hidden]="!diet" *ngIf="recipes">
+  <div class="container">
+    <h1 class="jumbotron-heading">Diet Suggestions</h1>
+    <div class="row">
+
+      <!-- recipe item -->
+      <div class="col-md-4 text-center" *ngFor="let recipe of recipes">
+        <div class="panel panel-pricing rounded">
+          <div class="panel-heading">
+            <img id="img-container" class="rounded" src={{recipe.image}}>
+          </div>
+          <div class="panel-body text-center">
+            <h4>
+              <a href="{{recipe.url}}" target="_blank">
+                {{recipe.label}}
+              </a>
+            </h4>
+          </div>
+          <ul class="list-group text-center" id="recipe-scroller-container">
+            <li *ngFor="let ingredient of recipe.ingredients" class="list-group-item">
+              {{ingredient.text}}</li>
+          </ul>
+        </div>
+      </div>
+      <!-- recipe item end -->
+    </div>
+  </div>
+</section>
+
+<!-- exercise suggestions -->
+<section class="jumbotron text-center" id="plans" [hidden]="!exercise">
+  <div class="container">
+    <h1 class="jumbotron-heading">Exercise Suggestions</h1>
+
+    <div class="container">
+      <div class="panel-group" id="accordion">
+        <div class="notice notice-lg notice-info"  *ngFor="let type of allExercises">
+          <div class="panel-heading">
+
+            <strong class="panel-title" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#'+type.name">
+              <h1> {{type.name}}</h1>
+            </strong>
+
+          </div>
+          <div [attr.id]="type.name" class="panel-collapse collapse">
+            <div class="notice notice-info" *ngFor="let exercise of type.exercises" (click)="modalSettings(exercise.name,exercise.description)"
+              data-toggle="modal" data-target="#exerciseModal">{{exercise.name}} &nbsp; {{exercise.units}}</div>
+
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="jumbotron text-center" id="plans" [hidden]="!sleep">
+  <div class="container">
+    <h1 class="jumbotron-heading">Sleep Suggestions</h1>
+
+  </div>
+
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="exerciseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header-primary">
+        <h1>{{modalDetails.title}}</h1>
+      </div>
+      <div class="modal-body text-left" [innerHTML]="modalDetails.description">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default float-left" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Modal -->

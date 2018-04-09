@@ -1,0 +1,82 @@
+<script type="text/javascript" src="assets/js/jquery-2.1.1.min.js"></script>
+<div  class= " jumbotron text-center">
+  <ul class="moods col-md-12">
+    <h2 align="center">How are you feeling</h2>
+    <br>
+    <li>
+      <a (click)="setMood(1)">
+        <img class="logo" src="assets/emojis/1.png" />
+      </a>
+    </li>
+    <li>
+      <a (click)="setMood(2)">
+        <img class="logo" src="assets/emojis/2.png" />
+      </a>
+    </li>
+    <li>
+      <a (click)="setMood(3)">
+        <img class="logo" src="assets/emojis/3.png" />
+      </a>
+    </li>
+    <li>
+      <a (click)="setMood(4)">
+        <img class="logo" src="assets/emojis/4.png" />
+      </a>
+    </li>
+    <li>
+      <a (click)="setMood(5)">
+        <img class="logo" src="assets/emojis/5.png" />
+      </a>
+    </li>
+  </ul>
+
+  <form class="form-signin" (submit)="onInfoSubmit()">
+
+    <div *ngIf=!filled>
+    <h3 align="center">How much sleep did you get last night ?</h3>
+    <input type="number" min="0" class="form-control" name="sleep" [(ngModel)]="sleep">
+
+    <br>
+
+    <h3 align="center">What was your diet like today ?</h3>
+    <br>
+    <div class="btn-group" data-toggle="buttons">
+      <label (click)="setDiet('poor')" class="btn btn-lg btn-primary">
+        <input type="radio" (change)="test(1)" class="hideRadio"> Poor
+      </label>
+      <label (click)="setDiet('fair')" class="btn btn-lg btn-primary">
+        <input type="radio" class="hideRadio"> Fair
+      </label>
+      <label (click)="setDiet('good')" class="btn btn-lg btn-primary">
+        <input type="radio" class="hideRadio"> Good
+      </label>
+    </div>
+
+    <br>
+    <br>
+
+    <h3 align="center">How was your level of exercise today ?</h3>
+    <br>
+    <div class="btn-group" data-toggle="buttons">
+      <label (click)="setExercise('poor')" class="btn btn-lg btn-primary">
+        <input class="hideRadio" type="radio" autocomplete="off"> Poor
+      </label>
+      <label (click)="setExercise('fair')" class="btn btn-lg btn-primary">
+        <input class="hideRadio" type="radio" autocomplete="off"> Fair
+      </label>
+      <label (click)="setExercise('good')" class="btn btn-lg btn-primary">
+        <input class="hideRadio" type="radio" autocomplete="off"> Good
+      </label>
+    </div>
+    <br>
+    <br>
+  </div>
+    
+
+    <div align="center" style="padding: 10px 0 20px 0;" >
+      <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+      <button (click)="reset()" type="reset" class="btn btn-lg btn-primary">Reset</button>
+    </div>
+
+  </form>
+</div>

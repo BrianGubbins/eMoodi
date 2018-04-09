@@ -1,0 +1,235 @@
+body { padding-top: 0; }
+@media screen and (max-width: 768px) {
+    body { padding-top: 60px; }
+}
+
+body#main {
+  background: #FFFFF0
+}
+
+#background-wrapper {
+  border-radius: 6px;
+  padding: 5px;
+  margin-top: 15px;
+}
+
+.pager {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+li.xs-remove-label {
+  margin-left: 10px;
+}
+
+.recipe-image {
+  display: block;
+  height: 50%;
+  width: 50%;
+  margin: auto;
+}
+
+.btn-group {
+  margin-left: 0px;
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.capitalize {
+   text-transform: capitalize;
+}
+
+
+/***** FLASH MESSAGE ANIMATION *****/
+
+.alert.ng-leave {
+  opacity: 1;
+  transition: opacity 1.5s ease-out;
+}
+.alert.ng-leave-active {
+  opacity: 0;
+}
+
+
+
+/***** SCROLL STYLING *****/
+
+#wrapper {
+  height: 100%;
+}
+
+#left-column, #right-column {
+  display: inline-block;
+  height: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+  vertical-align: top;
+  overflow: auto;
+}
+
+#scroller-container {
+  height: 100%;
+  max-height: 70vh;
+  overflow: auto;
+  padding-bottom: 1px;
+}
+
+#recipe-scroller-container {
+  height: 100%;
+  max-height: 35vh;
+  overflow: auto;
+}
+
+
+
+/***** RECIPE SEARCH BAR *****/
+
+
+  /*margin: 0 auto;*/
+#search-form {
+  width: auto;
+  margin-top: 15px;
+}
+
+#search-result-title {
+  text-align: center;
+}
+/* still need to make it wider on mobile */
+@media screen and (max-width: 768px) {
+  #search-form { width: 100%; margin: 0 15px; }
+}
+
+
+
+/***** RECIPE SHOW PANE *****/
+
+div.list{
+position: relative;
+display: block;
+padding: .75rem 1.25rem;
+margin-bottom: -1px;
+background-color: #fff;
+border: 1px solid rgba(0,0,0,.125);
+width: 300px;
+}
+
+h3.headline {
+  margin: 5px auto 20px;
+}
+
+#recipe-label {
+  margin: 5px auto 20px;
+}
+
+button.centered-btn {
+  margin: 0 auto 10px;
+}
+
+img #img-container {
+  width: 75%;
+  height: 175px;
+  margin: 0 auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+ul#recipe-ingredients {
+  width: 80%;
+  margin: 0 auto;
+}
+
+
+
+/***** HEADER/NAVBAR STYLING *****/
+
+button#desktop-logo { 
+  background-color: #FFFFF0;
+  padding: 0;
+  width: 225px;
+  height: 75px;  
+  border: 3px solid #337ab7;
+}
+
+button#desktop-logo > img {
+  width: 90%;
+  margin: auto;
+}
+
+div.desktop-header {
+  margin: 0;
+  padding: 40px 0 20px 0;
+  background-image: url('https://s19.postimg.org/4lbe7e1b7/cooking_header.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+button#mobile-logo { 
+  background-color: #FFFFF0;
+  padding: 0;
+  margin-top: 5px;
+  width: 175px;
+  height: 50px;  
+  border: 3px solid #337ab7;
+}
+
+button#mobile-logo > img {
+  width: 90%;
+  margin: auto;
+}
+
+button#hamburger {
+  background-color: #FFFFF0;
+}
+
+div.mobile-header {
+  margin: 0;
+  background-image: url('https://s19.postimg.org/4lbe7e1b7/cooking_header.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+ul.nav-pills {
+  margin-top: 15px;
+}
+
+desk-nav > h4 {
+  margin-top: 15px; 
+}
+
+.glyphicon-menu-hamburger {
+  font-size: 20px;
+}
+
+div.navbar-header {
+  background-color: #fff;
+}
+div.navbar-header>button{
+  margin: 5px 15px;
+}
+a.navbar-brand {
+  font-size: 20px;
+}
+
+ul.nav-dropdown>li>a {
+  text-align: right;
+  font-size: 16px;
+  padding-right: 30px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+ul.nav-dropdown:first-child {
+  border-top: 1px solid #eeeeee;
+}
+
+ul.nav-dropdown {
+  background-color: #fff;
+}
+
+ul.nav-tabs>li {
+  width: 50%;
+  text-align: center;
+}

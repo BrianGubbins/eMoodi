@@ -444,7 +444,7 @@ module.exports = ""
 /***/ "./src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center\">\n<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">Mood</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n<a routerLink=\"/input\"><button class=\"btn btn-lg btn-primary\" > Add Info</button></a>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart1\">\n  <canvas id=\"myChart\"></canvas>\n</div>\n\n<div>\n  <canvas [hidden]=\"!chart2\" id=\"myChart1\" width=\"1000\" height=\"500\"></canvas>\n</div>\n\n"
+module.exports = "<div class=\"text-center\">\n<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">Mood</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n<button (click)=\"chart('exerciseDiet')\" class=\"btn btn-lg btn-primary\">Exercise/Diet</button>\n<a routerLink=\"/input\"><button class=\"btn btn-lg btn-primary\" > Add Info</button></a>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart1\">\n  <canvas id=\"moodGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart2\">\n  <canvas id=\"sleepGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart3\">\n  <canvas id=\"exerciseDiet\"></canvas>\n</div>\n\n<br>"
 
 /***/ }),
 
@@ -479,75 +479,90 @@ var DashboardComponent = (function () {
         this.authService = authService;
         this.flashMessage = flashMessage;
         this.router = router;
+        this.moods = [];
+        this.moodDates = [];
         this.dates = [];
+        this.sleep = [];
+        this.exercise = [];
+        this.diet = [];
         this.chart1 = true;
         this.chart2 = false;
-        this.moodDone = false;
+        this.chart3 = false;
+        this.data = [];
     }
-    // ctx: any;
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.moods = [];
         this.authService.getMood().subscribe(function (moodDocs) {
-            // this.moods = moodData.mood;
-            // console.log(moodData.mood[0].moodData[0]);
-            console.log(moodDocs);
-            console.log(moodDocs[0].moodData[0]);
-            console.log(moodDocs[0].moodData[1]);
-            console.log(moodDocs[0].moodData.length);
-            if (moodDocs.length > 0) {
-                for (var i = 0, len = moodDocs.length; i < len; i++) {
-                    for (var j = 0, len = moodDocs[i].moodData.length; j < len; j++) {
-                        // console.log("forloop" + moodDocs[i].moodData[j].currMood);
-                        _this.moods.push(moodDocs[i].moodData[j].currMood);
-                        var jsdate = new Date(moodDocs[i].moodData[j].date);
-                        _this.dates.push(jsdate.toLocaleTimeString('en', { month: 'long', day: 'numeric' }));
-                        _this.myChart.update();
-                        _this.myChart1.update();
-                        console.log(_this.moods);
-                        console.log(_this.dates);
-                    }
-                }
-            }
+            _this.data = moodDocs;
+            _this.updateGraphs();
         }, function (err) {
             console.log(err);
             return false;
         });
     };
     DashboardComponent.prototype.ngAfterViewInit = function () {
-        var mood = [
-            { currentMood: 1, time: Date.now() },
-            { currentMood: 3, time: Date.now() },
-            { currentMood: 4, time: Date.now() },
-            { currentMood: 3, time: Date.now() + (1000 * 60 * 60 * 24) },
-            { currentMood: 5, time: Date.now() + (1000 * 60 * 60 * 24) },
-            { currentMood: 3, time: Date.now() + (1000 * 60 * 60 * 24) },
-            { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
-            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
-            { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 2) },
-            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
-            { currentMood: 5, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
-            { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 3) },
-            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
-            { currentMood: 3, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
-            { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 4) },
-            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
-            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
-            { currentMood: 5, time: Date.now() + ((1000 * 60 * 60 * 24) * 5) },
-            { currentMood: 1, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) },
-            { currentMood: 2, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) },
-            { currentMood: 4, time: Date.now() + ((1000 * 60 * 60 * 24) * 6) }
-        ];
-        var canvas = document.getElementById('myChart');
-        var ctx = canvas.getContext("2d");
-        this.myChart = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
+        this.updateGraphs;
+        var moodCanvas = document.getElementById('moodGraph');
+        var ctx = moodCanvas.getContext("2d");
+        this.moodGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
+            "type": "line",
+            "data": {
+                "labels": this.moodDates,
+                "datasets": [{
+                        "label": "Your Mood",
+                        "data": this.moods,
+                        "fill": true,
+                        "backgroundColor": "rgba(	0, 123, 255,0.2)",
+                        "borderColor": "rgba(	0, 123, 255, 0.6)",
+                    }]
+            },
+            options: {
+                responsive: true,
+                tooltips: {
+                    enabled: false
+                },
+                scales: {
+                    xAxes: [{
+                            ticks: {
+                                maxTicksLimit: 3,
+                                maxRotation: 0
+                            }
+                        }],
+                    yAxes: [{
+                            ticks: {
+                                fontSize: 15,
+                                min: 0,
+                                max: 6,
+                                callback: function (label, index, labels) {
+                                    switch (label) {
+                                        case 1:
+                                            return 'Very Sad';
+                                        case 2:
+                                            return 'Sad';
+                                        case 3:
+                                            return 'Indifferent';
+                                        case 4:
+                                            return 'Happy';
+                                        case 5:
+                                            return 'Very Happy';
+                                    }
+                                }
+                            }
+                        }]
+                }
+            }
+        });
+        var sleepCanvas = document.getElementById('sleepGraph');
+        var ctx1 = sleepCanvas.getContext("2d");
+        this.sleepGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
             "type": "line",
             "data": {
                 "labels": this.dates,
                 "datasets": [{
-                        "label": "Your Mood", "data": this.moods,
-                        "fill": false,
-                        "borderColor": "rgb(75, 192, 192)"
+                        "label": "Sleep",
+                        "data": this.sleep,
+                        "fill": true,
+                        "borderColor": "rgb(255, 209, 26)"
                     }]
             },
             options: {
@@ -556,27 +571,68 @@ var DashboardComponent = (function () {
                     yAxes: [{
                             ticks: {
                                 min: 0,
-                                max: 6
+                                max: 12
                             }
                         }]
                 }
             }
         });
-        var canvas1 = document.getElementById('myChart1');
-        var ctx1 = canvas1.getContext("2d");
-        this.myChart1 = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
-            "type": "line",
+        var excerciseDietCanvas = document.getElementById('exerciseDiet');
+        var ctx1 = excerciseDietCanvas.getContext("2d");
+        this.exerciseDietGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
+            "type": "horizontalBar",
             "data": {
                 "labels": this.dates,
                 "datasets": [{
-                        "label": "Your Sleep", "data": [6, 7, 9, 7, 6, 8],
+                        "label": "Exercise",
+                        "data": this.exercise,
                         "fill": false,
-                        "borderColor": "rgb(75, 192, 192)"
+                        backgroundColor: "rgba(255,99,132,0.2)",
+                        borderColor: "rgba(255,99,132,1)"
+                    },
+                    {
+                        "label": "Diet",
+                        "data": this.diet,
+                        "fill": false,
+                        backgroundColor: "rgba(	0, 123, 255,0.2)",
+                        borderColor: "rgba(	0, 123, 255,1)"
                     }]
             },
             options: {
-                responsive: true
-            }
+                tooltips: {
+                    enabled: false
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                            ticks: {
+                                fontSize: 15,
+                            }
+                        }],
+                    xAxes: [{
+                            ticks: {
+                                fontSize: 20,
+                                min: 0,
+                                max: 3,
+                                callback: function (label, index, labels) {
+                                    switch (label) {
+                                        case 1:
+                                            return 'Poor';
+                                        case 2:
+                                            return 'Fair';
+                                        case 3:
+                                            return 'Good';
+                                    }
+                                }
+                            }
+                        }]
+                },
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                    }
+                }
+            },
         });
     };
     DashboardComponent.prototype.chart = function (type) {
@@ -587,11 +643,58 @@ var DashboardComponent = (function () {
                 // this.myChart.update();
                 this.chart1 = true;
                 this.chart2 = false;
+                this.chart3 = false;
                 break;
             case "sleep":
                 this.chart1 = false;
                 this.chart2 = true;
+                this.chart3 = false;
                 break;
+            case "exerciseDiet":
+                this.chart1 = false;
+                this.chart2 = false;
+                this.chart3 = true;
+                break;
+        }
+    };
+    DashboardComponent.prototype.score = function (dietScore, exerciseScore) {
+        if (dietScore == "poor") {
+            this.diet.push(1);
+        }
+        if (exerciseScore == "poor") {
+            this.exercise.push(1);
+        }
+        if (dietScore == "fair") {
+            this.diet.push(2);
+        }
+        if (exerciseScore == "fair") {
+            this.exercise.push(2);
+        }
+        if (dietScore == "good") {
+            this.diet.push(3);
+        }
+        if (exerciseScore == "good") {
+            this.exercise.push(3);
+        }
+    };
+    DashboardComponent.prototype.dateFormat = function (date) {
+        return new Date(date).toDateString().slice(0, -5);
+    };
+    DashboardComponent.prototype.updateGraphs = function () {
+        if (this.data.length > 0) {
+            for (var i = 0, len = this.data.length; i < len; i++) {
+                this.sleep.push(this.data[i].sleep);
+                this.dates.push(this.dateFormat(this.data[i].date));
+                this.score(this.data[i].diet, this.data[i].exercise);
+                this.sleepGraph.update();
+                this.exerciseDietGraph.update();
+                console.log(this.sleep, this.diet, this.exercise);
+                for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
+                    this.moods.push(this.data[i].moodData[j].currMood);
+                    this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
+                    this.moodGraph.update();
+                }
+            }
         }
     };
     DashboardComponent = __decorate([
@@ -612,14 +715,14 @@ var DashboardComponent = (function () {
 /***/ "./src/app/components/home/home.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".jumbotron{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    background-color: #64a7ec5c;\r\n  }"
 
 /***/ }),
 
 /***/ "./src/app/components/home/home.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n      <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n\n    </p>\n  </div>\n</section>\n\n\n<!-- <button (click)=\"getForecast()\">Get Forecast</button> -->\n\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Mood Tracking</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Diet Suggestions</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Exercise Suggestions</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
+module.exports = "<section class=\"jumbotron text-center\" >\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">eMoodi</h1>\n    <p class=\"lead text-muted\">Welcome to eMoodi MEAN application used to track and improve your mood.</p>\n    <p>\n        <a class=\"btn btn-secondary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/login']\">Login</a>\n      <a class=\"btn btn-primary\"  *ngIf=\"!authService.loggedIn()\" [routerLink]=\"['/register']\">Register</a> \n\n    </p>\n  </div>\n</section>\n\n\n<!-- <button (click)=\"getForecast()\">Get Forecast</button> -->\n\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <h3>Mood Tracking</h3>\n    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Diet Suggestions</h3>\n    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>\n  </div>\n  <div class=\"col-md-4\">\n    <h3>Exercise Suggestions</h3>\n    <p>Full featured authentication using JSON web tokens. Login and store user data</p>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -674,14 +777,14 @@ var HomeComponent = (function () {
 /***/ "./src/app/components/inputs/inputs.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "input.hideRadio {\r\n    visibility:hidden;\r\n}\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\nul.moods li {\r\n    padding: 0px 25px 0px 25px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
+module.exports = ".jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #64a8ec42;\r\n}\r\n\r\ninput.hideRadio {\r\n    visibility:hidden;\r\n}\r\n\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\n\r\nul.moods li {\r\n    padding: 0px 25px 0px 25px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
 
 /***/ }),
 
 /***/ "./src/app/components/inputs/inputs.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div class= \"text-center\">\n  <ul class=\"moods col-md-12\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n    <br>\n\n    <div style=\"float:right\">\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
+module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div  class= \" jumbotron text-center\">\n  <ul class=\"moods col-md-12\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <div *ngIf=!filled>\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n    <br>\n    <br>\n  </div>\n    \n\n    <div align=\"center\" style=\"padding: 10px 0 20px 0;\" >\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
 
 /***/ }),
 
@@ -720,6 +823,7 @@ var InputsComponent = (function () {
         this.weatherServ = weatherServ;
         this.UserID = (JSON.parse(localStorage.getItem('user'))).id;
         this.date = Date.now;
+        this.filled = true;
     }
     InputsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -738,6 +842,20 @@ var InputsComponent = (function () {
             this.lat = 40.73;
             this.lng = -73.93;
         }
+        this.authService.getMood().subscribe(function (moodDocs) {
+            console.log(moodDocs);
+            var lastCreated = new Date(moodDocs[moodDocs.length - 1].date);
+            var today = new Date();
+            if (lastCreated.getDay() == today.getDay()) {
+                _this.filled = false;
+            }
+            else {
+                _this.filled = false;
+            }
+        }, function (err) {
+            console.log(err);
+            return false;
+        });
     };
     InputsComponent.prototype.reset = function () {
         this.mood = null;
@@ -759,14 +877,27 @@ var InputsComponent = (function () {
     };
     InputsComponent.prototype.onInfoSubmit = function () {
         var _this = this;
-        var moodInfo = {
-            userId: this.UserID,
-            date: Date.now,
-            sleep: this.sleep,
-            diet: this.diet,
-            exercise: this.exercise,
-            moodData: [{ currMood: this.mood, date: Date.now() }]
-        };
+        var moodInfo;
+        if (!this.filled) {
+            moodInfo = {
+                userId: this.UserID,
+                date: Date.now,
+                sleep: this.sleep,
+                diet: this.diet,
+                exercise: this.exercise,
+                moodData: [{ currMood: this.mood, date: Date.now() }]
+            };
+        }
+        else {
+            moodInfo = {
+                userId: this.UserID,
+                date: Date.now,
+                sleep: 0,
+                diet: "",
+                exercise: "",
+                moodData: [{ currMood: this.mood, date: Date.now() }]
+            };
+        }
         this.authService.setMood(moodInfo).subscribe(function (data) {
             if (data.success) {
                 _this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
@@ -894,7 +1025,7 @@ module.exports = "body {\r\n  padding-top: 40px;\r\n  padding-bottom: 40px;\r\n 
 /***/ "./src/app/components/login/login.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!-- <h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form> -->\n\n\n<div class=\"container\" (submit)=\"onLoginSubmit()\">\n    <form class=\"form-signin\">\n      <h2 class=\"form-signin-heading\">Please Login</h2>\n      <input type=\"username\"  class=\"form-control\" placeholder=\"Username\" required autofocus [(ngModel)]=\"username\" name=\"username\">\n      <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required [(ngModel)]=\"password\" name=\"password\">\n      <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Login</button>\n    </form>\n</div>\n"
+module.exports = "<!-- <h2 class=\"page-header\">Login</h2>\n<form (submit)=\"onLoginSubmit()\">\n  <div class=\"form-group\">\n    <label>Username</label>\n    <input type=\"text\" class=\"form-control\" [(ngModel)]=\"username\" name=\"username\">\n  </div>\n  <div class=\"form-group\">\n    <label>Password</label>\n    <input type=\"password\" class=\"form-control\" [(ngModel)]=\"password\" name=\"password\">\n  </div>\n  <input type=\"submit\" class=\"btn btn-primary\" value=\"Login\">\n</form> -->\n\n\n<div class=\"container text-center\" (submit)=\"onLoginSubmit()\">\n    <form class=\"form-signin\">\n      <h2 class=\"form-signin-heading\">Please Login</h2>\n      <input type=\"username\"  class=\"form-control\" placeholder=\"Username\" required autofocus [(ngModel)]=\"username\" name=\"username\">\n      <input type=\"password\" class=\"form-control\" placeholder=\"Password\" required [(ngModel)]=\"password\" name=\"password\">\n      <button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\">Login</button>\n    </form>\n</div>\n"
 
 /***/ }),
 
@@ -969,14 +1100,14 @@ var LoginComponent = (function () {
 /***/ "./src/app/components/navbar/navbar.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "\r\n.navbar {\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }"
+module.exports = "\r\n.navbar {\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#194064), to(#367fc9));\r\n  background-image: linear-gradient(to bottom, #194064 0%, #367fc9 100%);\r\n  background-repeat: repeat-x;\r\n  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a1a29', endColorstr='#367fc9', GradientType=5); */\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }\r\n\r\n  /* .bg-emoodi{\r\n    background-color: #265c92!important;\r\n  } */"
 
 /***/ }),
 
 /***/ "./src/app/components/navbar/navbar.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--<nav class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n      </div>\n      <div id=\"navbar\" class=\"collapse navbar-collapse\">\n        <ul class=\"nav navbar-nav navbar-left\">\n          <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/']\">Home</a></li>\n        </ul>\n\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/dashboard']\">Dashboard</a></li>\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/profile']\">Profile</a></li>\n\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/login']\">Login</a></li>\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/register']\">Register</a></li>\n          <li *ngIf=\"authService.loggedIn()\"><a (click)=\"onLogoutClick()\" href=\"#\">Logout</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n-->\n\n\n\n<nav class=\"navbar navbar-expand-md navbar-dark bg-dark\">\n  <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#emoodiNavbar\" aria-controls=\"emoodiNavbar\"\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n    <span class=\"navbar-toggler-icon\"></span>\n  </button>\n\n  <div class=\"collapse navbar-collapse\" id=\"emoodiNavbar\">\n    <div class=\"navbar-nav mr-auto\">\n      <li class=\"nav-item\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/']\">Home</a>\n      </li>\n\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/dashboard']\">Dashboard</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/profile']\">Profile</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/suggestion']\">Suggestions</a>\n      </li>\n    </div>\n      <div class=\"navbar-nav ml-auto\">\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/login']\">Login</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/register']\">Register</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\">\n        <a class=\"nav-link\" (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n      </li>\n\n    </div>\n  </div>\n</nav>\n"
+module.exports = "<!--<nav class=\"navbar navbar-default\">\n    <div class=\"container\">\n      <div class=\"navbar-header\">\n        <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n          <span class=\"sr-only\">Toggle navigation</span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n          <span class=\"icon-bar\"></span>\n        </button>\n        <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n      </div>\n      <div id=\"navbar\" class=\"collapse navbar-collapse\">\n        <ul class=\"nav navbar-nav navbar-left\">\n          <li [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/']\">Home</a></li>\n        </ul>\n\n        <ul class=\"nav navbar-nav navbar-right\">\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/dashboard']\">Dashboard</a></li>\n          <li *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/profile']\">Profile</a></li>\n\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/login']\">Login</a></li>\n          <li *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions] = \"{exact:true}\"><a [routerLink]=\"['/register']\">Register</a></li>\n          <li *ngIf=\"authService.loggedIn()\"><a (click)=\"onLogoutClick()\" href=\"#\">Logout</a></li>\n        </ul>\n      </div>\n    </div>\n  </nav>\n-->\n\n\n\n<nav class=\"navbar navbar-expand-md navbar-dark bg-emoodi\">\n  <a class=\"navbar-brand\" href=\"#\">eMoodi</a>\n  <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#emoodiNavbar\" aria-controls=\"emoodiNavbar\"\n    aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n    <span class=\"navbar-toggler-icon\"></span>\n  </button>\n\n  <div class=\"collapse navbar-collapse\" id=\"emoodiNavbar\">\n    <div class=\"navbar-nav mr-auto\">\n      <li class=\"nav-item\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/']\">Home</a>\n      </li>\n\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/dashboard']\">Dashboard</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/profile']\">Profile</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/input']\">Mood</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/suggestion']\">Suggestions</a>\n      </li>\n    </div>\n      <div class=\"navbar-nav ml-auto\">\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/login']\">Login</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"!authService.loggedIn()\" [routerLinkActive]=\"['active']\" [routerLinkActiveOptions]=\"{exact:true}\">\n        <a class=\"nav-link\" [routerLink]=\"['/register']\">Register</a>\n      </li>\n      <li class=\"nav-item\" *ngIf=\"authService.loggedIn()\">\n        <a class=\"nav-link\" (click)=\"onLogoutClick()\" href=\"#\">Logout</a>\n      </li>\n\n    </div>\n  </div>\n</nav>\n"
 
 /***/ }),
 
@@ -1246,11 +1377,13 @@ var exercises = {
             level: 1,
             name: "Cobra Stretch",
             description: "Lie down on your stomach and bend your elbows with your hands beneath your shoulders <br><br> Then push your chest up off the ground as far as possible <br><br> Hold this position for the specified duration",
+            duration: "30s"
         },
         {
             level: 1,
             name: "Chest Stretch",
             description: "Find a doorway, take a lunge position in the doorway with your arms on the doorframe and your elbows a little lower than your shoulders, then slowly bring your chest forward <br><br> Hold for the specified duration. Then slowly come out of it, bring your arms down and do a couple of shoulder rolls <br><br>  Don’t pull your head forward and keep your neck relaxed",
+            duration: "30s"
         },
         {
             level: 2,
@@ -1270,7 +1403,8 @@ var exercises = {
         {
             level: 2,
             name: "Shoulder Stretch",
-            description: "Place one arm across your body, parallel to the ground, then use the other arm to pull the parallel arm toward your chest. Hold this position, switch arms and repeat the exercise <br><br> Keep the inside arm straight during the exercise"
+            description: "Place one arm across your body, parallel to the ground, then use the other arm to pull the parallel arm toward your chest. Hold this position, switch arms and repeat the exercise <br><br> Keep the inside arm straight during the exercise",
+            duration: "30s"
         },
         {
             level: 3,
@@ -1327,12 +1461,14 @@ var exercises = {
         {
             level: 1,
             name: "Plank",
-            description: "Lie on the floor with your toes and forearms on the ground. Keep your body straight and hold this position for the specified duration or as long as you can <br><br> This exercise strengthens the abdomen back and shoulders"
+            description: "Lie on the floor with your toes and forearms on the ground. Keep your body straight and hold this position for the specified duration or as long as you can <br><br> This exercise strengthens the abdomen back and shoulders",
+            duration: "20s"
         },
         {
             level: 1,
             name: "Spine Lumbar Twist Stretch",
-            description: "Lie on your back with your legs extended <br><br> Lift your left leg up and use your right hand to pull your left knee to the right, but keep your other arm extended to the side on the floor <br><br> Hold this position for the specified duration <br><br> Repeat using your right leg for the same amount of time "
+            description: "Lie on your back with your legs extended <br><br> Lift your left leg up and use your right hand to pull your left knee to the right, but keep your other arm extended to the side on the floor <br><br> Hold this position for the specified duration <br><br> Repeat using your right leg for the same amount of time ",
+            duration: "30s"
         },
         {
             level: 2,
@@ -1362,7 +1498,8 @@ var exercises = {
         {
             level: 2,
             name: "Side Plank",
-            description: "Lie on your right side with your forearm supporting your body. Hold your body in a straight line for the specified duration or as long as you can <br><br> Repeat the exercise this time starting on your left side <br><br> This exercise targets the abdominal muscles and obliques"
+            description: "Lie on your right side with your forearm supporting your body. Hold your body in a straight line for the specified duration or as long as you can <br><br> Repeat the exercise this time starting on your left side <br><br> This exercise targets the abdominal muscles and obliques",
+            duration: "35s"
         }
     ],
     "Arm Exercises": [
@@ -1374,12 +1511,14 @@ var exercises = {
         {
             level: 1,
             name: "Arm Raises",
-            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration"
+            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration",
+            duration: "50s"
         },
         {
             level: 1,
             name: "Side Arm Raise",
-            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout"
+            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout",
+            duration: "50s"
         },
         {
             level: 1,
@@ -1409,7 +1548,8 @@ var exercises = {
         {
             level: 1,
             name: "Punches",
-            description: "Stand with your legs shoulder width apart and your knees bent slightly. Bend your elbows and clench your fists in front of your face <br><br> Begin throwing left and right punches for as long as the specified duration"
+            description: "Stand with your legs shoulder width apart and your knees bent slightly. Bend your elbows and clench your fists in front of your face <br><br> Begin throwing left and right punches for as long as the specified duration",
+            duration: "40s"
         },
         {
             level: 2,
@@ -1424,12 +1564,14 @@ var exercises = {
         {
             level: 1,
             name: "Triceps Stretch",
-            description: "Put your left hand on your back, over your left shoulder. Use your right hand to grab your left elbow and gently pull it <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm"
+            description: "Put your left hand on your back, over your left shoulder. Use your right hand to grab your left elbow and gently pull it <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm",
+            duration: "30s"
         },
         {
             level: 1,
             name: "Standing Biceps Stretch",
-            description: "Stand with your left arm close to a wall. Extend your left arm and put your left hand on the wall, then gently turn your body to the right until you feel a stretch along your bicep <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm"
+            description: "Stand with your left arm close to a wall. Extend your left arm and put your left hand on the wall, then gently turn your body to the right until you feel a stretch along your bicep <br><br> Hold this position for 30 seconds <br><br> Repeat for right arm",
+            duration: "30s"
         },
         {
             level: 2,
@@ -1444,7 +1586,8 @@ var exercises = {
         {
             level: 2,
             name: "Skipping Without Rope",
-            description: "Place your arms at your sides and pretend to hold a skipping rope handle in each hand <br><br> Jump and alternately land on the balls of your feet, rotating your wrists at the same time as you were spinning the rope <br><br> Repeat for the specified duration"
+            description: "Place your arms at your sides and pretend to hold a skipping rope handle in each hand <br><br> Jump and alternately land on the balls of your feet, rotating your wrists at the same time as you were spinning the rope <br><br> Repeat for the specified duration",
+            duration: "45s"
         },
         {
             level: 2,
@@ -1464,19 +1607,22 @@ var exercises = {
         {
             level: 3,
             name: "Modified Push-Up Low Hold",
-            description: "Start in the standard push-up position but with your feet shoulder-width apart and knees on the ground <br><br> Lower your body until your elbows are at 90 degrees <br><br> Hold this position for the specified duration"
+            description: "Start in the standard push-up position but with your feet shoulder-width apart and knees on the ground <br><br> Lower your body until your elbows are at 90 degrees <br><br> Hold this position for the specified duration",
+            duration: "30s"
         }
     ],
     "Shoulder and Back Exercises": [
         {
             level: 1,
             name: "Arm Raises",
-            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration"
+            description: "Stand on the floor with your arms extended straight forward at shoulder height <br><br> Raise your arms above your head. Return to the start position and repeat for as long as the specified duration",
+            duration: "50s"
         },
         {
             level: 1,
             name: "Side Arm Raise",
-            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout"
+            description: "Stand with your feet shoulder width apart <br><br> Raise your arms to the sides at shoulder height, then put them down <br><br> Repeat for as long as the specified duration, keeping your arms straight throughout",
+            duration: "30s"
         },
         {
             level: 1,
@@ -1491,7 +1637,8 @@ var exercises = {
         {
             level: 1,
             name: "Cat Cow Pose",
-            description: "Start on all fours with your knees under your butt and your hands directly under your shoulders <br><br> Then take a breath and make your belly fall down, shoulders roll back and head come up towards the ceiling <br><br> As you exhale, curve your back upwardand let your head come down <br><br> Repeat this over the specified duration"
+            description: "Start on all fours with your knees under your butt and your hands directly under your shoulders <br><br> Then take a breath and make your belly fall down, shoulders roll back and head come up towards the ceiling <br><br> As you exhale, curve your back upwardand let your head come down <br><br> Repeat this over the specified duration",
+            duration: "30s"
         },
         {
             level: 1,
@@ -1526,12 +1673,13 @@ var exercises = {
         {
             level: 1,
             name: "Childs Pose",
-            description: "Start with your knees and hands on the floor. Put your hands a little forward, widen your knees and put your toes together. Take a breath, then exhale and sit back. Try to make your butt touch your heels. Relax your elbows, make your forehead touch the floor and try to lower your chest close to the floor. Hold this position for the duration specified <br><br> Keep your arms stretched forward as you sit back. Make sure there is enough space between your shoulders and your ears during the exercise"
+            description: "Start with your knees and hands on the floor. Put your hands a little forward, widen your knees and put your toes together. Take a breath, then exhale and sit back. Try to make your butt touch your heels. Relax your elbows, make your forehead touch the floor and try to lower your chest close to the floor. Hold this position for the duration specified <br><br> Keep your arms stretched forward as you sit back. Make sure there is enough space between your shoulders and your ears during the exercise",
+            duration: "30s"
         },
         {
             level: 3,
             name: "Hyperextension",
-            description: "Lie down on your stomach with your toes touching the floor and your chin on your hand <br><br> Raise your chest up as high as possible off the floor. Hold this position for a few seconds and then go back to the start position <br><br> Repeat for the specified duration"
+            description: "Lie down on your stomach with your toes touching the floor and your chin on your hand <br><br> Raise your chest up as high as possible off the floor. Hold this position for a few seconds and then go back to the start position <br><br> Repeat for the given repetitions"
         },
         {
             level: 3,
@@ -1557,7 +1705,8 @@ var exercises = {
     "Leg Exercises": [{
             level: 1,
             name: "Side Hop",
-            description: "Stand on the floor, put your hands in front of you and hop side to side for the specified duration"
+            description: "Stand on the floor, put your hands in front of you and hop side to side for the specified duration",
+            duration: "30s"
         },
         {
             level: 1,
@@ -1582,12 +1731,14 @@ var exercises = {
         {
             level: 1,
             name: "Quad Stretch",
-            description: "Stand with your left hand on the wall. Bend your right left and grasp your ankle or toes to bring your right calf close to your right thigh, hold this position for 30 seconds <br><br> Repeat for your left leg"
+            description: "Stand with your left hand on the wall. Bend your right left and grasp your ankle or toes to bring your right calf close to your right thigh, hold this position for 30 seconds <br><br> Repeat for your left leg",
+            duration: "30s"
         },
         {
             level: 1,
             name: "knee To Chest Stretch",
-            description: "Lie on the floor with your legs extended. Lift your left knee up and grab it with both hands <br><br> Pull your left knee towards your chest as much as you can while keeping your right leg straight on the ground. Hold this position for a few seconds and repeat for the specified duration <br><br> Repeat for your right leg"
+            description: "Lie on the floor with your legs extended. Lift your left knee up and grab it with both hands <br><br> Pull your left knee towards your chest as much as you can while keeping your right leg straight on the ground. Hold this position for a few seconds and repeat for the specified duration <br><br> Repeat for your right leg",
+            duration: "30s"
         },
         {
             level: 1,
@@ -1597,7 +1748,8 @@ var exercises = {
         {
             level: 1,
             name: "Calf Stretch",
-            description: "Stand one big step away in front of a wall. Step forward with your left foot and push the wall with your hands <br><br> Make sure your right leg is fully extended and you can feel the right calf stretching. Hold this for a few seconds and repeat for the specified duration <br><br> Repeat for the left calf"
+            description: "Stand one big step away in front of a wall. Step forward with your left foot and push the wall with your hands <br><br> Make sure your right leg is fully extended and you can feel the right calf stretching. Hold this for a few seconds and repeat for the specified duration <br><br> Repeat for the left calf",
+            duration: "30s"
         },
         {
             level: 1,
@@ -1617,7 +1769,8 @@ var exercises = {
         {
             level: 2,
             name: "Wall Sit",
-            description: "Start with your back against the wall, then slide down until your knees are at a 90 degree angle <br><br> Keep your back against the wall with your hands and arms away from your legs. Hold the position for the specified duration"
+            description: "Start with your back against the wall, then slide down until your knees are at a 90 degree angle <br><br> Keep your back against the wall with your hands and arms away from your legs. Hold the position for the specified duration",
+            duration: "35s"
         },
         {
             level: 2,
@@ -1642,7 +1795,8 @@ var exercises = {
         {
             level: 3,
             name: "Lying Butterfly Stretch",
-            description: "Lie on the floor with your feet together. Open your knees to the sides and hold for the specified duration"
+            description: "Lie on the floor with your feet together. Open your knees to the sides and hold for the specified duration",
+            duration: "30s"
         },
         {
             level: 3,
@@ -1658,14 +1812,14 @@ var exercises = {
 /***/ "./src/app/components/suggestion/suggestion.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n}\r\n\r\n.jumbotron-heading{\r\n  padding-bottom: 35px;\r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n          box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n/* .panel-pricing:hover {\r\n  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n} */\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n"
+module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #64a7ec5c;\r\n}\r\n\r\n.jumbotron-heading{\r\n  padding-bottom: 35px;\r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n          box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n/* .panel-pricing:hover {\r\n  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n} */\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n"
 
 /***/ }),
 
 /***/ "./src/app/components/suggestion/suggestion.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  <button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n        <div class=\"panel panel-pricing rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n  </div>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; x10</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n\n  </div>\n\n</section>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n        <!-- {{modalDetails.description}} -->\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
+module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  <button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n        <div class=\"panel panel-pricing rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n  </div>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n\n  </div>\n\n</section>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
 
 /***/ }),
 
@@ -1710,15 +1864,12 @@ var SuggestionComponent = (function () {
             var user = profile.user;
             var bmi = 18;
             if (bmi < 18.5) {
-                console.log("You are too thin.");
                 _this.getExerciseSuggestions(2);
             }
             if (bmi > 18.5 && bmi < 25) {
-                console.log("You are healthy.");
                 _this.getExerciseSuggestions(3);
             }
             if (bmi > 25) {
-                console.log("You are overweight.");
                 _this.getExerciseSuggestions(1);
             }
         }, function (err) {
@@ -1768,8 +1919,18 @@ var SuggestionComponent = (function () {
             var finalExercises = [];
             for (var i = 0; i < 5; i++) {
                 var index = Math.floor(Math.random() * exercises.length);
-                var exercise = exercises[index];
+                var units;
+                if (exercises[index].duration == null) {
+                    var reps = level * 10;
+                    units = { units: "x" + reps };
+                }
+                else {
+                    units = { units: exercises[index].duration };
+                }
+                // var units = {units: "x15"}
+                var exercise = Object.assign({}, exercises[index], units);
                 exercises.splice(index, 1); // This removes the picked element from the array
+                // console.log("index: " + exercises[index].name )
                 finalExercises.push(exercise);
             }
             console.log(finalExercises);
@@ -1869,7 +2030,7 @@ var AuthService = (function () {
     function AuthService(http, weatherServ) {
         this.http = http;
         this.weatherServ = weatherServ;
-        this.isDev = true; // Change to true before deployment
+        this.isDev = false; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();

@@ -1,0 +1,86 @@
+<div>
+
+<button (click)="getForecast()">Get Recipes</button>
+
+<!-- <div style="background-image: url({{pic}});"></div> -->
+
+<!-- <div id="img-container" style="background-image : url('https://www.edamam.com/web-img/262/262b4353ca25074178ead2a07cdf7dc1.jpg')"> -->
+
+    <div *ngIf="recipes" id="left-column">
+        <div class="list-group">
+        <button type="button" class="list-group-item" 
+        *ngFor="let recipe of recipes" 
+          (click)="showSearchRecipe(recipe)">
+        {{recipe.label}}
+        </button>
+        </div>
+  </div>
+
+
+  <div *ngIf="displayRecipe" id="right-column">
+        <div id="background-wrapper">
+          <h4 class="centered-text" id="recipe-label">
+            <a href="{{displayRecipe.url}}" target="_blank">
+              {{displayRecipe.label}}
+            </a>
+          </h4>
+    
+          <div>
+            <img id="img-container" src={{displayRecipe.image}}>
+          </div>
+    
+          <ul class="list-group" id="recipe-scroller-container">
+    
+            <li *ngFor="let ingredient of displayRecipe.ingredients" class="list-group-item">
+              {{ingredient.text}}</li>
+          </ul>
+        </div>
+  </div>
+</div>
+
+
+
+
+<!-- <div *ngIf="recipes">
+  <div *ngFor="let recipe of recipes">
+    <div id="background-wrapper">
+      <h4 class="centered-text" id="recipe-label">
+        <a href="{{recipe.url}}" target="_blank">
+          {{recipe.label}}
+        </a>
+      </h4>
+
+      <div>
+        <img id="img-container" src={ {recipe.image}}>
+      </div>
+
+      <ul class="list-group" id="recipe-scroller-container">
+
+        <li *ngFor="let ingredient of recipe.ingredients" class="list-group-item">
+          {{ingredient.text}}</li>
+      </ul>
+    </div>
+  </div>
+</div> -->
+
+
+
+
+<!-- <h1>Seven Day Forecast</h1>
+
+<div *ngIf="forecast" class="columns"> 
+    <div *ngFor="let day of forecast.daily.data" class="column">
+
+        <i [class]="weatherIcon(day.icon)"></i>
+        <h3>{{ day.time * 1000 | date: 'MMM d'  }}</h3>
+        <p>{{ day.summary }}</p>
+
+    </div>
+ </div> -->
+
+<!-- <div *ngIf="forecast">
+   time:{{ forecast.daily.data[0].time}}
+  summary: {{ forecast.daily.data[0].summary}}
+   cloudCover{{ forecast.daily.data[0].cloudCover}}
+   temp{{ forecast.daily.data[0].temperatureMax}}
+ </div> -->
