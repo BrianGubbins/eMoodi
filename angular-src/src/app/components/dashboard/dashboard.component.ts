@@ -3,6 +3,7 @@ import { Chart } from 'chart.js';
 import { AuthService } from '../../services/auth.service';
 import { FlashMessagesService } from 'angular2-flash-messages';
 import { Router } from '@angular/router';
+import 'chartjs-plugin-annotation'
 
 @Component({
   selector: 'app-dashboard',
@@ -31,6 +32,11 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     private router: Router
   ) { }
 
+  ngOnChanges(){
+    this.moodGraph.update();
+    
+  }
+
   ngOnInit() {
     this.authService.getMood().subscribe(moodDocs => {
       this.data= moodDocs
@@ -45,28 +51,48 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
 
   ngAfterViewInit() {
-this.updateGraphs;
+  this.updateGraphs();
+
+
+  /*
+
+
+Mood Graph
+
+
+*/
     var moodCanvas = <HTMLCanvasElement>document.getElementById('moodGraph');
     var ctx: CanvasRenderingContext2D = moodCanvas.getContext("2d");
     this.moodGraph = new Chart(ctx, {
-      "type": "line",
-      "data": {
-        "labels": this.moodDates,
-        "datasets": [{
-          "label": "Your Mood",
-          "data": this.moods,
-          "fill": true,
-          "backgroundColor": "rgba(	0, 123, 255,0.2)",
-          "borderColor": "rgba(	0, 123, 255, 0.6)",
+      type: "line",
+      
+      data: {
+        labels: this.moodDates,
+        datasets: [{
+          label: "Your Mood",
+          data: this.moods,
+          fill: true,
+          backgroundColor: "rgba(	0, 123, 255,0.2)",
+          borderColor: "rgba(	0, 123, 255, 0.6)",
         }]
       },
-      options: {
+      options: {  
+        legend: {
+          position:"top",
+          display: true,
+          labels: {
+            fontSize: 15
+          }
+      },
         responsive: true,
         tooltips: {
           enabled: false
         },
         scales: {
           xAxes: [{
+            gridLines: {
+              drawOnChartArea: false
+          },
             ticks: {
               maxTicksLimit: 3,
               maxRotation: 0 
@@ -97,66 +123,151 @@ this.updateGraphs;
       }
     });
 
-    var sleepCanvas = <HTMLCanvasElement>document.getElementById('sleepGraph');
-    var ctx1: CanvasRenderingContext2D = sleepCanvas.getContext("2d");
-    this.sleepGraph = new Chart(ctx1, {
-      "type": "line",
-      "data": {
-        "labels": this.dates,
-        "datasets": [{
-          "label": "Sleep",
-          "data": this.sleep,
-          "fill": true,
-          "borderColor": "rgb(255, 209, 26)"
+
+/*
+
+
+Sleep Graph
+
+
+*/
+
+
+    var config = {
+      type: "bar",
+      data: {
+        labels: this.dates,
+        datasets: [{
+          label: "Sleep",
+          data: this.sleep,
+          fill: false,
+          backgroundColor: "rgba(255,99,132,0.2)",
+          borderColor: "rgba(255,99,132,1)"
           
-        }]
+        }
+      
+      ]
       },
       options: {
+        tooltips: {
+          enabled: false
+        },
+        legend: {
+          // position:"top",
+          display: true,
+          labels: {
+            fontSize: 15
+          }
+      },
+
+        annotation: {
+          annotations: [
+            {
+              drawTime: "afterDatasetsDraw",
+              type: "line",
+              mode: "horizontal",
+              scaleID: "y-axis-0",
+              value: 9,
+              label: {
+                backgroundColor: "black",
+                content: "Recommended Sleep",
+                enabled: true,
+              }
+            },
+            { 
+            drawTime: "beforeDatasetsDraw",
+            type: "box",
+            yScaleID: "y-axis-0",
+            yMin: 7,
+            yMax: 9,
+            backgroundColor: "rgba(	0, 123, 255,0.2)",
+            borderColor: "rgba(	0, 123, 255,1)"
+          }
+          ]
+        },
         responsive: true,
         scales: {
+          xAxes :[{ 
+            ticks:{
+              fontSize: 15
+          }}
+           ],
           yAxes: [{
+            scaleLabel: {
+              fontSize: 15,
+              display: true,
+              labelString: 'Hours'
+            },
             ticks: {
+              fontSize: 15,
               min: 0,
               max: 12
             }
           }]
+        },
+        elements: {
+          rectangle: {
+            borderWidth: 2,
+          }
         }
       }
-    });
+    }
+    var sleepCanvas = <HTMLCanvasElement>document.getElementById('sleepGraph');
+    var ctx1: CanvasRenderingContext2D = sleepCanvas.getContext("2d");
+    this.sleepGraph = new Chart(ctx1, config);
 
+
+/*
+
+
+Exercise vs. Diet Graph
+
+
+*/
     var excerciseDietCanvas = <HTMLCanvasElement>document.getElementById('exerciseDiet');
     var ctx1: CanvasRenderingContext2D = excerciseDietCanvas.getContext("2d");
     this.exerciseDietGraph = new Chart(ctx1, {
-      "type": "horizontalBar",
-      "data": {
-        "labels": this.dates,
-        "datasets": [{
-          "label": "Exercise",
-          "data": this.exercise,
-          "fill": false,
+      type: "horizontalBar",
+      data: {
+        labels: this.dates,
+        datasets: [{
+          label: "Exercise",
+          data: this.exercise,
+          fill: false,
           backgroundColor: "rgba(255,99,132,0.2)",
           borderColor: "rgba(255,99,132,1)"
         },
         {
-          "label": "Diet",
-          "data": this.diet,
-          "fill": false,
+          label: "Diet",
+          data: this.diet,
+          fill: false,
           backgroundColor: "rgba(	0, 123, 255,0.2)",
           borderColor: "rgba(	0, 123, 255,1)"
         }]
       },
       options: {
+        legend: {
+          position:"top",
+          display: true,
+          labels: {
+            fontSize: 15
+          }
+      },
         tooltips: {
           enabled: false
         },
         responsive: true,
         scales: {
           yAxes: [{
+            gridLines: {
+              drawOnChartArea: false
+          },
             ticks: {
               fontSize: 15,
             }
           }],
           xAxes: [{
+            
             ticks: {
               fontSize: 20,
               min: 0,
@@ -247,7 +358,7 @@ this.updateGraphs;
         this.sleepGraph.update();
         this.exerciseDietGraph.update();
 
-        console.log(this.sleep, this.diet, this.exercise);
+        // console.log(this.sleep, this.diet, this.exercise);
 
         for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
           this.moods.push(this.data[i].moodData[j].currMood);

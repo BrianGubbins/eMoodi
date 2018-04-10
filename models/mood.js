@@ -67,7 +67,7 @@ module.exports.getMood = function (id, callback) {
         },
         callback
 
-    )
+    ).limit(7)
 }
 
 // module.exports.addMood= function(newMood, callback){

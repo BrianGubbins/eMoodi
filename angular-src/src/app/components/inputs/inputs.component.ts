@@ -56,7 +56,7 @@ export class InputsComponent implements OnInit {
     var lastCreated = new Date(moodDocs[moodDocs.length-1].date);
     var today = new Date();
     if(lastCreated.getDay() == today.getDay()) {
-      this.filled=false;
+      this.filled=true;
     }
     else{
       this.filled = false;

@@ -1,8 +1,7 @@
-<div class="text-center">
+<div class="text-center" style="padding:0 0 20px 0">
 <button (click)="chart('mood')" class="btn btn-lg btn-primary">Mood</button>
-<button (click)="chart('sleep')" class="btn btn-lg btn-primary">Sleep</button>
 <button (click)="chart('exerciseDiet')" class="btn btn-lg btn-primary">Exercise/Diet</button>
-<a routerLink="/input"><button class="btn btn-lg btn-primary" > Add Info</button></a>
+<button (click)="chart('sleep')" class="btn btn-lg btn-primary">Sleep</button>
 </div>
 
 <div class="container" width="1000" height="500" [hidden]="!chart1">

@@ -444,7 +444,7 @@ module.exports = ""
 /***/ "./src/app/components/dashboard/dashboard.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center\">\n<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">Mood</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n<button (click)=\"chart('exerciseDiet')\" class=\"btn btn-lg btn-primary\">Exercise/Diet</button>\n<a routerLink=\"/input\"><button class=\"btn btn-lg btn-primary\" > Add Info</button></a>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart1\">\n  <canvas id=\"moodGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart2\">\n  <canvas id=\"sleepGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart3\">\n  <canvas id=\"exerciseDiet\"></canvas>\n</div>\n\n<br>"
+module.exports = "<div class=\"text-center\" style=\"padding:0 0 20px 0\">\n<button (click)=\"chart('mood')\" class=\"btn btn-lg btn-primary\">Mood</button>\n<button (click)=\"chart('exerciseDiet')\" class=\"btn btn-lg btn-primary\">Exercise/Diet</button>\n<button (click)=\"chart('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart1\">\n  <canvas id=\"moodGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart2\">\n  <canvas id=\"sleepGraph\"></canvas>\n</div>\n\n<div class=\"container\" width=\"1000\" height=\"500\" [hidden]=\"!chart3\">\n  <canvas id=\"exerciseDiet\"></canvas>\n</div>\n\n<br>"
 
 /***/ }),
 
@@ -460,6 +460,8 @@ module.exports = "<div class=\"text-center\">\n<button (click)=\"chart('mood')\"
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__ = __webpack_require__("./node_modules/angular2-flash-messages/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_angular2_flash_messages__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("./node_modules/@angular/router/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_chartjs_plugin_annotation__ = __webpack_require__("./node_modules/chartjs-plugin-annotation/src/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_chartjs_plugin_annotation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_chartjs_plugin_annotation__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -469,6 +471,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -490,6 +493,9 @@ var DashboardComponent = (function () {
         this.chart3 = false;
         this.data = [];
     }
+    DashboardComponent.prototype.ngOnChanges = function () {
+        this.moodGraph.update();
+    };
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.authService.getMood().subscribe(function (moodDocs) {
@@ -501,28 +507,45 @@ var DashboardComponent = (function () {
         });
     };
     DashboardComponent.prototype.ngAfterViewInit = function () {
-        this.updateGraphs;
+        this.updateGraphs();
+        /*
+      
+      
+      Mood Graph
+      
+      
+      */
         var moodCanvas = document.getElementById('moodGraph');
         var ctx = moodCanvas.getContext("2d");
         this.moodGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
-            "type": "line",
-            "data": {
-                "labels": this.moodDates,
-                "datasets": [{
-                        "label": "Your Mood",
-                        "data": this.moods,
-                        "fill": true,
-                        "backgroundColor": "rgba(	0, 123, 255,0.2)",
-                        "borderColor": "rgba(	0, 123, 255, 0.6)",
+            type: "line",
+            data: {
+                labels: this.moodDates,
+                datasets: [{
+                        label: "Your Mood",
+                        data: this.moods,
+                        fill: true,
+                        backgroundColor: "rgba(	0, 123, 255,0.2)",
+                        borderColor: "rgba(	0, 123, 255, 0.6)",
                     }]
             },
             options: {
+                legend: {
+                    position: "top",
+                    display: true,
+                    labels: {
+                        fontSize: 15
+                    }
+                },
                 responsive: true,
                 tooltips: {
                     enabled: false
                 },
                 scales: {
                     xAxes: [{
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
                             ticks: {
                                 maxTicksLimit: 3,
                                 maxRotation: 0
@@ -552,59 +575,137 @@ var DashboardComponent = (function () {
                 }
             }
         });
-        var sleepCanvas = document.getElementById('sleepGraph');
-        var ctx1 = sleepCanvas.getContext("2d");
-        this.sleepGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
-            "type": "line",
-            "data": {
-                "labels": this.dates,
-                "datasets": [{
-                        "label": "Sleep",
-                        "data": this.sleep,
-                        "fill": true,
-                        "borderColor": "rgb(255, 209, 26)"
-                    }]
+        /*
+        
+        
+        Sleep Graph
+        
+        
+        */
+        var config = {
+            type: "bar",
+            data: {
+                labels: this.dates,
+                datasets: [{
+                        label: "Sleep",
+                        data: this.sleep,
+                        fill: false,
+                        backgroundColor: "rgba(255,99,132,0.2)",
+                        borderColor: "rgba(255,99,132,1)"
+                    }
+                ]
             },
             options: {
+                tooltips: {
+                    enabled: false
+                },
+                legend: {
+                    // position:"top",
+                    display: true,
+                    labels: {
+                        fontSize: 15
+                    }
+                },
+                annotation: {
+                    annotations: [
+                        {
+                            drawTime: "afterDatasetsDraw",
+                            type: "line",
+                            mode: "horizontal",
+                            scaleID: "y-axis-0",
+                            value: 9,
+                            label: {
+                                backgroundColor: "black",
+                                content: "Recommended Sleep",
+                                enabled: true,
+                            }
+                        },
+                        {
+                            drawTime: "beforeDatasetsDraw",
+                            type: "box",
+                            yScaleID: "y-axis-0",
+                            yMin: 7,
+                            yMax: 9,
+                            backgroundColor: "rgba(	0, 123, 255,0.2)",
+                            borderColor: "rgba(	0, 123, 255,1)"
+                        }
+                    ]
+                },
                 responsive: true,
                 scales: {
-                    yAxes: [{
+                    xAxes: [{
                             ticks: {
+                                fontSize: 15
+                            } }
+                    ],
+                    yAxes: [{
+                            scaleLabel: {
+                                fontSize: 15,
+                                display: true,
+                                labelString: 'Hours'
+                            },
+                            ticks: {
+                                fontSize: 15,
                                 min: 0,
                                 max: 12
                             }
                         }]
+                },
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                    }
                 }
             }
-        });
+        };
+        var sleepCanvas = document.getElementById('sleepGraph');
+        var ctx1 = sleepCanvas.getContext("2d");
+        this.sleepGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, config);
+        /*
+        
+        
+        Exercise vs. Diet Graph
+        
+        
+        */
         var excerciseDietCanvas = document.getElementById('exerciseDiet');
         var ctx1 = excerciseDietCanvas.getContext("2d");
         this.exerciseDietGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
-            "type": "horizontalBar",
-            "data": {
-                "labels": this.dates,
-                "datasets": [{
-                        "label": "Exercise",
-                        "data": this.exercise,
-                        "fill": false,
+            type: "horizontalBar",
+            data: {
+                labels: this.dates,
+                datasets: [{
+                        label: "Exercise",
+                        data: this.exercise,
+                        fill: false,
                         backgroundColor: "rgba(255,99,132,0.2)",
                         borderColor: "rgba(255,99,132,1)"
                     },
                     {
-                        "label": "Diet",
-                        "data": this.diet,
-                        "fill": false,
+                        label: "Diet",
+                        data: this.diet,
+                        fill: false,
                         backgroundColor: "rgba(	0, 123, 255,0.2)",
                         borderColor: "rgba(	0, 123, 255,1)"
                     }]
             },
             options: {
+                legend: {
+                    position: "top",
+                    display: true,
+                    labels: {
+                        fontSize: 15
+                    }
+                },
                 tooltips: {
                     enabled: false
                 },
                 responsive: true,
                 scales: {
                     yAxes: [{
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
                             ticks: {
                                 fontSize: 15,
                             }
@@ -688,7 +789,7 @@ var DashboardComponent = (function () {
                 this.score(this.data[i].diet, this.data[i].exercise);
                 this.sleepGraph.update();
                 this.exerciseDietGraph.update();
-                console.log(this.sleep, this.diet, this.exercise);
+                // console.log(this.sleep, this.diet, this.exercise);
                 for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
                     this.moods.push(this.data[i].moodData[j].currMood);
                     this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
@@ -715,7 +816,7 @@ var DashboardComponent = (function () {
 /***/ "./src/app/components/home/home.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ".jumbotron{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    background-color: #64a7ec5c;\r\n  }"
+module.exports = ".jumbotron{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    background-color: #3db1ff5e;\r\n  }"
 
 /***/ }),
 
@@ -777,14 +878,14 @@ var HomeComponent = (function () {
 /***/ "./src/app/components/inputs/inputs.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ".jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #64a8ec42;\r\n}\r\n\r\ninput.hideRadio {\r\n    visibility:hidden;\r\n}\r\n\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\n\r\nul.moods li {\r\n    padding: 0px 25px 0px 25px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
+module.exports = ".jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #3db1ff5e;\r\n}\r\n\r\ninput.hideRadio {\r\n    visibility:hidden;\r\n}\r\n\r\nbody {\r\n    padding-top: 40px;\r\n    padding-bottom: 40px;\r\n    background-color: #eee;\r\n  }\r\n\r\nimg.selected{\r\n    border-radius: 50%;\r\n    background-color: #007bff;\r\n    -webkit-box-shadow: 0 0 22px 6px #007bff;\r\n            box-shadow: 0 0 22px 6px #007bff;\r\n}\r\n\r\nul.moods li {\r\n    padding: 0px 25px 0px 25px;\r\n    display: inline-block;\r\n    vertical-align: top;\r\n    display: inline-block;   \r\n}\r\n\r\n.form-signin {\r\n    max-width: 330px;\r\n    padding: 15px;\r\n    margin: 0 auto;\r\n  }\r\n\r\n.form-signin .form-signin-heading,\r\n  .form-signin .checkbox {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\n.form-signin .checkbox {\r\n    font-weight: 400;\r\n  }\r\n\r\n.form-signin .form-control {\r\n    position: relative;\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n    height: auto;\r\n    padding: 10px;\r\n    font-size: 16px;\r\n  }\r\n\r\n.form-signin .form-control:focus {\r\n    z-index: 2;\r\n  }\r\n\r\n.form-signin input[type=\"username\"] ,input[type=\"password\"]  {\r\n    margin-bottom: 10px;\r\n  }\r\n\r\nbtn.btn-lg{\r\nborder: 2px;\r\n  }"
 
 /***/ }),
 
 /***/ "./src/app/components/inputs/inputs.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div  class= \" jumbotron text-center\">\n  <ul class=\"moods col-md-12\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <div *ngIf=!filled>\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n    <br>\n    <br>\n  </div>\n    \n\n    <div align=\"center\" style=\"padding: 10px 0 20px 0;\" >\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
+module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n<div  class= \"jumbotron text-center\">\n  <ul class=\"moods col-md-12 shadow\">\n    <h2 align=\"center\">How are you feeling</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <div *ngIf=!filled>\n    <h3 align=\"center\">How much sleep did you get last night ?</h3>\n    <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n    <br>\n\n    <h3 align=\"center\">What was your diet like today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n      </label>\n      <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Fair\n      </label>\n      <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n        <input type=\"radio\" class=\"hideRadio\"> Good\n      </label>\n    </div>\n\n    <br>\n    <br>\n\n    <h3 align=\"center\">How was your level of exercise today ?</h3>\n    <br>\n    <div class=\"btn-group\" data-toggle=\"buttons\">\n      <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n      </label>\n      <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n      </label>\n      <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n        <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n      </label>\n    </div>\n    <br>\n    <br>\n  </div>\n    \n\n    <div align=\"center\" style=\"padding: 10px 0 20px 0;\" >\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>"
 
 /***/ }),
 
@@ -847,7 +948,7 @@ var InputsComponent = (function () {
             var lastCreated = new Date(moodDocs[moodDocs.length - 1].date);
             var today = new Date();
             if (lastCreated.getDay() == today.getDay()) {
-                _this.filled = false;
+                _this.filled = true;
             }
             else {
                 _this.filled = false;
@@ -1100,7 +1201,7 @@ var LoginComponent = (function () {
 /***/ "./src/app/components/navbar/navbar.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "\r\n.navbar {\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#194064), to(#367fc9));\r\n  background-image: linear-gradient(to bottom, #194064 0%, #367fc9 100%);\r\n  background-repeat: repeat-x;\r\n  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a1a29', endColorstr='#367fc9', GradientType=5); */\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }\r\n\r\n  /* .bg-emoodi{\r\n    background-color: #265c92!important;\r\n  } */"
+module.exports = "\r\n.navbar {\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#194064), to(#007bff));\r\n  background-image: linear-gradient(to bottom, #194064 0%, #007bff 100%);\r\n  background-repeat: repeat-x;\r\n  /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0a1a29', endColorstr='#367fc9', GradientType=5); */\r\n    position: relative;\r\n    display: -webkit-box;\r\n    display: -ms-flexbox;\r\n    display: flex;\r\n    -ms-flex-wrap: wrap;\r\n    flex-wrap: wrap;\r\n    -webkit-box-align: center;\r\n    -ms-flex-align: center;\r\n    align-items: center;\r\n    -webkit-box-pack: justify;\r\n    -ms-flex-pack: justify;\r\n    justify-content: space-between;\r\n    padding: 0.5rem 1rem;\r\n    margin-bottom: 20px;\r\n  }\r\n\r\n  /* .bg-emoodi{\r\n    background-color: #265c92!important;\r\n  } */"
 
 /***/ }),
 
@@ -1812,14 +1913,14 @@ var exercises = {
 /***/ "./src/app/components/suggestion/suggestion.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #64a7ec5c;\r\n}\r\n\r\n.jumbotron-heading{\r\n  padding-bottom: 35px;\r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n          box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n/* .panel-pricing:hover {\r\n  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n} */\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n"
+module.exports = "@import url(\"http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\");\r\n\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #3db1ff5e;\r\n}\r\n\r\n.jumbotron-heading{\r\n  padding-bottom: 35px;\r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-pricing {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n          box-shadow: 0px 0px 20px rgba(0, 90, 255, 0.75);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n}\r\n\r\n/* .panel-pricing:hover {\r\n  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n} */\r\n\r\n.panel-pricing .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-pricing .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-pricing .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-pricing .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n"
 
 /***/ }),
 
 /***/ "./src/app/components/suggestion/suggestion.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"text-center\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  <button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button>\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n        <div class=\"panel panel-pricing rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n  </div>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n\n  </div>\n\n</section>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
+module.exports = "<div class=\"text-center\" style=\"padding:0 0 15px 0\">\n  <!-- <button (click)=\"getForecast()\">Get Recipes</button> -->\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  <!-- <button (click)=\"suggestion('sleep')\" class=\"btn btn-lg btn-primary\">Sleep</button> -->\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes\">\n        <div class=\"panel panel-pricing rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n  </div>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!sleep\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Sleep Suggestions</h1>\n\n  </div>\n\n</section>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
 
 /***/ }),
 
@@ -2030,7 +2131,7 @@ var AuthService = (function () {
     function AuthService(http, weatherServ) {
         this.http = http;
         this.weatherServ = weatherServ;
-        this.isDev = false; // Change to true before deployment
+        this.isDev = true; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
