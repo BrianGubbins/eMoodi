@@ -42,19 +42,19 @@ export class SuggestionComponent implements OnInit {
       return false;
     });
 
-    // this.recipeService.getRecipes().subscribe(recipeResults => {
+    this.recipeService.getRecipes().subscribe(recipeResults => {
 
-    //   if (recipeResults.hits.length > 0) {
-    //     for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
-    //       this.recipes.push(recipeResults.hits[i].recipe);
-    //     }
-    //   }
+      if (recipeResults.hits.length > 0) {
+        for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
+          this.recipes.push(recipeResults.hits[i].recipe);
+        }
+      }
 
-    // },
-    //   err => {
-    //     console.log(err);
-    //     return false;
-    //   });
+    },
+      err => {
+        console.log(err);
+        return false;
+      });
   }
 
   suggestion(type) {

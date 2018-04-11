@@ -141,8 +141,8 @@ Sleep Graph
           label: "Sleep",
           data: this.sleep,
           fill: false,
-          backgroundColor: "rgba(255,99,132,0.2)",
-          borderColor: "rgba(255,99,132,1)"
+          backgroundColor: "rgba(	0, 123, 255,0.2)",
+          borderColor: "rgba(	0, 123, 255,1)"
           
         }
       
@@ -180,8 +180,9 @@ Sleep Graph
             yScaleID: "y-axis-0",
             yMin: 7,
             yMax: 9,
-            backgroundColor: "rgba(	0, 123, 255,0.2)",
-            borderColor: "rgba(	0, 123, 255,1)"
+
+            backgroundColor: "rgb(255, 255, 77,0.5)",
+            borderColor: "rgba(255, 255, 77,1)"
           }
           ]
         },
@@ -234,8 +235,8 @@ Exercise vs. Diet Graph
           label: "Exercise",
           data: this.exercise,
           fill: false,
-          backgroundColor: "rgba(255,99,132,0.2)",
-          borderColor: "rgba(255,99,132,1)"
+          backgroundColor: "rgb(255, 255, 77,0.5)",
+          borderColor: "rgba(255, 255, 77,1)"
         },
         {
           label: "Diet",

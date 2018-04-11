@@ -24,7 +24,7 @@ export class RecipeService {
     //     })
     //   }
 
-    return this.http.get('https://api.edamam.com/search?q=chicken&from=0&to=3&diet=balanced&app_id=0d7244ce&app_key=f5b45cfc217e0ed8ef0f0f09e7b21058')
+    return this.http.get('https://api.edamam.com/search?q=lasagne&from=0&to=3&diet=balanced&app_id=0d7244ce&app_key=f5b45cfc217e0ed8ef0f0f09e7b21058')
     .map(res => res.json());
   }
 

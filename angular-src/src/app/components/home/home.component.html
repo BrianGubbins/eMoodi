@@ -1,6 +1,41 @@
+<div id="background-wrap" class="back">
+    <div class="bubble x1">
+        <img src="assets/emojis/4.png" />
+  </div>
+    <div class="bubble x2">
+        <img src="assets/emojis/5.png" />
+  </div>
+    <div class="bubble x3">
+        <img src="assets/emojis/55.png" />
+  </div>
+    <div class="bubble x4">
+        <img src="assets/emojis/4.png" />
+  </div>
+    <div class="bubble x5">
+        <img src="assets/emojis/55.png" />
+  </div>
+    <div class="bubble x6">
+        <img src="assets/emojis/5.png" />
+  </div>
+    <div class="bubble x7">
+        <img src="assets/emojis/4.png" />
+  </div>
+    <div class="bubble x8">
+        <img src="assets/emojis/55.png" />
+  </div>
+    <div class="bubble x9">
+        <img src="assets/emojis/5.png" />
+  </div>
+    <div class="bubble x10">
+        <img src="assets/emojis/4.png" />
+  </div>
+</div>
+
 <section class="jumbotron text-center" >
   <div class="container">
-    <h1 class="jumbotron-heading">eMoodi</h1>
+    <h1 class="jumbotron-heading">      
+        <img style="width:75%" src="/assets/Logo.png" />
+    </h1>
     <p class="lead text-muted">Welcome to eMoodi MEAN application used to track and improve your mood.</p>
     <p>
         <a class="btn btn-secondary"  *ngIf="!authService.loggedIn()" [routerLink]="['/login']">Login</a>
@@ -14,17 +49,46 @@
 <!-- <button (click)="getForecast()">Get Forecast</button> -->
 
 
-<div class="row">
-  <div class="col-md-4">
-    <h3>Mood Tracking</h3>
-    <p>A rock solid Node.js/Express server using Mongoose to organize models and query the database</p>
+<div class="row" style="padding:30px">
+  <div class="col-md-4 text-center">
+  <div class="card" style="padding:30px">
+      <img class="card-img-top" src="assets/emojis/4.png" style="width:180px;height:180px" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
   </div>
-  <div class="col-md-4">
-    <h3>Diet Suggestions</h3>
-    <p>Angular-CLI to generate components, services and more. Local dev server and easy compilation</p>
   </div>
-  <div class="col-md-4">
-    <h3>Exercise Suggestions</h3>
-    <p>Full featured authentication using JSON web tokens. Login and store user data</p>
-  </div>
+  <div class="col-md-4 text-center">
+      <div class="card" style="padding:30px">
+          <img class="card-img-top" src="assets/emojis/4.png" style="width:180px;height:180px" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
+      </div>
+      </div>
+
+      <div class="col-md-4 text-center">
+          <div class="card" style="padding:30px">
+              <img class="card-img-top" src="assets/emojis/4.png" style="width:180px;height:180px" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+              </div>
+          </div>
+          </div>
+
 </div>
+
+<!-- <div class="card" style="width: 18rem;">
+    <img class="card-img-top" src="..." alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">Card title</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div> -->
