@@ -359,8 +359,6 @@ Exercise vs. Diet Graph
         this.sleepGraph.update();
         this.exerciseDietGraph.update();
 
-        // console.log(this.sleep, this.diet, this.exercise);
-
         for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
           this.moods.push(this.data[i].moodData[j].currMood);
           this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));

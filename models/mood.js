@@ -69,11 +69,3 @@ module.exports.getMood = function (id, callback) {
 
     ).limit(7)
 }
-
-// module.exports.addMood= function(newMood, callback){
-//     newMood.save(callback);
-// }
-
-// module.exports.addMood= function(newMood, callback){
-//     newMood.save(callback);
-// }

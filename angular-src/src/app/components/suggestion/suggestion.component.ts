@@ -4,8 +4,6 @@ import { Observable } from 'rxjs/Observable';
 import {AuthService} from '../../services/auth.service';
 import 'rxjs/add/operator/do';
 import * as vars from './exercises';
-
-
 @Component({
   selector: 'app-suggestion',
   templateUrl: './suggestion.component.html',
@@ -19,6 +17,7 @@ export class SuggestionComponent implements OnInit {
   exercise = false;
   sleep = false;
   allExercises = [];
+  limit = 3;
 
   constructor(private recipeService: RecipeService, private authService:AuthService) { }
 
@@ -48,8 +47,9 @@ export class SuggestionComponent implements OnInit {
         for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
           this.recipes.push(recipeResults.hits[i].recipe);
         }
+        this.shuffle(this.recipes);
       }
-
+      
     },
       err => {
         console.log(err);
@@ -58,7 +58,6 @@ export class SuggestionComponent implements OnInit {
   }
 
   suggestion(type) {
-    console.log(type);
     switch (type) {
       case "diet":
         this.diet = true;
@@ -105,10 +104,8 @@ export class SuggestionComponent implements OnInit {
         // var units = {units: "x15"}
         var exercise = Object.assign({},exercises[index],units) ;
         exercises.splice(index, 1);  // This removes the picked element from the array
-                // console.log("index: " + exercises[index].name )
         finalExercises.push(exercise);
       }
-      console.log(finalExercises)
 
       var newExercises = {
         name: key,
@@ -120,6 +117,15 @@ export class SuggestionComponent implements OnInit {
   });
 
   }
+
+
+  shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 
 
 }

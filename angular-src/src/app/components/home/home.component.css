@@ -12,7 +12,9 @@
 
   .card{
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);
-
+    background-image: linear-gradient(to bottom, #fbff21d9 0%, #ffffffda 55%);
+    background-repeat: repeat-x;
+    padding: 20px 10px 20px 10px;
   }
 
   body {
@@ -247,9 +249,9 @@
     background: linear-gradient(270deg, #70aff1a4, #ffffff);
     background-size: 600% 600%;
     
-    -webkit-animation: AnimationName 20s ease infinite;
-    -moz-animation: AnimationName 20s ease infinite;
-    animation: AnimationName 20s ease infinite;
+    -webkit-animation: AnimationName 10s ease infinite;
+    -moz-animation: AnimationName 10s ease infinite;
+    animation: AnimationName 10s ease infinite;
 
   }
     

@@ -20,7 +20,10 @@ const WeatherSchema = mongoose.Schema({
 const Weather = module.exports = mongoose.model('Weather', WeatherSchema);
 
 module.exports.newWeather= function(weatherDaily, callback){
-          console.log("function reached");
-
     weatherDaily.save(callback);
+}
+
+module.exports.getWeather = function (id, callback) {
+    Weather.findOne({}, callback).limit(1).sort({$natural:-1});
+    //.sort({_id:-1}).limit(1)
 }

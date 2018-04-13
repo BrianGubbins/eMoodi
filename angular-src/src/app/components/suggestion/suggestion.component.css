@@ -1,4 +1,4 @@
-@import url("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css");
+/* @import url("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"); */
 
 .jumbotron{
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);
@@ -7,7 +7,16 @@
 }
 
 .jumbotron-heading{
+
+
+  font-size: 5vw;
   padding-bottom: 35px;
+  color: white;
+  text-shadow:
+  -1px -1px 0 #3b70a18c,
+  1px -1px 0 #3b70a18c,
+  -1px 1px 0 #3b70a18c,
+  1px 1px 0 #3b70a18c; 
 }
 
 #recipe-scroller-container {
@@ -27,6 +36,8 @@
   -moz-transition: all .3s ease;
   -o-transition: all .3s ease;
   -webkit-transition: all .3s ease;
+  background-image: linear-gradient(to bottom, #72a1cf 0%, #ffffff 50%);
+  background-repeat: repeat-x;
 }
 
 /* .panel-pricing:hover {
@@ -100,4 +111,8 @@
 .a {
   color: #2d5b84;
 
+}
+
+.col-md-4{
+  padding: 20px 10px 20px 15px;
 }

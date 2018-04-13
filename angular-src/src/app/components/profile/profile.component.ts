@@ -17,7 +17,14 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.authService.getProfile().subscribe(profile => {
       this.user = profile.user;
-      console.log(this.user);
+    },
+    err => {
+      console.log(err);
+      return false;
+    });
+
+
+    this.authService.getWeather().subscribe(weather => {
     },
     err => {
       console.log(err);

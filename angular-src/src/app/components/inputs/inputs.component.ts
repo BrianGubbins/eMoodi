@@ -51,7 +51,6 @@ export class InputsComponent implements OnInit {
    }
 
    this.authService.getMood().subscribe(moodDocs => {
-    console.log(moodDocs);
 
     var lastCreated = new Date(moodDocs[moodDocs.length-1].date);
     var today = new Date();
@@ -125,7 +124,6 @@ export class InputsComponent implements OnInit {
     });
 
 
-    console.log(moodInfo);
     this.router.navigate(['dashboard']);
   }
 

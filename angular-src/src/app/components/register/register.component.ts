@@ -45,8 +45,6 @@ export class RegisterComponent implements OnInit {
       bmi: (this.weight)/((this.height)/100*(this.height)/100)
     }
 
-    console.log(user);
-
     // Required Fields
     if(!this.validateService.validateRegister(user)){
       this.flashMessage.show('Please fill in all fields', {cssClass: 'alert-danger', timeout: 3000});

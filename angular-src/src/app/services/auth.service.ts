@@ -69,39 +69,7 @@ export class AuthService {
     // var lng;
     var weatherFormat;
 
-    // if (navigator.geolocation) {
-    //   console.log("hello");
-
-    //   navigator.geolocation.getCurrentPosition(position => {
-    //     lat = position.coords.latitude;
-    //     lng = position.coords.longitude;
-    //     console.log("hello");
-
-    //     this.weatherServ.currentForecast(lat, lng).subscribe(weather => {
-    //       console.log("hello");
-
-    //       var forecast = weather;
-    //       weatherFormat = {
-    //         cloudCover: forecast.daily.data[0].cloudCover,
-    //         rain: forecast.daily.data[0].precipProbability,
-    //         temp: forecast.daily.data[0].temperatureMax,
-    //         summary: forecast.daily.data[0].summary
-    //       }
-
-    //     },
-    //       err => {
-    //         console.log(err);
-    //         return false;
-    //       });
-    //   });
-    // } else {
-    //   /// default coords
-    //   lat = 40.73;
-    //   lng = -73.93;
-    // }
-
     this.weatherServ.currentForecast(40, -72).subscribe(weather => {
-      console.log("hello");
 
       var forecast = weather;
       weatherFormat = {
@@ -118,24 +86,27 @@ export class AuthService {
         .map(res => res.json())
         .subscribe(data => {
           if (data.success) {
-            console.log('weather added')
           } else {
             console.log('error')
           }
         });
-
-     // console.log(weatherFormat);
-
     },
       err => {
         console.log(err);
         return false;
       });
-
-
-    console.log(weatherFormat);
-
   }
+
+  getWeather() {
+    let headers = new Headers();
+    this.loadToken();
+    headers.append('Authorization', this.authToken);
+    headers.append('Content-Type', 'application/json');
+    let ep = this.prepEndpoint('users/weatherGET');
+    return this.http.get(ep, { headers: headers })
+      .map(res => res.json());
+  }
+
 
 
   setMood(mood) {

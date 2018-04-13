@@ -1,36 +1,6 @@
-<!--<nav class="navbar navbar-default">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">eMoodi</a>
-      </div>
-      <div id="navbar" class="collapse navbar-collapse">
-        <ul class="nav navbar-nav navbar-left">
-          <li [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/']">Home</a></li>
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-          <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/dashboard']">Dashboard</a></li>
-          <li *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/profile']">Profile</a></li>
-
-          <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/login']">Login</a></li>
-          <li *ngIf="!authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions] = "{exact:true}"><a [routerLink]="['/register']">Register</a></li>
-          <li *ngIf="authService.loggedIn()"><a (click)="onLogoutClick()" href="#">Logout</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
--->
-
-
-
 <nav class="navbar navbar-expand-md navbar-dark bg-emoodi lighten-5">
-  <a class="navbar-brand" href="#">eMoodi</a>
+  <a class="navbar-brand" href="#">        <img src="/assets/Logo.png" alt="logo">
+  </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#emoodiNavbar" aria-controls="emoodiNavbar"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -38,18 +8,19 @@
 
   <div class="collapse navbar-collapse" id="emoodiNavbar">
     <div class="navbar-nav mr-auto">
+
       <li class="nav-item" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" [routerLink]="['/']">Home</a>
       </li>
 
       <li class="nav-item" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-        <a class="nav-link" [routerLink]="['/dashboard']">Dashboard</a>
+        <a class="nav-link" [routerLink]="['/dashboard']">Charts</a>
       </li>
       <li class="nav-item" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" [routerLink]="['/profile']">Profile</a>
       </li>
       <li class="nav-item" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-        <a class="nav-link" [routerLink]="['/input']">Mood</a>
+        <a class="nav-link" [routerLink]="['/input']">Update Mood</a>
       </li>
       <li class="nav-item" *ngIf="authService.loggedIn()" [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
         <a class="nav-link" [routerLink]="['/suggestion']">Suggestions</a>

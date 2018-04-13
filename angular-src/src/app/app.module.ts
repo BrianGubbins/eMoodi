@@ -21,6 +21,8 @@ import { WeatherService } from './services/weather.service';
 import { RecipeService } from './services/recipe.service';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import{ AuthGuard } from './guards/auth.guard';
+import {ToastModule} from 'ng2-toastr/ng2-toastr';
+
 
 
 const appRoutes: Routes = [
@@ -52,7 +54,8 @@ const appRoutes: Routes = [
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-    FlashMessagesModule
+    FlashMessagesModule,
+    ToastModule.forRoot()
   ],
   providers: [ValidateService, AuthService, AuthGuard, WeatherService, RecipeService],
   bootstrap: [AppComponent]

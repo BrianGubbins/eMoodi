@@ -7,12 +7,10 @@
 
 <!-- recipe suggestions -->
 <section class="jumbotron text-center" id="plans" [hidden]="!diet" *ngIf="recipes">
-  <!-- <div class="container"> -->
     <h1 class="jumbotron-heading">Diet Suggestions</h1>
     <div class="row">
-
       <!-- recipe item -->
-      <div class="col-md-4 text-center" *ngFor="let recipe of recipes">
+      <div class="col-md-4 text-center" *ngFor="let recipe of recipes | slice:0: limit">
         <div class="panel panel-pricing rounded">
           <div class="panel-heading">
             <img id="img-container" class="rounded" src={{recipe.image}}>
@@ -30,9 +28,10 @@
           </ul>
         </div>
       </div>
+     
       <!-- recipe item end -->
-    <!-- </div> -->
   </div>
+    <button (click)="limit = limit + 3" class="btn btn-lg btn-primary btn btn-sx">Show more</button>
 </section>
 
 <!-- exercise suggestions -->
@@ -61,14 +60,6 @@
 
     </div>
   </div>
-</section>
-
-<section class="jumbotron text-center" id="plans" [hidden]="!sleep">
-  <div class="container">
-    <h1 class="jumbotron-heading">Sleep Suggestions</h1>
-
-  </div>
-
 </section>
 
 <!-- Modal -->

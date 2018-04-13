@@ -71,24 +71,17 @@ router.get('/profile', passport.authenticate('jwt', {session: false}), (req, res
     res.json({user: req.user});
 });
 
+
+// Weather
+
 router.post('/addweather', (req, res, next) => {
   
-  console.log("userWeather");
-
   let weatherDaily = new Weather({
     cloudCover: req.body.cloudCover,
     rain:  req.body.rain,
     temp: req.body.temp,
     summary:  req.body.summary
   });
-
-
-//   let weatherDaily = new Weather({
-//     cloudCover: 4,
-//     rain: 4,
-//     temp: 4,
-//     summary: "this.forecast.daily.data[0].summary"
-// });
 
   Weather.newWeather(weatherDaily, (err, user) => {
     if(err){
@@ -100,8 +93,31 @@ router.post('/addweather', (req, res, next) => {
 });
 
 
+router.get('/weatherGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
+  
+  Weather.getWeather( req.user._id, (err, weather) => {
+    if(err){
+      return done(err, false);
+    }
+    else{
+      res.json(weather);
+    } 
+  });
+
+  // Mood.getMood( req.user._id, (err, mood) => {
+  //   if(err){
+  //     return done(err, false);
+  //   }
+  //   else{
+  //     res.json(mood);
+  //   } 
+  // });
+});
+
+
+// Mood
+
 router.post('/mood', (req, res, next) => {
-  console.log("hello2");
 
   let newMood = new Mood({
     userId: req.body.userId,
@@ -112,14 +128,10 @@ router.post('/mood', (req, res, next) => {
     moodData: req.body.moodData
   });
 
-  console.log(newMood)
-
   Mood.addMood(newMood, (err, user) => {
     if(err){
-      console.log(user);
       res.json({success: false, msg:'Failed to register user'});
     } else {
-      console.log(user);
       res.json({success: true, msg:'User registered'});
     }
   });
@@ -128,7 +140,6 @@ router.post('/mood', (req, res, next) => {
 
 router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
   
-  let id = '\"' + req.user._id + '\"';
   Mood.getMood( req.user._id, (err, mood) => {
     if(err){
       return done(err, false);
