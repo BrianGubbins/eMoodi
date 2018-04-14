@@ -1,8 +1,7 @@
+<div *ngIf="recipes[0]">
 <div class="text-center" style="padding:0 0 15px 0">
-  <!-- <button (click)="getForecast()">Get Recipes</button> -->
   <button (click)="suggestion('diet')" class="btn btn-lg btn-primary">Diet</button>
   <button (click)="suggestion('exercise')" class="btn btn-lg btn-primary">Exercise</button>
-  <!-- <button (click)="suggestion('sleep')" class="btn btn-lg btn-primary">Sleep</button> -->
 </div>
 
 <!-- recipe suggestions -->
@@ -11,7 +10,7 @@
     <div class="row">
       <!-- recipe item -->
       <div class="col-md-4 text-center" *ngFor="let recipe of recipes | slice:0: limit">
-        <div class="panel panel-pricing rounded">
+        <div class="panel panel-recipe rounded">
           <div class="panel-heading">
             <img id="img-container" class="rounded" src={{recipe.image}}>
           </div>
@@ -61,6 +60,7 @@
     </div>
   </div>
 </section>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exerciseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

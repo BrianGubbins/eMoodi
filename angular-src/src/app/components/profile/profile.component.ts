@@ -10,7 +10,6 @@ import {Router} from '@angular/router';
 
 export class ProfileComponent implements OnInit {
   user:Object;
-  location: String;
 
   constructor(private authService:AuthService, private router:Router) { }
 

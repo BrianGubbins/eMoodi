@@ -24,7 +24,49 @@ export class AppComponent {
       this.authService.setWeather();
     });
 
-  }
+  //   var notificationMessage = cron.scheduleJob('*/10 * * * * *', function () {
+    
+  //   var sendNotification = function(data) {
+  //     var headers = {
+  //       "Content-Type": "application/json; charset=utf-8",
+  //       "Authorization": "Basic YzBlMTRkMGEtODdlOC00MDM5LTk5ZWQtNjA2N2I4OWRkZGIw"
+  //     };
+      
+  //     var options = {
+  //       host: "onesignal.com",
+  //       port: 443,
+  //       path: "/api/v1/notifications",
+  //       method: "POST",
+  //       headers: headers
+  //     };
+      
+  //     var https = require('https');
+  //     var req = https.request(options, function(res) {  
+  //       res.on('data', function(data) {
+  //         console.log("Response:");
+  //         console.log(JSON.parse(data));
+  //       });
+  //     });
+      
+  //     req.on('error', function(e) {
+  //       console.log("ERROR:");
+  //       console.log(e);
+  //     });
+      
+  //     req.write(JSON.stringify(data));
+  //     req.end();
+  //   };
+    
+  //   var message = { 
+  //     app_id: "e3c78f55-02be-4e3e-9502-64abbd2d806a",
+  //     contents: {"en": "English Message"},
+  //     included_segments: ["All"]
+  //   };
+    
+  //   sendNotification(message);
+
+  // });
+};
 
 }
 

@@ -29,11 +29,6 @@ ul.nav ul.nav a:focus, .active {
   color: rgb(255, 250, 250);
 }
 
-.nav a:hover{
-  color: rgb(255, 29, 29);
-
-}
-
 .navbar-brand img {
   width: 125px;
 }

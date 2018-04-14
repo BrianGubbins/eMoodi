@@ -1,4 +1,3 @@
-/* @import url("http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"); */
 
 .jumbotron{
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);
@@ -7,8 +6,6 @@
 }
 
 .jumbotron-heading{
-
-
   font-size: 5vw;
   padding-bottom: 35px;
   color: white;
@@ -30,7 +27,7 @@
   width: 90%;
 }
 
-.panel-pricing {
+.panel-recipe {
   /* border: 1px solid rgba(219, 219, 219, 0.849); */
   box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.514);
   -moz-transition: all .3s ease;
@@ -40,24 +37,20 @@
   background-repeat: repeat-x;
 }
 
-/* .panel-pricing:hover {
-  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);
-} */
-
-.panel-pricing .panel-heading {
+.panel-recipe .panel-heading {
   padding: 20px 0px;
 }
 
-.panel-pricing .panel-heading .fa {
+.panel-recipe .panel-heading .fa {
   margin-top: 10px;
   font-size: 58px;
 }
 
-.panel-pricing .list-group-item {
+.panel-recipe .list-group-item {
   color: #777777;
 }
 
-.panel-pricing .panel-body {
+.panel-recipe .panel-body {
   background-color: #f0f0f0;
   font-size: 40px;
   color: #777777;

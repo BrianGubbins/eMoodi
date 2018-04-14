@@ -46,39 +46,35 @@
   </div>
 </section>
 
-
-<!-- <button (click)="getForecast()">Get Forecast</button> -->
-
-
 <div class="row" style="padding:30px">
-  <div class="col-md-4" style="padding:0 20px 20px 20px">
+  <div class="col-md-4">
   <div class="card text-center">
       <img class="card-img-top mx-auto d-block" src="assets/graphs.png" style="width:150px;height:150px" alt="Card image cap">
       <div class="card-body">
         <h4 class="card-title">Mood Tracking</h4>
         <p class="card-text">A range of graphs are provided to help you analyse and track your daily progress in areas such as mood, sleep, diet and exercise</p>
-        <a [routerLink]="['/dashboard']" class="btn btn-primary">Go to charts</a>
+        <a *ngIf="authService.loggedIn()" [routerLink]="['/dashboard']" class="btn btn-primary">Go to charts</a>
       </div>
   </div>
   </div>
-  <div class="col-md-4" style="padding:0 20px 20px 20px">
+  <div class="col-md-4">
       <div class="card text-center">
           <img class="card-img-top mx-auto d-block" src="assets/diet.png" style="width:150px;height:150px" alt="Card image cap">
           <div class="card-body">
             <h4 class="card-title">Diet Suggestions</h4>
             <p class="card-text">Personalised diet suggestions are provided based on your user profile which includes a variety of cuisines and the information to make them</p>
-            <a [routerLink]="['/suggestion']" class="btn btn-primary">Go to suggestions</a>
+            <a *ngIf="authService.loggedIn()" [routerLink]="['/suggestion']" class="btn btn-primary">Go to suggestions</a>
           </div>
       </div>
       </div>
 
-      <div class="col-md-4" style="padding:0 20px 20px 20px">
+      <div class="col-md-4">
           <div class="card text-center">
               <img class="card-img-top mx-auto d-block" src="assets/exercise.png" style="width:150px;height:150px" alt="Card image cap">
               <div class="card-body">
                 <h4 class="card-title">Exercise Suggestions</h4>
                 <p class="card-text">Personalised exercise suggestions are provided based on your user profile which includes a full body workout recommendation </p>
-                <a [routerLink]="['/suggestion']" class="btn btn-primary">Go to suggestions</a>
+                <a *ngIf="authService.loggedIn()" [routerLink]="['/suggestion']" class="btn btn-primary">Go to suggestions</a>
               </div>
           </div>
           </div>

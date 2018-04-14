@@ -30,36 +30,33 @@ export class InputsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private flashMessage: FlashMessagesService,
-    private router: Router,
-    private weatherServ: WeatherService
-    ) { }
+    private router: Router
+      ) { }
 
   ngOnInit() {
     $('img').click(function () {
       $('.selected').removeClass('selected');
       $(this).addClass('selected');
     });
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-       this.lat = position.coords.latitude;
-       this.lng = position.coords.longitude;
-     });
-   } else {
-     /// default coords
-    this.lat = 40.73;
-    this.lng = -73.93;
-   }
 
    this.authService.getMood().subscribe(moodDocs => {
 
-    var lastCreated = new Date(moodDocs[moodDocs.length-1].date);
-    var today = new Date();
-    if(lastCreated.getDay() == today.getDay()) {
-      this.filled=true;
-    }
-    else{
+    if(moodDocs[0] == null){ // to handle a new user with no info
       this.filled = false;
     }
+    
+    // checking if the latest mood entry was created today, if so then we don't want to display inputs for sleep, diet and exercise, only mood
+    else{ 
+      var lastCreated = new Date(moodDocs[moodDocs.length-1].date);
+      var today = new Date();
+      if(lastCreated.getDay() == today.getDay()) {
+        this.filled=true;
+      }
+      else{
+        this.filled = false;
+      }
+    }
+
        },
       err => {
         console.log(err);
@@ -76,6 +73,11 @@ export class InputsComponent implements OnInit {
     $('.btn-group :radio').prop('checked', false);
     $('.btn-group .active').removeClass('active');
     $('.selected').removeClass('selected');
+
+  }
+
+  expand(){
+    $('.container').toggleClass('expand');    
 
   }
 
