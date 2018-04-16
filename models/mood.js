@@ -67,5 +67,5 @@ module.exports.getMood = function (id, callback) {
         },
         callback
 
-    ).limit(7)
+    ).limit(7).sort({$natural:-1});
 }

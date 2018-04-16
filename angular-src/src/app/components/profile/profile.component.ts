@@ -24,11 +24,12 @@ export class ProfileComponent implements OnInit {
 
 
     this.authService.getWeather().subscribe(weather => {
+      console.log(weather)
     },
-    err => {
-      console.log(err);
-      return false;
-    });
+      err => {
+        console.log(err);
+        return false;
+      });
   }
 
 }

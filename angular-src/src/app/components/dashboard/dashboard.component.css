@@ -1,0 +1,4 @@
+.btn-primary:active, .btn-primary:focus {
+    background-color: #9dc7f4;
+    box-shadow: 0;
+}

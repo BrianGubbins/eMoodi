@@ -65,11 +65,9 @@ export class AuthService {
 
   setWeather() {
 
-    // var lat;
-    // var lng;
     var weatherFormat;
 
-    this.weatherServ.currentForecast(40, -72).subscribe(weather => {
+    this.weatherServ.currentForecast().subscribe(weather => {
 
       var forecast = weather;
       weatherFormat = {

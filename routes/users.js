@@ -138,7 +138,7 @@ router.post('/mood', (req, res, next) => {
 });
 
 
-router.get('/moodGET',passport.authenticate('jwt', {session: false}), (req, res, next) => {
+router.get('/moodGET', passport.authenticate('jwt', {session: false}), (req, res, next) => {
   
   Mood.getMood( req.user._id, (err, mood) => {
     if(err){

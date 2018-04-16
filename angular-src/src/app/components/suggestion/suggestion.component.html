@@ -1,11 +1,11 @@
 <div *ngIf="recipes[0]">
-<div class="text-center" style="padding:0 0 15px 0">
-  <button (click)="suggestion('diet')" class="btn btn-lg btn-primary">Diet</button>
-  <button (click)="suggestion('exercise')" class="btn btn-lg btn-primary">Exercise</button>
-</div>
+  <div class="text-center" style="padding:0 0 15px 0">
+    <button (click)="suggestion('diet')" class="btn btn-lg btn-primary">Diet</button>
+    <button (click)="suggestion('exercise')" class="btn btn-lg btn-primary">Exercise</button>
+  </div>
 
-<!-- recipe suggestions -->
-<section class="jumbotron text-center" id="plans" [hidden]="!diet" *ngIf="recipes">
+  <!-- recipe suggestions -->
+  <section class="jumbotron text-center" id="plans" [hidden]="!diet" *ngIf="recipes">
     <h1 class="jumbotron-heading">Diet Suggestions</h1>
     <div class="row">
       <!-- recipe item -->
@@ -20,6 +20,7 @@
                 {{recipe.label}}
               </a>
             </h4>
+            <h4>Calories - {{recipe.calories| number:'1.0-0'}}</h4>
           </div>
           <ul class="list-group text-center" id="recipe-scroller-container">
             <li *ngFor="let ingredient of recipe.ingredients" class="list-group-item">
@@ -27,39 +28,34 @@
           </ul>
         </div>
       </div>
-     
       <!-- recipe item end -->
-  </div>
+    </div>
     <button (click)="limit = limit + 3" class="btn btn-lg btn-primary btn btn-sx">Show more</button>
-</section>
+  </section>
 
-<!-- exercise suggestions -->
-<section class="jumbotron text-center" id="plans" [hidden]="!exercise">
-  <div class="container">
-    <h1 class="jumbotron-heading">Exercise Suggestions</h1>
-
+  <!-- exercise suggestions -->
+  <section class="jumbotron text-center" id="plans" [hidden]="!exercise">
     <div class="container">
-      <div class="panel-group" id="accordion">
-        <div class="notice notice-lg notice-info"  *ngFor="let type of allExercises">
-          <div class="panel-heading">
-
-            <strong class="panel-title" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#'+type.name">
-              <h1> {{type.name}}</h1>
-            </strong>
-
-          </div>
-          <div [attr.id]="type.name" class="panel-collapse collapse">
-            <div class="notice notice-info" *ngFor="let exercise of type.exercises" (click)="modalSettings(exercise.name,exercise.description)"
-              data-toggle="modal" data-target="#exerciseModal">{{exercise.name}} &nbsp; {{exercise.units}}</div>
-
-
+      <h1 class="jumbotron-heading">Exercise Suggestions</h1>
+      <div class="container">
+        <div class="panel-group" id="accordion">
+          <!-- for each exercise category -->
+          <div class="notice notice-lg notice-info" *ngFor="let type of allExercises">  
+            <div class="panel-heading">
+               <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->
+              <strong class="panel-title" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#'+type.name">
+                <h1> {{type.name}}</h1>
+              </strong>
+            </div>
+            <div [attr.id]="type.name" class="panel-collapse collapse">
+              <div class="notice notice-info" *ngFor="let exercise of type.exercises" (click)="modalSettings(exercise.name,exercise.description)"
+                data-toggle="modal" data-target="#exerciseModal">{{exercise.name}} &nbsp; {{exercise.units}}</div>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
-  </div>
-</section>
+  </section>
 </div>
 
 <!-- Modal -->
@@ -80,4 +76,3 @@
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
-<!-- Modal -->

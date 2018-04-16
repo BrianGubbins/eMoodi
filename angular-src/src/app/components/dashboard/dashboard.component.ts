@@ -32,58 +32,56 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     private router: Router
   ) { }
 
-  ngOnChanges(){
-    this.moodGraph.update();
-    
-  }
 
   ngOnInit() {
-    this.authService.getMood().subscribe(moodDocs => {
-      this.data= moodDocs
-      this.updateGraphs();
-
-    },
-      err => {
-        console.log(err);
-        return false;
-      });
+    this.authService.getMood()
+      .subscribe(
+        moodDocs => {
+          this.data = moodDocs.reverse();
+        },
+        err => {
+          console.log(err);
+          return false;
+        }, 
+        () => { // on completion
+          this.updateCharts();
+        }
+      )
   }
 
 
   ngAfterViewInit() {
-  this.updateGraphs();
-
-
-  /*
-
-
-Mood Graph
-
-
-*/
+    /*
+  
+  
+  Mood Graph
+  
+  
+  */
+ 
     var moodCanvas = <HTMLCanvasElement>document.getElementById('moodGraph');
     var ctx: CanvasRenderingContext2D = moodCanvas.getContext("2d");
     this.moodGraph = new Chart(ctx, {
       type: "line",
-      
+
       data: {
         labels: this.moodDates,
         datasets: [{
           label: "Your Mood",
           data: this.moods,
           fill: true,
-          backgroundColor: "rgba(	0, 123, 255,0.2)",
-          borderColor: "rgba(	0, 123, 255, 0.6)",
+          backgroundColor: "rgba(	0, 123, 255, 0.3)",
+          borderColor: "rgba(255, 231, 77,1)"
         }]
       },
-      options: {  
+      options: {
         legend: {
-          position:"top",
+          position: "top",
           display: true,
           labels: {
             fontSize: 15
           }
-      },
+        },
         responsive: true,
         tooltips: {
           enabled: false
@@ -91,11 +89,11 @@ Mood Graph
         scales: {
           xAxes: [{
             gridLines: {
-              drawOnChartArea: false
-          },
+              // drawOnChartArea: false
+            },
             ticks: {
-              maxTicksLimit: 3,
-              maxRotation: 0 
+              maxTicksLimit: 7,
+              maxRotation: 10
             }
           }],
           yAxes: [{
@@ -123,108 +121,14 @@ Mood Graph
       }
     });
 
+    /*
+    
+    
+    Exercise vs. Diet Graph
+    
+    
+      */
 
-/*
-
-
-Sleep Graph
-
-
-*/
-
-
-    var config = {
-      type: "bar",
-      data: {
-        labels: this.dates,
-        datasets: [{
-          label: "Sleep",
-          data: this.sleep,
-          fill: false,
-          backgroundColor: "rgba(	0, 123, 255,0.2)",
-          borderColor: "rgba(	0, 123, 255,1)"
-          
-        }
-      
-      ]
-      },
-      options: {
-        tooltips: {
-          enabled: false
-        },
-        legend: {
-          // position:"top",
-          display: true,
-          labels: {
-            fontSize: 15
-          }
-      },
-
-        annotation: {
-          annotations: [
-            {
-              drawTime: "afterDatasetsDraw",
-              type: "line",
-              mode: "horizontal",
-              scaleID: "y-axis-0",
-              value: 9,
-              label: {
-                backgroundColor: "black",
-                content: "Recommended Sleep",
-                enabled: true,
-              }
-            },
-            { 
-            drawTime: "beforeDatasetsDraw",
-            type: "box",
-            yScaleID: "y-axis-0",
-            yMin: 7,
-            yMax: 9,
-
-            backgroundColor: "rgb(255, 255, 77,0.5)",
-            borderColor: "rgba(255, 255, 77,1)"
-          }
-          ]
-        },
-        responsive: true,
-        scales: {
-          xAxes :[{ 
-            ticks:{
-              fontSize: 15
-          }}
-           ],
-          yAxes: [{
-            scaleLabel: {
-              fontSize: 15,
-              display: true,
-              labelString: 'Hours'
-            },
-            ticks: {
-              fontSize: 15,
-              min: 0,
-              max: 12
-            }
-          }]
-        },
-        elements: {
-          rectangle: {
-            borderWidth: 2,
-          }
-        }
-      }
-    }
-    var sleepCanvas = <HTMLCanvasElement>document.getElementById('sleepGraph');
-    var ctx1: CanvasRenderingContext2D = sleepCanvas.getContext("2d");
-    this.sleepGraph = new Chart(ctx1, config);
-
-
-/*
-
-
-Exercise vs. Diet Graph
-
-
-*/
     var excerciseDietCanvas = <HTMLCanvasElement>document.getElementById('exerciseDiet');
     var ctx1: CanvasRenderingContext2D = excerciseDietCanvas.getContext("2d");
     this.exerciseDietGraph = new Chart(ctx1, {
@@ -236,7 +140,7 @@ Exercise vs. Diet Graph
           data: this.exercise,
           fill: false,
           backgroundColor: "rgb(255, 255, 77,0.5)",
-          borderColor: "rgba(255, 255, 77,1)"
+          borderColor: "rgba(255, 231, 77,1)"
         },
         {
           label: "Diet",
@@ -248,12 +152,12 @@ Exercise vs. Diet Graph
       },
       options: {
         legend: {
-          position:"top",
+          position: "top",
           display: true,
           labels: {
             fontSize: 15
           }
-      },
+        },
         tooltips: {
           enabled: false
         },
@@ -262,13 +166,13 @@ Exercise vs. Diet Graph
           yAxes: [{
             gridLines: {
               drawOnChartArea: false
-          },
+            },
             ticks: {
               fontSize: 15,
             }
           }],
           xAxes: [{
-            
+
             ticks: {
               fontSize: 20,
               min: 0,
@@ -294,6 +198,102 @@ Exercise vs. Diet Graph
       },
 
     });
+
+
+    /*
+    
+    
+    Sleep Graph
+    
+    
+    */
+
+
+    var config = {
+      type: "bar",
+      data: {
+        labels: this.dates,
+        datasets: [{
+          label: "Sleep",
+          data: this.sleep,
+          fill: false,
+          backgroundColor: "rgba(	0, 123, 255,0.2)",
+          borderColor: "rgba(	0, 123, 255,1)"
+
+        }
+
+        ]
+      },
+      options: {
+        tooltips: {
+          enabled: false
+        },
+        legend: {
+          // position:"top",
+          display: true,
+          labels: {
+            fontSize: 15
+          }
+        },
+
+        annotation: {
+          annotations: [
+            {
+              drawTime: "afterDatasetsDraw",
+              type: "line",
+              mode: "horizontal",
+              scaleID: "y-axis-0",
+              value: 9,
+              label: {
+                backgroundColor: "black",
+                content: "Recommended Sleep",
+                enabled: true,
+              }
+            },
+            {
+              drawTime: "beforeDatasetsDraw",
+              type: "box",
+              yScaleID: "y-axis-0",
+              yMin: 7,
+              yMax: 9,
+
+              backgroundColor: "rgb(255, 255, 77,0.5)",
+              borderColor: "rgba(255, 255, 77,1)"
+            }
+          ]
+        },
+        responsive: true,
+        scales: {
+          xAxes: [{
+            ticks: {
+              fontSize: 15
+            }
+          }
+          ],
+          yAxes: [{
+            scaleLabel: {
+              fontSize: 15,
+              display: true,
+              labelString: 'Hours'
+            },
+            ticks: {
+              fontSize: 15,
+              min: 0,
+              max: 12
+            }
+          }]
+        },
+        elements: {
+          rectangle: {
+            borderWidth: 2,
+          }
+        }
+      }
+    }
+    var sleepCanvas = <HTMLCanvasElement>document.getElementById('sleepGraph');
+    var ctx1: CanvasRenderingContext2D = sleepCanvas.getContext("2d");
+    this.sleepGraph = new Chart(ctx1, config);
+
 
   }
 
@@ -349,18 +349,32 @@ Exercise vs. Diet Graph
     return new Date(date).toDateString().slice(0, -5);
   }
 
-  updateGraphs(){
+  updateCharts() {
     if (this.data.length > 0) {
+      // looping through all documents returned
       for (var i = 0, len = this.data.length; i < len; i++) {
+
+        // sleep value
         this.sleep.push(this.data[i].sleep);
+
+        // date corresponding to the document's creation date
         this.dates.push(this.dateFormat(this.data[i].date));
+
+        /* score function converts the string values of exercise and diet 
+        i.e. "Poor", "Fair" and "Good" to numbers values 1, 2 and 3 respectively
+        for graphing purposes */
         this.score(this.data[i].diet, this.data[i].exercise);
 
         this.sleepGraph.update();
         this.exerciseDietGraph.update();
 
+        // looping through mood objects in the moodData array
         for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
+
+          // mood value 1-5
           this.moods.push(this.data[i].moodData[j].currMood);
+
+          // date corresponding to the object's creation date
           this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
           this.moodGraph.update();
 

@@ -367,6 +367,33 @@ var AppComponent = (function () {
         this.flashMessage = flashMessage;
         this.authService = authService;
         this.title = 'app works!';
+        // function for sending a notifcation through oneSignal
+        var sendNotification = function (data) {
+            var headers = {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": "Basic YzBlMTRkMGEtODdlOC00MDM5LTk5ZWQtNjA2N2I4OWRkZGIw"
+            };
+            var options = {
+                host: "onesignal.com",
+                port: 443,
+                path: "/api/v1/notifications",
+                method: "POST",
+                headers: headers
+            };
+            var https = __webpack_require__("./node_modules/https-browserify/index.js");
+            var req = https.request(options, function (res) {
+                res.on('data', function (data) {
+                    console.log("Response:");
+                    console.log(JSON.parse(data));
+                });
+            });
+            req.on('error', function (e) {
+                console.log("ERROR:");
+                console.log(e);
+            });
+            req.write(JSON.stringify(data));
+            req.end();
+        };
         // displays affirmation every 10 minutes
         var affirmationMessage = cron.scheduleJob('*/10 * * * *', function () {
             var message = __WEBPACK_IMPORTED_MODULE_2__affirmations__["a" /* affirmations */][Math.floor(Math.random() * __WEBPACK_IMPORTED_MODULE_2__affirmations__["a" /* affirmations */].length)];
@@ -376,40 +403,33 @@ var AppComponent = (function () {
         var weather = cron.scheduleJob('00 00 * * *', function () {
             this.authService.setWeather();
         });
-        //   var notificationMessage = cron.scheduleJob('*/10 * * * * *', function () {
-        //   var sendNotification = function(data) {
-        //     var headers = {
-        //       "Content-Type": "application/json; charset=utf-8",
-        //       "Authorization": "Basic YzBlMTRkMGEtODdlOC00MDM5LTk5ZWQtNjA2N2I4OWRkZGIw"
-        //     };
-        //     var options = {
-        //       host: "onesignal.com",
-        //       port: 443,
-        //       path: "/api/v1/notifications",
-        //       method: "POST",
-        //       headers: headers
-        //     };
-        //     var https = require('https');
-        //     var req = https.request(options, function(res) {  
-        //       res.on('data', function(data) {
-        //         console.log("Response:");
-        //         console.log(JSON.parse(data));
-        //       });
-        //     });
-        //     req.on('error', function(e) {
-        //       console.log("ERROR:");
-        //       console.log(e);
-        //     });
-        //     req.write(JSON.stringify(data));
-        //     req.end();
-        //   };
-        //   var message = { 
-        //     app_id: "e3c78f55-02be-4e3e-9502-64abbd2d806a",
-        //     contents: {"en": "English Message"},
-        //     included_segments: ["All"]
-        //   };
-        //   sendNotification(message);
-        // });
+        // sending reminder notification at 12 noon day. Note "test" segment are users who havent used the app in the last 4 hours
+        var noonNotification = cron.scheduleJob('0 12 */1 * *', function () {
+            var message = {
+                app_id: "e3c78f55-02be-4e3e-9502-64abbd2d806a",
+                contents: { "en": "I hope your afternoon is going great, have the time to update your mood ? Just click on the notification :)" },
+                included_segments: ["test"]
+            };
+            sendNotification(message);
+        });
+        // sending reminder notification at 6pm every evening
+        var eveningNotification = cron.scheduleJob('0 18 */1 * *', function () {
+            var message = {
+                app_id: "e3c78f55-02be-4e3e-9502-64abbd2d806a",
+                contents: { "en": "Good evening, hope your day has been productive, have the time to update your mood ? Just click on the notification :)" },
+                included_segments: ["test"]
+            };
+            sendNotification(message);
+        });
+        // sending reminder notification at 9pm every night
+        var nightNotification = cron.scheduleJob('0 21 */1 * *', function () {
+            var message = {
+                app_id: "e3c78f55-02be-4e3e-9502-64abbd2d806a",
+                contents: { "en": "Hopefully you aren't too tired to update your mood" },
+                included_segments: ["test"]
+            };
+            sendNotification(message);
+        });
     }
     ;
     AppComponent = __decorate([
@@ -536,7 +556,7 @@ var AppModule = (function () {
 /***/ "./src/app/components/dashboard/dashboard.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".btn-primary:active, .btn-primary:focus {\r\n    background-color: #9dc7f4;\r\n    -webkit-box-shadow: 0;\r\n            box-shadow: 0;\r\n}"
 
 /***/ }),
 
@@ -592,21 +612,19 @@ var DashboardComponent = (function () {
         this.chart3 = false;
         this.data = [];
     }
-    DashboardComponent.prototype.ngOnChanges = function () {
-        this.moodGraph.update();
-    };
     DashboardComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.authService.getMood().subscribe(function (moodDocs) {
-            _this.data = moodDocs;
-            _this.updateGraphs();
+        this.authService.getMood()
+            .subscribe(function (moodDocs) {
+            _this.data = moodDocs.reverse();
         }, function (err) {
             console.log(err);
             return false;
+        }, function () {
+            _this.updateCharts();
         });
     };
     DashboardComponent.prototype.ngAfterViewInit = function () {
-        this.updateGraphs();
         /*
       
       
@@ -624,8 +642,8 @@ var DashboardComponent = (function () {
                         label: "Your Mood",
                         data: this.moods,
                         fill: true,
-                        backgroundColor: "rgba(	0, 123, 255,0.2)",
-                        borderColor: "rgba(	0, 123, 255, 0.6)",
+                        backgroundColor: "rgba(	0, 123, 255, 0.3)",
+                        borderColor: "rgba(255, 231, 77,1)"
                     }]
             },
             options: {
@@ -642,12 +660,10 @@ var DashboardComponent = (function () {
                 },
                 scales: {
                     xAxes: [{
-                            gridLines: {
-                                drawOnChartArea: false
-                            },
+                            gridLines: {},
                             ticks: {
-                                maxTicksLimit: 3,
-                                maxRotation: 0
+                                maxTicksLimit: 7,
+                                maxRotation: 10
                             }
                         }],
                     yAxes: [{
@@ -673,6 +689,80 @@ var DashboardComponent = (function () {
                         }]
                 }
             }
+        });
+        /*
+        
+        
+        Exercise vs. Diet Graph
+        
+        
+          */
+        var excerciseDietCanvas = document.getElementById('exerciseDiet');
+        var ctx1 = excerciseDietCanvas.getContext("2d");
+        this.exerciseDietGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
+            type: "horizontalBar",
+            data: {
+                labels: this.dates,
+                datasets: [{
+                        label: "Exercise",
+                        data: this.exercise,
+                        fill: false,
+                        backgroundColor: "rgb(255, 255, 77,0.5)",
+                        borderColor: "rgba(255, 231, 77,1)"
+                    },
+                    {
+                        label: "Diet",
+                        data: this.diet,
+                        fill: false,
+                        backgroundColor: "rgba(	0, 123, 255,0.2)",
+                        borderColor: "rgba(	0, 123, 255,1)"
+                    }]
+            },
+            options: {
+                legend: {
+                    position: "top",
+                    display: true,
+                    labels: {
+                        fontSize: 15
+                    }
+                },
+                tooltips: {
+                    enabled: false
+                },
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                fontSize: 15,
+                            }
+                        }],
+                    xAxes: [{
+                            ticks: {
+                                fontSize: 20,
+                                min: 0,
+                                max: 3,
+                                callback: function (label, index, labels) {
+                                    switch (label) {
+                                        case 1:
+                                            return 'Poor';
+                                        case 2:
+                                            return 'Fair';
+                                        case 3:
+                                            return 'Good';
+                                    }
+                                }
+                            }
+                        }]
+                },
+                elements: {
+                    rectangle: {
+                        borderWidth: 2,
+                    }
+                }
+            },
         });
         /*
         
@@ -735,7 +825,8 @@ var DashboardComponent = (function () {
                     xAxes: [{
                             ticks: {
                                 fontSize: 15
-                            } }
+                            }
+                        }
                     ],
                     yAxes: [{
                             scaleLabel: {
@@ -760,80 +851,6 @@ var DashboardComponent = (function () {
         var sleepCanvas = document.getElementById('sleepGraph');
         var ctx1 = sleepCanvas.getContext("2d");
         this.sleepGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, config);
-        /*
-        
-        
-        Exercise vs. Diet Graph
-        
-        
-        */
-        var excerciseDietCanvas = document.getElementById('exerciseDiet');
-        var ctx1 = excerciseDietCanvas.getContext("2d");
-        this.exerciseDietGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx1, {
-            type: "horizontalBar",
-            data: {
-                labels: this.dates,
-                datasets: [{
-                        label: "Exercise",
-                        data: this.exercise,
-                        fill: false,
-                        backgroundColor: "rgb(255, 255, 77,0.5)",
-                        borderColor: "rgba(255, 255, 77,1)"
-                    },
-                    {
-                        label: "Diet",
-                        data: this.diet,
-                        fill: false,
-                        backgroundColor: "rgba(	0, 123, 255,0.2)",
-                        borderColor: "rgba(	0, 123, 255,1)"
-                    }]
-            },
-            options: {
-                legend: {
-                    position: "top",
-                    display: true,
-                    labels: {
-                        fontSize: 15
-                    }
-                },
-                tooltips: {
-                    enabled: false
-                },
-                responsive: true,
-                scales: {
-                    yAxes: [{
-                            gridLines: {
-                                drawOnChartArea: false
-                            },
-                            ticks: {
-                                fontSize: 15,
-                            }
-                        }],
-                    xAxes: [{
-                            ticks: {
-                                fontSize: 20,
-                                min: 0,
-                                max: 3,
-                                callback: function (label, index, labels) {
-                                    switch (label) {
-                                        case 1:
-                                            return 'Poor';
-                                        case 2:
-                                            return 'Fair';
-                                        case 3:
-                                            return 'Good';
-                                    }
-                                }
-                            }
-                        }]
-                },
-                elements: {
-                    rectangle: {
-                        borderWidth: 2,
-                    }
-                }
-            },
-        });
     };
     DashboardComponent.prototype.chart = function (type) {
         switch (type) {
@@ -880,16 +897,25 @@ var DashboardComponent = (function () {
     DashboardComponent.prototype.dateFormat = function (date) {
         return new Date(date).toDateString().slice(0, -5);
     };
-    DashboardComponent.prototype.updateGraphs = function () {
+    DashboardComponent.prototype.updateCharts = function () {
         if (this.data.length > 0) {
+            // looping through all documents returned
             for (var i = 0, len = this.data.length; i < len; i++) {
+                // sleep value
                 this.sleep.push(this.data[i].sleep);
+                // date corresponding to the document's creation date
                 this.dates.push(this.dateFormat(this.data[i].date));
+                /* score function converts the string values of exercise and diet
+                i.e. "Poor", "Fair" and "Good" to numbers values 1, 2 and 3 respectively
+                for graphing purposes */
                 this.score(this.data[i].diet, this.data[i].exercise);
                 this.sleepGraph.update();
                 this.exerciseDietGraph.update();
+                // looping through mood objects in the moodData array
                 for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
+                    // mood value 1-5
                     this.moods.push(this.data[i].moodData[j].currMood);
+                    // date corresponding to the object's creation date
                     this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
                     this.moodGraph.update();
                 }
@@ -914,7 +940,7 @@ var DashboardComponent = (function () {
 /***/ "./src/app/components/home/home.component.css":
 /***/ (function(module, exports) {
 
-module.exports = ".jumbotron{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    /* background-color: #3f6bff5e; */\r\n    /* background: url('/assets/Logo.png') no-repeat center center; */\r\n    /* background-size: 100% 100%; */\r\n  padding: 0px 0px 15px 0px;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#fbff1f), to(#ffffffda));\r\n  background-image: linear-gradient(to bottom, #fbff1f 0%, #ffffffda 100%);\r\n    background-repeat: repeat-x;\r\n  }\r\n\r\n  .card{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    background-image: -webkit-gradient(linear, left top, left bottom, from(#fbff21d9), color-stop(55%, #ffffffda));\r\n    background-image: linear-gradient(to bottom, #fbff21d9 0%, #ffffffda 55%);\r\n    background-repeat: repeat-x;\r\n    padding: 20px 10px 20px 10px;\r\n  }\r\n\r\n  body {\r\n    background: #00b4ff;\r\n    color: #333;\r\n    font: 100% Lato, Arial, Sans Serif;\r\n    height: 100vh;\r\n    margin: 0;\r\n    padding: 0;\r\n    overflow-x: hidden;\r\n  }\r\n\r\n  #background-wrap {\r\n    bottom: 0;\r\n    left: 0;\r\n    position: fixed;\r\n    right: 0;\r\n    top: 0;\r\n    z-index: -1;\r\n  }\r\n\r\n  /* KEYFRAMES */\r\n\r\n  @-webkit-keyframes animateBubble {\r\n      0% {\r\n          margin-top: 1000px;\r\n      }\r\n      100% {\r\n          margin-top: -100%;\r\n      }\r\n  }\r\n\r\n  @keyframes animateBubble {\r\n      0% {\r\n          margin-top: 1000px;\r\n      }\r\n      100% {\r\n          margin-top: -100%;\r\n      }\r\n  }\r\n\r\n  @-webkit-keyframes sideWays { \r\n      0% { \r\n          margin-left:0px;\r\n      }\r\n      100% { \r\n          margin-left:50px;\r\n      }\r\n  }\r\n\r\n  @keyframes sideWays { \r\n      0% { \r\n          margin-left:0px;\r\n      }\r\n      100% { \r\n          margin-left:50px;\r\n      }\r\n  }\r\n\r\n  /* ANIMATIONS */\r\n\r\n  .x1 {\r\n      -webkit-animation: animateBubble 9s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 9s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: -5%;\r\n    top: 5%;\r\n    \r\n    -webkit-transform: scale(0.6);\r\n    transform: scale(0.6);\r\n  }\r\n\r\n  .x2 {\r\n      -webkit-animation: animateBubble 12s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 12s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 5%;\r\n    top: 80%;\r\n    \r\n    -webkit-transform: scale(0.4);\r\n    transform: scale(0.4);\r\n  }\r\n\r\n  .x3 {\r\n      -webkit-animation: animateBubble 35s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 35s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 10%;\r\n    top: 40%;\r\n    \r\n    -webkit-transform: scale(0.7);\r\n    transform: scale(0.7);\r\n  }\r\n\r\n  .x4 {\r\n      -webkit-animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    \r\n    left: 20%;\r\n    top: 0;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  .x5 {\r\n      -webkit-animation: animateBubble 40s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 40s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 30%;\r\n    top: 50%;\r\n    \r\n    -webkit-transform: scale(0.5);\r\n    transform: scale(0.5);\r\n  }\r\n\r\n  .x6 {\r\n      -webkit-animation: animateBubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 50%;\r\n    top: 0;\r\n    \r\n    -webkit-transform: scale(0.8);\r\n    transform: scale(0.8);\r\n  }\r\n\r\n  .x7 {\r\n      -webkit-animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 65%;\r\n    top: 70%;\r\n    \r\n    -webkit-transform: scale(0.4);\r\n    transform: scale(0.4);\r\n  }\r\n\r\n  .x8 {\r\n      -webkit-animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    \r\n    left: 80%;\r\n    top: 10%;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  .x9 {\r\n      -webkit-animation: animateBubble 29s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 29s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 90%;\r\n    top: 50%;\r\n    \r\n    -webkit-transform: scale(0.6);\r\n    transform: scale(0.6);\r\n  }\r\n\r\n  .x10 {\r\n      -webkit-animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 80%;\r\n    top: 80%;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  /* OBJECTS */\r\n\r\n  .bubble {\r\n    border-radius: 50%;\r\n  \topacity: 0.6;\r\n      height:100px;\r\n    position: absolute;\r\n    width: 100px;\r\n  }\r\n\r\n  .bubble:after {\r\n    \r\n    content: \"\";\r\n      height: 180px;\r\n    left: 10px;\r\n    position: absolute;\r\n    width: 180px;\r\n  }\r\n\r\n  .back{\r\n    background: -webkit-gradient(linear, right top, left top, from(#70aff1a4), to(#ffffff));\r\n    background: linear-gradient(270deg, #70aff1a4, #ffffff);\r\n    background-size: 600% 600%;\r\n    \r\n    -webkit-animation: AnimationName 10s ease infinite;\r\n    animation: AnimationName 10s ease infinite;\r\n\r\n  }\r\n\r\n  @-webkit-keyframes AnimationName {\r\n    0%{background-position:0% 50%}\r\n    50%{background-position:100% 50%}\r\n    100%{background-position:0% 50%}\r\n}\r\n\r\n  @keyframes AnimationName { \r\n    0%{background-position:0% 50%}\r\n    50%{background-position:100% 50%}\r\n    100%{background-position:0% 50%}\r\n}\r\n\r\n  .col-md-4{\r\n    padding:0 20px 20px 20px\r\n}"
+module.exports = ".jumbotron{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    /* background-color: #3f6bff5e; */\r\n    /* background: url('/assets/Logo.png') no-repeat center center; */\r\n    /* background-size: 100% 100%; */\r\n  padding: 0px 0px 15px 0px;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#fbff1f), to(#ffffffda));\r\n  background-image: linear-gradient(to bottom, #fbff1f 0%, #ffffffda 100%);\r\n    background-repeat: repeat-x;\r\n  }\r\n\r\n  .card{\r\n    -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.514);\r\n    background-image: -webkit-gradient(linear, left top, left bottom, from(#fbff21d9), color-stop(55%, #ffffffda));\r\n    background-image: linear-gradient(to bottom, #fbff21d9 0%, #ffffffda 55%);\r\n    background-repeat: repeat-x;\r\n    padding: 20px 10px 20px 10px;\r\n  }\r\n\r\n  body {\r\n    background: #00b4ff;\r\n    color: #333;\r\n    font: 100% Lato, Arial, Sans Serif;\r\n    height: 100vh;\r\n    margin: 0;\r\n    padding: 0;\r\n    overflow-x: hidden;\r\n  }\r\n\r\n  #background-wrap {\r\n    bottom: 0;\r\n    left: 0;\r\n    position: fixed;\r\n    right: 0;\r\n    top: 0;\r\n    z-index: -1;\r\n  }\r\n\r\n  /* KEYFRAMES */\r\n\r\n  @-webkit-keyframes animateBubble {\r\n      0% {\r\n          margin-top: 1000px;\r\n      }\r\n      100% {\r\n          margin-top: -100%;\r\n      }\r\n  }\r\n\r\n  @keyframes animateBubble {\r\n      0% {\r\n          margin-top: 1000px;\r\n      }\r\n      100% {\r\n          margin-top: -100%;\r\n      }\r\n  }\r\n\r\n  @-webkit-keyframes sideWays { \r\n      0% { \r\n          margin-left:0px;\r\n      }\r\n      100% { \r\n          margin-left:50px;\r\n      }\r\n  }\r\n\r\n  @keyframes sideWays { \r\n      0% { \r\n          margin-left:0px;\r\n      }\r\n      100% { \r\n          margin-left:50px;\r\n      }\r\n  }\r\n\r\n  /* ANIMATIONS */\r\n\r\n  .x1 {\r\n      -webkit-animation: animateBubble 9s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 9s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: -5%;\r\n    top: 5%;\r\n    \r\n    -webkit-transform: scale(0.6);\r\n    transform: scale(0.6);\r\n  }\r\n\r\n  .x2 {\r\n      -webkit-animation: animateBubble 12s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 12s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 5%;\r\n    top: 80%;\r\n    \r\n    -webkit-transform: scale(0.4);\r\n    transform: scale(0.4);\r\n  }\r\n\r\n  .x3 {\r\n      -webkit-animation: animateBubble 35s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 35s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 10%;\r\n    top: 40%;\r\n    \r\n    -webkit-transform: scale(0.7);\r\n    transform: scale(0.7);\r\n  }\r\n\r\n  .x4 {\r\n      -webkit-animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    \r\n    left: 20%;\r\n    top: 0;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  .x5 {\r\n      -webkit-animation: animateBubble 40s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 40s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 30%;\r\n    top: 50%;\r\n    \r\n    -webkit-transform: scale(0.5);\r\n    transform: scale(0.5);\r\n  }\r\n\r\n  .x6 {\r\n      -webkit-animation: animateBubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 18s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 50%;\r\n    top: 0;\r\n    \r\n    -webkit-transform: scale(0.8);\r\n    transform: scale(0.8);\r\n  }\r\n\r\n  .x7 {\r\n      -webkit-animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 65%;\r\n    top: 70%;\r\n    \r\n    -webkit-transform: scale(0.4);\r\n    transform: scale(0.4);\r\n  }\r\n\r\n  .x8 {\r\n      -webkit-animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    animation: animateBubble 22s linear infinite, sideWays 3s ease-in-out infinite alternate;\r\n    \r\n    left: 80%;\r\n    top: 10%;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  .x9 {\r\n      -webkit-animation: animateBubble 29s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    animation: animateBubble 29s linear infinite, sideWays 4s ease-in-out infinite alternate;\r\n    \r\n    left: 90%;\r\n    top: 50%;\r\n    \r\n    -webkit-transform: scale(0.6);\r\n    transform: scale(0.6);\r\n  }\r\n\r\n  .x10 {\r\n      -webkit-animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    animation: animateBubble 26s linear infinite, sideWays 2s ease-in-out infinite alternate;\r\n    \r\n    left: 80%;\r\n    top: 80%;\r\n    \r\n    -webkit-transform: scale(0.3);\r\n    transform: scale(0.3);\r\n  }\r\n\r\n  /* OBJECTS */\r\n\r\n  .bubble {\r\n    border-radius: 50%;\r\n  \topacity: 0.6;\r\n      height:100px;\r\n    position: absolute;\r\n    width: 100px;\r\n  }\r\n\r\n  .bubble:after {\r\n    \r\n    content: \"\";\r\n      height: 180px;\r\n    left: 10px;\r\n    position: absolute;\r\n    width: 180px;\r\n  }\r\n\r\n  .back{\r\n    background: -webkit-gradient(linear, right top, left top, from(#70aff1a4), to(#ffffff));\r\n    background: linear-gradient(270deg, #70aff1a4, #ffffff);\r\n    background-size: 600% 600%;\r\n    \r\n    -webkit-animation: AnimationName 10s ease infinite;\r\n    animation: AnimationName 10s ease infinite;\r\n\r\n  }\r\n\r\n  @-webkit-keyframes AnimationName {\r\n    0%{background-position:0% 50%}\r\n    50%{background-position:100% 50%}\r\n    100%{background-position:0% 50%}\r\n}\r\n\r\n  @keyframes AnimationName { \r\n    0%{background-position:0% 50%}\r\n    50%{background-position:100% 50%}\r\n    100%{background-position:0% 50%}\r\n}\r\n\r\n  .col-md-4{\r\n    padding:0 20px 20px 20px\r\n}\r\n\r\n  .btn-primary{\r\n    white-space: inherit;\r\n\r\n}"
 
 /***/ }),
 
@@ -932,8 +958,6 @@ module.exports = "\n<div id=\"background-wrap\" class=\"back\">\n    <div class=
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomeComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_auth_service__ = __webpack_require__("./src/app/services/auth.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__ = __webpack_require__("./node_modules/angular2-flash-messages/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -945,11 +969,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
-
 var HomeComponent = (function () {
-    function HomeComponent(authService, flashMessage) {
+    function HomeComponent(authService) {
         this.authService = authService;
-        this.flashMessage = flashMessage;
     }
     HomeComponent.prototype.ngOnInit = function () {
     };
@@ -959,10 +981,10 @@ var HomeComponent = (function () {
             template: __webpack_require__("./src/app/components/home/home.component.html"),
             styles: [__webpack_require__("./src/app/components/home/home.component.css")]
         }), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object, (typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__["FlashMessagesService"] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_2_angular2_flash_messages__["FlashMessagesService"]) === 'function' && _b) || Object])
+        __metadata('design:paramtypes', [(typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */] !== 'undefined' && __WEBPACK_IMPORTED_MODULE_1__services_auth_service__["a" /* AuthService */]) === 'function' && _a) || Object])
     ], HomeComponent);
     return HomeComponent;
-    var _a, _b;
+    var _a;
 }());
 //# sourceMappingURL=C:/Users/brian/Desktop/FYP/eMoodi/angular-src/src/home.component.js.map
 
@@ -1014,6 +1036,10 @@ var InputsComponent = (function () {
         this.router = router;
         this.UserID = (JSON.parse(localStorage.getItem('user'))).id;
         this.date = Date.now;
+        this.mood = null;
+        this.diet = null;
+        this.exercise = null;
+        this.sleep = null;
         this.filled = true;
     }
     InputsComponent.prototype.ngOnInit = function () {
@@ -1023,13 +1049,14 @@ var InputsComponent = (function () {
             $(this).addClass('selected');
         });
         this.authService.getMood().subscribe(function (moodDocs) {
+            moodDocs = moodDocs.reverse();
             if (moodDocs[0] == null) {
                 _this.filled = false;
             }
             else {
-                var lastCreated = new Date(moodDocs[moodDocs.length - 1].date);
+                var lastCreated = moodDocs[moodDocs.length - 1];
                 var today = new Date();
-                if (lastCreated.getDay() == today.getDay()) {
+                if (new Date(lastCreated.date).getDay() == today.getDay() && lastCreated.exercise != null && lastCreated.diet != null) {
                     _this.filled = true;
                 }
                 else {
@@ -1258,7 +1285,7 @@ var LoginComponent = (function () {
                 _this.flashMessage.show('You are now logged in', {
                     cssClass: 'alert-success',
                     timeout: 5000 });
-                _this.router.navigate(['dashboard']);
+                _this.router.navigate(['home']);
             }
             else {
                 _this.flashMessage.show(data.msg, {
@@ -1400,6 +1427,7 @@ var ProfileComponent = (function () {
             return false;
         });
         this.authService.getWeather().subscribe(function (weather) {
+            console.log(weather);
         }, function (err) {
             console.log(err);
             return false;
@@ -2008,7 +2036,7 @@ module.exports = "\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 
 /***/ "./src/app/components/suggestion/suggestion.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"recipes[0]\">\n<div class=\"text-center\" style=\"padding:0 0 15px 0\">\n  <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n  <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n</div>\n\n<!-- recipe suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes | slice:0: limit\">\n        <div class=\"panel panel-recipe rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n     \n      <!-- recipe item end -->\n  </div>\n    <button (click)=\"limit = limit + 3\" class=\"btn btn-lg btn-primary btn btn-sx\">Show more</button>\n</section>\n\n<!-- exercise suggestions -->\n<section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n  <div class=\"container\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n\n    <div class=\"container\">\n      <div class=\"panel-group\" id=\"accordion\">\n        <div class=\"notice notice-lg notice-info\"  *ngFor=\"let type of allExercises\">\n          <div class=\"panel-heading\">\n\n            <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n              <h1> {{type.name}}</h1>\n            </strong>\n\n          </div>\n          <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n            <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n              data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n\n\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </div>\n</section>\n</div>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n<!-- Modal -->\n"
+module.exports = "<div *ngIf=\"recipes[0]\">\n  <div class=\"text-center\" style=\"padding:0 0 15px 0\">\n    <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n    <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  </div>\n\n  <!-- recipe suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes | slice:0: limit\">\n        <div class=\"panel panel-recipe rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n            <h4>Calories - {{recipe.calories| number:'1.0-0'}}</h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n    <button (click)=\"limit = limit + 3\" class=\"btn btn-lg btn-primary btn btn-sx\">Show more</button>\n  </section>\n\n  <!-- exercise suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n    <div class=\"container\">\n      <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n      <div class=\"container\">\n        <div class=\"panel-group\" id=\"accordion\">\n          <!-- for each exercise category -->\n          <div class=\"notice notice-lg notice-info\" *ngFor=\"let type of allExercises\">  \n            <div class=\"panel-heading\">\n               <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->\n              <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n                <h1> {{type.name}}</h1>\n              </strong>\n            </div>\n            <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n              <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n                data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </section>\n</div>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n"
 
 /***/ }),
 
@@ -2050,28 +2078,65 @@ var SuggestionComponent = (function () {
     }
     SuggestionComponent.prototype.ngOnInit = function () {
         var _this = this;
+        this.authService.getWeather().subscribe(function (weather) {
+            _this.dailyWeather = weather;
+        }, function (err) {
+            console.log(err);
+            return false;
+        }, function () {
+            _this.getExercises();
+        });
+    };
+    //Functions
+    SuggestionComponent.prototype.getExercises = function () {
+        var _this = this;
         this.authService.getProfile().subscribe(function (profile) {
             var user = profile.user;
-            var bmi = 18;
+            var bmi = user.bmi;
             if (bmi < 18.5) {
                 _this.getExerciseSuggestions(2);
+                _this.dietTag = "high-protein";
             }
             if (bmi > 18.5 && bmi < 25) {
                 _this.getExerciseSuggestions(3);
+                _this.dietTag = "balanced";
             }
             if (bmi > 25) {
                 _this.getExerciseSuggestions(1);
+                _this.dietTag = "low-fat";
+            }
+            if (user.gender == "M") {
+                _this.calorieIntake = 2500;
+            }
+            if (user.gender == "F") {
+                _this.calorieIntake = 2000;
             }
         }, function (err) {
             console.log(err);
             return false;
+        }, function () {
+            _this.getRecipes();
         });
-        this.recipeService.getRecipes().subscribe(function (recipeResults) {
-            if (recipeResults.hits.length > 0) {
-                for (var i = 0, len = recipeResults.hits.length; i < len; i++) {
-                    _this.recipes.push(recipeResults.hits[i].recipe);
+    };
+    SuggestionComponent.prototype.getRecipes = function () {
+        var _this = this;
+        this.recipeService.getRecipes(this.dietTag).subscribe(function (recipeResults) {
+            var recipesArray = recipeResults.hits;
+            var recipe;
+            if (recipesArray.length > 0) {
+                for (var i = 0, len = recipesArray.length; i < len; i++) {
+                    recipe = recipesArray[i].recipe;
+                    if (_this.dailyWeather.cloudCover > .4) {
+                        if (recipe.digest[21].hasRDI && recipe.calories <= _this.calorieIntake) {
+                            _this.recipes.push(recipe);
+                        }
+                    }
+                    else if (recipe.calories <= _this.calorieIntake) {
+                        _this.recipes.push(recipe);
+                    }
                 }
                 _this.shuffle(_this.recipes);
+                console.log(_this.recipes);
             }
         }, function (err) {
             console.log(err);
@@ -2116,7 +2181,6 @@ var SuggestionComponent = (function () {
                 else {
                     units = { units: exercises[index].duration };
                 }
-                // var units = {units: "x15"}
                 var exercise = Object.assign({}, exercises[index], units);
                 exercises.splice(index, 1); // This removes the picked element from the array
                 finalExercises.push(exercise);
@@ -2270,10 +2334,8 @@ var AuthService = (function () {
     };
     AuthService.prototype.setWeather = function () {
         var _this = this;
-        // var lat;
-        // var lng;
         var weatherFormat;
-        this.weatherServ.currentForecast(40, -72).subscribe(function (weather) {
+        this.weatherServ.currentForecast().subscribe(function (weather) {
             var forecast = weather;
             weatherFormat = {
                 cloudCover: forecast.daily.data[0].cloudCover,
@@ -2364,21 +2426,8 @@ var RecipeService = (function () {
     function RecipeService(http) {
         this.http = http;
     }
-    RecipeService.prototype.getRecipes = function () {
-        // var url = 'https://api.edamam.com/search?q=chicken';
-        // url += '&from=0&to=5'
-        // url += '&app_id=10d42f85&app_key=eebfb150fdd04e3418cd3fb620e91387'
-        // this.recipe = undefined;
-        // this.getRecipes = function(query, user){
-        //   var url = 'https://api.edamam.com/search?q=' + query;
-        //   url += '&from=0&to=50'
-        //   url += '&app_id=10d42f85&app_key=eebfb150fdd04e3418cd3fb620e91387'
-        //   if(user){
-        //     user.healthLabels.forEach(function(label){
-        //       url += '&health=' + label.label
-        //     })
-        //   }
-        return this.http.get('https://api.edamam.com/search?q=&from=0&to=100&health=sugar-conscious&health=alcohol-free&diet=balanced&app_id=0d7244ce&app_key=f5b45cfc217e0ed8ef0f0f09e7b21058')
+    RecipeService.prototype.getRecipes = function (dietTag) {
+        return this.http.get('https://api.edamam.com/search?q=&from=0&to=100&health=sugar-conscious&health=alcohol-free&diet=' + dietTag + '&app_id=0d7244ce&app_key=f5b45cfc217e0ed8ef0f0f09e7b21058')
             .map(function (res) { return res.json(); });
     };
     RecipeService = __decorate([
@@ -2455,7 +2504,23 @@ var WeatherService = (function () {
     function WeatherService(http) {
         this.http = http;
     }
-    WeatherService.prototype.currentForecast = function (lat, lng) {
+    WeatherService.prototype.currentForecast = function () {
+        // default coords
+        var lat = 53;
+        var lng = -9;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+        }
+        else {
+        }
+        function geoSuccess(position) {
+            lat = position.coords.latitude;
+            lng = position.coords.longitude;
+            // console.log("lat:" + lat + " lng:" + lng);
+        }
+        function geoError() {
+            // console.log("Geocoder failed.");
+        }
         return this.http.get('https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/0d84709db8c9b163c1536a07b36f1f35/' + lat.toString() + "," + lng.toString() + "?exclude=hourly,currently,minutely,flags,alerts&units=si")
             .map(function (res) { return res.json(); });
     };
@@ -2516,6 +2581,20 @@ module.exports = __webpack_require__("./src/main.ts");
 /***/ }),
 
 /***/ 1:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 2:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 3:
 /***/ (function(module, exports) {
 
 /* (ignored) */

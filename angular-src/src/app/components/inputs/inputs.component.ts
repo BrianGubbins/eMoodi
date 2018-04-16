@@ -16,10 +16,10 @@ declare var $: any;
 export class InputsComponent implements OnInit {
   UserID = (JSON.parse(localStorage.getItem('user'))).id;
   date = Date.now;
-  mood: Number;
-  diet: String;
-  exercise: String;
-  sleep: Number;
+  mood: Number = null;
+  diet: String = null;
+  exercise: String = null;
+  sleep: Number = null;
   filled = true;
 
   lat: number;
@@ -40,16 +40,17 @@ export class InputsComponent implements OnInit {
     });
 
    this.authService.getMood().subscribe(moodDocs => {
-
+    moodDocs = moodDocs.reverse()
     if(moodDocs[0] == null){ // to handle a new user with no info
       this.filled = false;
     }
     
     // checking if the latest mood entry was created today, if so then we don't want to display inputs for sleep, diet and exercise, only mood
     else{ 
-      var lastCreated = new Date(moodDocs[moodDocs.length-1].date);
+      var lastCreated = moodDocs[moodDocs.length-1];
+      
       var today = new Date();
-      if(lastCreated.getDay() == today.getDay()) {
+      if(new Date(lastCreated.date).getDay() == today.getDay() &&  lastCreated.exercise != null && lastCreated.diet != null) {
         this.filled=true;
       }
       else{
