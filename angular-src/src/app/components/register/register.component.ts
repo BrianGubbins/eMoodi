@@ -45,18 +45,6 @@ export class RegisterComponent implements OnInit {
       bmi: (this.weight)/((this.height)/100*(this.height)/100)
     }
 
-    // Required Fields
-    if(!this.validateService.validateRegister(user)){
-      this.flashMessage.show('Please fill in all fields', {cssClass: 'alert-danger', timeout: 3000});
-      return false;
-    }
-
-    // Validate Email
-    if(!this.validateService.validateEmail(user.email)){
-      this.flashMessage.show('Please use a valid email', {cssClass: 'alert-danger', timeout: 3000});
-      return false;
-    }
-
     // // Register user
     this.authService.registerUser(user).subscribe(data => {
       if(data.success){

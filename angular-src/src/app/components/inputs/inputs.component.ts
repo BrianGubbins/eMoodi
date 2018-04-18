@@ -22,11 +22,6 @@ export class InputsComponent implements OnInit {
   sleep: Number = null;
   filled = true;
 
-  lat: number;
-  lng: number;
-  forecast: any;
-
-
   constructor(
     private authService: AuthService,
     private flashMessage: FlashMessagesService,
@@ -120,9 +115,9 @@ export class InputsComponent implements OnInit {
 
     this.authService.setMood(moodInfo).subscribe(data => {
       if (data.success) {
-        this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
+        this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
       } else {
-        this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
+        this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
       }
     });
 

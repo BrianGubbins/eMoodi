@@ -59,22 +59,22 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   
   */
  
+    // getting moodCanvas from the view, the canvas element in which the chart will be rendered
     var moodCanvas = <HTMLCanvasElement>document.getElementById('moodGraph');
     var ctx: CanvasRenderingContext2D = moodCanvas.getContext("2d");
     this.moodGraph = new Chart(ctx, {
-      type: "line",
-
+      type: "line", // line chart
       data: {
-        labels: this.moodDates,
+        labels: this.moodDates, // each mood will have a label which is its date of creation
         datasets: [{
           label: "Your Mood",
-          data: this.moods,
-          fill: true,
+          data: this.moods, // data used to plot is an array of all the moods(1-5)
+          fill: true, // colours area under the line using rgba values below
           backgroundColor: "rgba(	0, 123, 255, 0.3)",
           borderColor: "rgba(255, 231, 77,1)"
         }]
       },
-      options: {
+      options: { // options object contains all the chart customization 
         legend: {
           position: "top",
           display: true,
@@ -82,27 +82,31 @@ export class DashboardComponent implements AfterViewInit, OnInit {
             fontSize: 15
           }
         },
-        responsive: true,
-        tooltips: {
-          enabled: false
+        responsive: true, // canvas element will resize depending on screen size
+        tooltips: { // the boxes that appear when hovering over a data point(mood) on the line 
+          callbacks: { // customising tooltip to display the date and time the mood was created 
+            label: function(tooltipItem, data) { // converting the date label per mood into time 
+              return new Date(data.labels[tooltipItem.index].toString()).toLocaleTimeString();
+            }
+          }
         },
         scales: {
           xAxes: [{
-            gridLines: {
-              // drawOnChartArea: false
-            },
-            ticks: {
-              maxTicksLimit: 7,
-              maxRotation: 10
+            ticks: { // a tick is a label i.e. date displayed on axis per mood
+              maxTicksLimit: 7, // limiting ticks to 7 so axis isn't cluttered with labels
+              maxRotation: 10, // the max a label can rotate due to less space on resize is 10 degrees
+              callback: function (label, index, labels) { // cleaning up date object to use as a label 
+                return new Date(label).toDateString().slice(0, -5);
+              }
             }
           }],
           yAxes: [{
             ticks: {
               fontSize: 15,
               min: 0,
-              max: 6,
-              callback: function (label, index, labels) {
-                switch (label) {
+              max: 6, // given a max of 6, even though max of mood is 5, to make chart look better
+              callback: function (label, index, labels) { 
+                switch (label) { // changing mood values to corresponding strings so y axis isn't just numbers
                   case 1:
                     return 'Very Sad';
                   case 2:
@@ -375,11 +379,16 @@ export class DashboardComponent implements AfterViewInit, OnInit {
           this.moods.push(this.data[i].moodData[j].currMood);
 
           // date corresponding to the object's creation date
-          this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
+          this.moodDates.push(this.data[i].moodData[j].date);
           this.moodGraph.update();
 
         }
       }
+    }
+    else{
+      this.flashMessage.show('New user ? Click the update Mood tab to get started', {
+        cssClass: 'alert-info text-center',
+        timeout: 6000});
     }
   }
 

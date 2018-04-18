@@ -77,13 +77,17 @@ export class SuggestionComponent implements OnInit {
       });
   }
 
-  getRecipes() {
-    this.recipeService.getRecipes(this.dietTag).subscribe(recipeResults => {
+  getRecipes() {  // calls recipeService with a diet tag e.g. 'low-fat' - according to user's BMI
+    this.recipeService.getRecipes(this.dietTag).subscribe(recipeResults => { 
+      //recipeService returns 100 recipe objects, filtered by diet tag, containing nutrional info, ingredients etc.
       var recipesArray = recipeResults.hits;
       var recipe;
-      if (recipesArray.length > 0) {
+      if (recipesArray.length > 0) { // loops through all 100 objects
         for (var i = 0, len = recipesArray.length; i < len; i++) {
           recipe = recipesArray[i].recipe;
+          /* if cloud cover of current day is >40% then filter recipes to make sure they have sufficient vitamin D amounts
+          Note: daily weather is stored in database daily using Dark Sky API, this information is retreived onInit and 
+          stored in dailyWeather. Also filter by calorie intake - according to gender */
           if(this.dailyWeather.cloudCover > .4){
             if (recipe.digest[21].hasRDI && recipe.calories <= this.calorieIntake) {
               this.recipes.push(recipe);
@@ -94,7 +98,6 @@ export class SuggestionComponent implements OnInit {
           }
         }
         this.shuffle(this.recipes);
-        console.log(this.recipes)
       }
 
     },

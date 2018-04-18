@@ -31,12 +31,12 @@ export class LoginComponent implements OnInit {
     if(data.success){
       this.authService.storeUserData(data.token, data.user);
       this.flashMessage.show('You are now logged in', {
-        cssClass: 'alert-success',
+        cssClass: 'alert-success text-center',
         timeout: 5000});
       this.router.navigate(['home']);
     } else {
       this.flashMessage.show(data.msg, {
-        cssClass: 'alert-danger',
+        cssClass: 'alert-danger text-center',
         timeout: 5000});
       this.router.navigate(['login']);
     }

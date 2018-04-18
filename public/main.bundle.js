@@ -632,6 +632,7 @@ var DashboardComponent = (function () {
       
       
       */
+        // getting moodCanvas from the view, the canvas element in which the chart will be rendered
         var moodCanvas = document.getElementById('moodGraph');
         var ctx = moodCanvas.getContext("2d");
         this.moodGraph = new __WEBPACK_IMPORTED_MODULE_1_chart_js__["Chart"](ctx, {
@@ -656,14 +657,20 @@ var DashboardComponent = (function () {
                 },
                 responsive: true,
                 tooltips: {
-                    enabled: false
+                    callbacks: {
+                        label: function (tooltipItem, data) {
+                            return new Date(data.labels[tooltipItem.index].toString()).toLocaleTimeString();
+                        }
+                    }
                 },
                 scales: {
                     xAxes: [{
-                            gridLines: {},
                             ticks: {
                                 maxTicksLimit: 7,
-                                maxRotation: 10
+                                maxRotation: 10,
+                                callback: function (label, index, labels) {
+                                    return new Date(label).toDateString().slice(0, -5);
+                                }
                             }
                         }],
                     yAxes: [{
@@ -916,10 +923,15 @@ var DashboardComponent = (function () {
                     // mood value 1-5
                     this.moods.push(this.data[i].moodData[j].currMood);
                     // date corresponding to the object's creation date
-                    this.moodDates.push(this.dateFormat(this.data[i].moodData[j].date));
+                    this.moodDates.push(this.data[i].moodData[j].date);
                     this.moodGraph.update();
                 }
             }
+        }
+        else {
+            this.flashMessage.show('New user ? Click the update Mood tab to get started', {
+                cssClass: 'alert-info text-center',
+                timeout: 6000 });
         }
     };
     DashboardComponent = __decorate([
@@ -1114,10 +1126,10 @@ var InputsComponent = (function () {
         }
         this.authService.setMood(moodInfo).subscribe(function (data) {
             if (data.success) {
-                _this.flashMessage.show('Info added !', { cssClass: 'alert-success', timeout: 3000 });
+                _this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
             }
             else {
-                _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger', timeout: 3000 });
+                _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
             }
         });
         this.router.navigate(['dashboard']);
@@ -1283,13 +1295,13 @@ var LoginComponent = (function () {
             if (data.success) {
                 _this.authService.storeUserData(data.token, data.user);
                 _this.flashMessage.show('You are now logged in', {
-                    cssClass: 'alert-success',
+                    cssClass: 'alert-success text-center',
                     timeout: 5000 });
                 _this.router.navigate(['home']);
             }
             else {
                 _this.flashMessage.show(data.msg, {
-                    cssClass: 'alert-danger',
+                    cssClass: 'alert-danger text-center',
                     timeout: 5000 });
                 _this.router.navigate(['login']);
             }
@@ -1358,7 +1370,7 @@ var NavbarComponent = (function () {
     NavbarComponent.prototype.onLogoutClick = function () {
         this.authService.logout();
         this.flashMessage.show('You are logged out', {
-            cssClass: 'alert-success',
+            cssClass: 'alert-success text-center',
             timeout: 3000
         });
         this.router.navigate(['/login']);
@@ -1389,7 +1401,7 @@ module.exports = ""
 /***/ "./src/app/components/profile/profile.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"user\">\n    <h2 class=\"page-header\">{{user.name}}</h2>\n    <ul class=\"list-group\">\n      <li class=\"list-group-item\">name: {{user.name}}</li>\n      <li class=\"list-group-item\">Username: {{user.username}}</li>\n      <li class=\"list-group-item\">Email: {{user.email}}</li>\n      <li class=\"list-group-item\">Weight: {{user.weight}}</li>\n      <li class=\"list-group-item\">Height: {{user.height}}</li>\n    </ul>\n  </div>"
+module.exports = "<div *ngIf=\"user\">\n    <h2 class=\"page-header\">{{user.name}}</h2>\n    <ul class=\"list-group\">\n      <li class=\"list-group-item\">name: {{user.name}}</li>\n      <li class=\"list-group-item\">Username: {{user.username}}</li>\n      <li class=\"list-group-item\">Email: {{user.email}}</li>\n      <li class=\"list-group-item\">Weight: {{user.weight}} Kg</li>\n      <li class=\"list-group-item\">Height: {{user.height}} Cm</li>\n    </ul>\n  </div>"
 
 /***/ }),
 
@@ -1512,16 +1524,6 @@ var RegisterComponent = (function () {
             height: this.height,
             bmi: (this.weight) / ((this.height) / 100 * (this.height) / 100)
         };
-        // Required Fields
-        if (!this.validateService.validateRegister(user)) {
-            this.flashMessage.show('Please fill in all fields', { cssClass: 'alert-danger', timeout: 3000 });
-            return false;
-        }
-        // Validate Email
-        if (!this.validateService.validateEmail(user.email)) {
-            this.flashMessage.show('Please use a valid email', { cssClass: 'alert-danger', timeout: 3000 });
-            return false;
-        }
         // // Register user
         this.authService.registerUser(user).subscribe(function (data) {
             if (data.success) {
@@ -2029,14 +2031,14 @@ var exercises = {
 /***/ "./src/app/components/suggestion/suggestion.component.css":
 /***/ (function(module, exports) {
 
-module.exports = "\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #3f6bff5e;\r\n  padding: 2rem 1.5rem;\r\n}\r\n\r\n.jumbotron-heading{\r\n  font-size: 5vw;\r\n  padding-bottom: 35px;\r\n  color: white;\r\n  text-shadow:\r\n  -1px -1px 0 #3b70a18c,\r\n  1px -1px 0 #3b70a18c,\r\n  -1px 1px 0 #3b70a18c,\r\n  1px 1px 0 #3b70a18c; \r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-recipe {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.514);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#72a1cf), color-stop(50%, #ffffff));\r\n  background-image: linear-gradient(to bottom, #72a1cf 0%, #ffffff 50%);\r\n  background-repeat: repeat-x;\r\n}\r\n\r\n.panel-recipe .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-recipe .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-recipe .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-recipe .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n.a {\r\n  color: #2d5b84;\r\n\r\n}\r\n\r\n.col-md-4{\r\n  padding: 20px 10px 20px 15px;\r\n}"
+module.exports = "\r\n.jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.514);\r\n  background-color: #3f6bff5e;\r\n  padding: 2rem 1.5rem;\r\n}\r\n\r\n.jumbotron-heading{\r\n  font-size: 5vw;\r\n  padding-bottom: 35px;\r\n  color: white;\r\n  text-shadow:\r\n  -1px -1px 0 #3b70a18c,\r\n  1px -1px 0 #3b70a18c,\r\n  -1px 1px 0 #3b70a18c,\r\n  1px 1px 0 #3b70a18c; \r\n}\r\n\r\n#recipe-scroller-container {\r\n  height: 100%;\r\n  max-height: 50vh;\r\n  overflow: auto;\r\n}\r\n\r\n#img-container {\r\n  border: 1px solid rgba(219, 219, 219, 0.849);\r\n  width: 90%;\r\n}\r\n\r\n.panel-recipe {\r\n  /* border: 1px solid rgba(219, 219, 219, 0.849); */\r\n  -webkit-box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.514);\r\n          box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.514);\r\n  -moz-transition: all .3s ease;\r\n  -o-transition: all .3s ease;\r\n  -webkit-transition: all .3s ease;\r\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#72a1cf), color-stop(50%, #ffffff));\r\n  background-image: linear-gradient(to bottom, #72a1cf 0%, #ffffff 50%);\r\n  background-repeat: repeat-x;\r\n}\r\n\r\n.panel-recipe .panel-heading {\r\n  padding: 20px 0px;\r\n}\r\n\r\n.panel-recipe .panel-heading .fa {\r\n  margin-top: 10px;\r\n  font-size: 58px;\r\n}\r\n\r\n.panel-recipe .list-group-item {\r\n  color: #777777;\r\n}\r\n\r\n.panel-recipe .panel-body {\r\n  background-color: #f0f0f0;\r\n  font-size: 40px;\r\n  color: #777777;\r\n  padding: 20px;\r\n  margin: 0px;\r\n}\r\n\r\n/* exercise */\r\n\r\n.modal-header-primary {\r\n  text-align: center;\r\n  color: #fff;\r\n  padding: 9px 15px;\r\n  border-bottom: 1px solid #eee;\r\n  background-color: #428bca;\r\n  -webkit-border-top-left-radius: 5px;\r\n  -webkit-border-top-right-radius: 5px;\r\n  -moz-border-radius-topleft: 5px;\r\n  -moz-border-radius-topright: 5px;\r\n  border-top-left-radius: 5px;\r\n  border-top-right-radius: 5px;\r\n}\r\n\r\n.notice {\r\n  padding: 15px;\r\n  background-color: #fafafa;\r\n  border-left: 6px solid #7f7f84;\r\n  margin-bottom: 10px;\r\n  -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n          box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);\r\n}\r\n\r\n.notice-sm {\r\n  font-size: 80%;\r\n}\r\n\r\n.notice-lg {\r\n  padding: 35px;\r\n  font-size: large;\r\n}\r\n\r\n.notice-info {\r\n  border-color: #45ABCD;\r\n}\r\n\r\n.notice-info>strong {\r\n  color: #45ABCD;\r\n}\r\n\r\n.a {\r\n  color: #2d5b84;\r\n\r\n}\r\n\r\n.col-md-4{\r\n  padding: 20px 10px 20px 15px;\r\n}\r\n"
 
 /***/ }),
 
 /***/ "./src/app/components/suggestion/suggestion.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf=\"recipes[0]\">\n  <div class=\"text-center\" style=\"padding:0 0 15px 0\">\n    <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n    <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  </div>\n\n  <!-- recipe suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes | slice:0: limit\">\n        <div class=\"panel panel-recipe rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n            <h4>Calories - {{recipe.calories| number:'1.0-0'}}</h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n    <button (click)=\"limit = limit + 3\" class=\"btn btn-lg btn-primary btn btn-sx\">Show more</button>\n  </section>\n\n  <!-- exercise suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n    <div class=\"container\">\n      <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n      <div class=\"container\">\n        <div class=\"panel-group\" id=\"accordion\">\n          <!-- for each exercise category -->\n          <div class=\"notice notice-lg notice-info\" *ngFor=\"let type of allExercises\">  \n            <div class=\"panel-heading\">\n               <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->\n              <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n                <h1> {{type.name}}</h1>\n              </strong>\n            </div>\n            <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n              <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n                data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </section>\n</div>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n"
+module.exports = "<div *ngIf=\"recipes[0]\">\n  <div class=\"text-center\" style=\"padding:0 0 15px 0\">\n    <button (click)=\"suggestion('diet')\" class=\"btn btn-lg btn-primary\">Diet</button>\n    <button (click)=\"suggestion('exercise')\" class=\"btn btn-lg btn-primary\">Exercise</button>\n  </div>\n\n  <!-- recipe suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!diet\" *ngIf=\"recipes\">\n    <h1 class=\"jumbotron-heading\">Diet Suggestions</h1>\n    <div class=\"row\">\n      <!-- recipe item -->\n      <div class=\"col-md-4 text-center\" *ngFor=\"let recipe of recipes | slice:0: limit\">\n        <div class=\"panel panel-recipe rounded\">\n          <div class=\"panel-heading\">\n            <img id=\"img-container\" class=\"rounded\" src={{recipe.image}}>\n          </div>\n          <div class=\"panel-body text-center\">\n            <h4>\n              <a href=\"{{recipe.url}}\" target=\"_blank\">\n                {{recipe.label}}\n              </a>\n            </h4>\n            <h4>Calories - {{recipe.calories| number:'1.0-0'}}</h4>\n          </div>\n          <ul class=\"list-group text-center\" id=\"recipe-scroller-container\">\n            <li *ngFor=\"let ingredient of recipe.ingredients\" class=\"list-group-item\">\n              {{ingredient.text}}</li>\n          </ul>\n        </div>\n      </div>\n      <!-- recipe item end -->\n    </div>\n    <button (click)=\"limit = limit + 3\" class=\"btn btn-lg btn-primary btn btn-sx\">Show more</button>\n  </section>\n\n  <!-- exercise suggestions -->\n  <section class=\"jumbotron text-center\" id=\"plans\" [hidden]=\"!exercise\">\n    <h1 class=\"jumbotron-heading\">Exercise Suggestions</h1>\n    <div class=\"panel-group\" id=\"accordion\">\n      <!-- for each exercise category -->\n      <div class=\"notice notice-lg notice-info\" *ngFor=\"let type of allExercises\">\n        <div class=\"panel-heading\">\n          <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->\n          <strong class=\"panel-title\" data-toggle=\"collapse\" data-parent=\"#accordion\" [attr.href]=\"'#'+type.name\">\n            <h1> {{type.name}}</h1>\n          </strong>\n        </div>\n        <div [attr.id]=\"type.name\" class=\"panel-collapse collapse\">\n          <!-- unique id matching anchor to enable accordion behaviour -->\n          <!-- for each exercise in the given exercise category -->\n          <div class=\"notice notice-info\" *ngFor=\"let exercise of type.exercises\" (click)=\"modalSettings(exercise.name,exercise.description)\"\n            data-toggle=\"modal\" data-target=\"#exerciseModal\">{{exercise.name}} &nbsp; {{exercise.units}}</div>\n        </div>\n      </div>\n    </div>\n  </section>\n</div>\n\n<!-- Modal -->\n<div class=\"modal fade\" id=\"exerciseModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">\n  <div class=\"modal-dialog modal-dialog-centered\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header-primary\">\n        <h1>{{modalDetails.title}}</h1>\n      </div>\n      <div class=\"modal-body text-left\" [innerHTML]=\"modalDetails.description\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default float-left\" data-dismiss=\"modal\">Close</button>\n      </div>\n    </div>\n    <!-- /.modal-content -->\n  </div>\n  <!-- /.modal-dialog -->\n</div>\n<!-- /.modal -->\n"
 
 /***/ }),
 
@@ -2121,11 +2123,15 @@ var SuggestionComponent = (function () {
     SuggestionComponent.prototype.getRecipes = function () {
         var _this = this;
         this.recipeService.getRecipes(this.dietTag).subscribe(function (recipeResults) {
+            //recipeService returns 100 recipe objects, filtered by diet tag, containing nutrional info, ingredients etc.
             var recipesArray = recipeResults.hits;
             var recipe;
             if (recipesArray.length > 0) {
                 for (var i = 0, len = recipesArray.length; i < len; i++) {
                     recipe = recipesArray[i].recipe;
+                    /* if cloud cover of current day is >40% then filter recipes to make sure they have sufficient vitamin D amounts
+                    Note: daily weather is stored in database daily using Dark Sky API, this information is retreived onInit and
+                    stored in dailyWeather. Also filter by calorie intake - according to gender */
                     if (_this.dailyWeather.cloudCover > .4) {
                         if (recipe.digest[21].hasRDI && recipe.calories <= _this.calorieIntake) {
                             _this.recipes.push(recipe);
@@ -2136,7 +2142,6 @@ var SuggestionComponent = (function () {
                     }
                 }
                 _this.shuffle(_this.recipes);
-                console.log(_this.recipes);
             }
         }, function (err) {
             console.log(err);

@@ -35,23 +35,21 @@
 
   <!-- exercise suggestions -->
   <section class="jumbotron text-center" id="plans" [hidden]="!exercise">
-    <div class="container">
-      <h1 class="jumbotron-heading">Exercise Suggestions</h1>
-      <div class="container">
-        <div class="panel-group" id="accordion">
-          <!-- for each exercise category -->
-          <div class="notice notice-lg notice-info" *ngFor="let type of allExercises">  
-            <div class="panel-heading">
-               <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->
-              <strong class="panel-title" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#'+type.name">
-                <h1> {{type.name}}</h1>
-              </strong>
-            </div>
-            <div [attr.id]="type.name" class="panel-collapse collapse">
-              <div class="notice notice-info" *ngFor="let exercise of type.exercises" (click)="modalSettings(exercise.name,exercise.description)"
-                data-toggle="modal" data-target="#exerciseModal">{{exercise.name}} &nbsp; {{exercise.units}}</div>
-            </div>
-          </div>
+    <h1 class="jumbotron-heading">Exercise Suggestions</h1>
+    <div class="panel-group" id="accordion">
+      <!-- for each exercise category -->
+      <div class="notice notice-lg notice-info" *ngFor="let type of allExercises">
+        <div class="panel-heading">
+          <!-- each panel given unique anchor tag to enable collapsible accordion behaviour -->
+          <strong class="panel-title" data-toggle="collapse" data-parent="#accordion" [attr.href]="'#'+type.name">
+            <h1> {{type.name}}</h1>
+          </strong>
+        </div>
+        <div [attr.id]="type.name" class="panel-collapse collapse">
+          <!-- unique id matching anchor to enable accordion behaviour -->
+          <!-- for each exercise in the given exercise category -->
+          <div class="notice notice-info" *ngFor="let exercise of type.exercises" (click)="modalSettings(exercise.name,exercise.description)"
+            data-toggle="modal" data-target="#exerciseModal">{{exercise.name}} &nbsp; {{exercise.units}}</div>
         </div>
       </div>
     </div>
