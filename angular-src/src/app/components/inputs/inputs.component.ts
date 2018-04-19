@@ -16,11 +16,14 @@ declare var $: any;
 export class InputsComponent implements OnInit {
   UserID = (JSON.parse(localStorage.getItem('user'))).id;
   date = Date.now;
-  mood: Number = null;
-  diet: String = null;
-  exercise: String = null;
-  sleep: Number = null;
-  filled = true;
+  mood: Number;
+  diet: String;
+  exercise: String;
+  sleep: Number;
+  sleepFilled = false;
+  dietFilled = false;
+  exerciseFilled = false;
+  lastCreated;
 
   constructor(
     private authService: AuthService,
@@ -37,20 +40,23 @@ export class InputsComponent implements OnInit {
    this.authService.getMood().subscribe(moodDocs => {
     moodDocs = moodDocs.reverse()
     if(moodDocs[0] == null){ // to handle a new user with no info
-      this.filled = false;
+      this.sleepFilled = false;
+      this.dietFilled = false;
+      this.exerciseFilled = false;
     }
     
-    // checking if the latest mood entry was created today, if so then we don't want to display inputs for sleep, diet and exercise, only mood
-    else{ 
-      var lastCreated = moodDocs[moodDocs.length-1];
-      
-      var today = new Date();
-      if(new Date(lastCreated.date).getDay() == today.getDay() &&  lastCreated.exercise != null && lastCreated.diet != null) {
-        this.filled=true;
-      }
-      else{
-        this.filled = false;
-      }
+    this.lastCreated = moodDocs[moodDocs.length-1];
+
+    if(this.lastCreated.sleep != null){
+      this.sleepFilled = true;      
+    }
+    
+    if(this.lastCreated.diet != null){
+      this.dietFilled = true;      
+    }
+    
+    if(this.lastCreated.exercise != null){
+      this.exerciseFilled = true;      
     }
 
        },
@@ -90,9 +96,21 @@ export class InputsComponent implements OnInit {
   }
 
   onInfoSubmit() {
-  var moodInfo
-    if(!this.filled){
-      moodInfo = {
+ 
+    if (this.mood || this.sleep || this.diet || this.exercise){
+
+      if(this.sleep == null){
+        this.sleep = this.lastCreated.sleep
+      }
+
+      if(this.exercise == null){
+        this.exercise = this.lastCreated.exercise
+      }
+
+      if(this.diet == null){
+        this.diet = this.lastCreated.diet
+      }
+  let moodInfo = {
       userId: this.UserID,
       date: Date.now,
       sleep: this.sleep,
@@ -100,18 +118,6 @@ export class InputsComponent implements OnInit {
       exercise: this.exercise,
       moodData: [{currMood: this.mood, date: Date.now()}]
     }
-  }
-
-  else{
-     moodInfo = {
-      userId: this.UserID,
-      date: Date.now,
-      sleep: 0,
-      diet: "",
-      exercise: "",
-      moodData: [{currMood: this.mood, date: Date.now()}]
-    }
-  }
 
     this.authService.setMood(moodInfo).subscribe(data => {
       if (data.success) {
@@ -121,8 +127,15 @@ export class InputsComponent implements OnInit {
       }
     });
 
-
     this.router.navigate(['dashboard']);
   }
+  else{
+    this.flashMessage.show('Please fill in some data', { cssClass: 'alert-danger text-center', timeout: 3000 });
+    
+  }
+  }
 
-}
+  }
+
+
+

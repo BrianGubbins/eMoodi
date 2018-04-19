@@ -909,22 +909,35 @@ var DashboardComponent = (function () {
             // looping through all documents returned
             for (var i = 0, len = this.data.length; i < len; i++) {
                 // sleep value
-                this.sleep.push(this.data[i].sleep);
+                if (this.data[i].sleep != null) {
+                    this.sleep.push(this.data[i].sleep);
+                }
                 // date corresponding to the document's creation date
-                this.dates.push(this.dateFormat(this.data[i].date));
+                if (this.data[i].date != null) {
+                    this.dates.push(this.dateFormat(this.data[i].date));
+                }
                 /* score function converts the string values of exercise and diet
                 i.e. "Poor", "Fair" and "Good" to numbers values 1, 2 and 3 respectively
                 for graphing purposes */
-                this.score(this.data[i].diet, this.data[i].exercise);
+                if (this.data[i].diet != null) {
+                    this.score(this.data[i].diet, 0);
+                }
+                if (this.data[i].exercise != null) {
+                    this.score(0, this.data[i].exercise);
+                }
                 this.sleepGraph.update();
                 this.exerciseDietGraph.update();
                 // looping through mood objects in the moodData array
-                for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
-                    // mood value 1-5
-                    this.moods.push(this.data[i].moodData[j].currMood);
-                    // date corresponding to the object's creation date
-                    this.moodDates.push(this.data[i].moodData[j].date);
-                    this.moodGraph.update();
+                if (this.data[i].moodData.length >= 1) {
+                    for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
+                        if (this.data[i].moodData[j].currMood != null) {
+                            // mood value 1-5
+                            this.moods.push(this.data[i].moodData[j].currMood);
+                            // date corresponding to the object's creation date
+                            this.moodDates.push(this.data[i].moodData[j].date);
+                            this.moodGraph.update();
+                        }
+                    }
                 }
             }
         }
@@ -1012,7 +1025,7 @@ module.exports = ".jumbotron{\r\n  -webkit-box-shadow: 0px 0px 30px rgba(0, 0, 0
 /***/ "./src/app/components/inputs/inputs.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n\n<div class=\"container\">\n  <span class=\"expandButton\" (click)=\"expand()\">Info</span>\n  <div class=\"content\">\n    <div class=\"body\">\n        <h4>Diet Level:</h4>\n          A balanced diet has Protein/Fat/Carb values in 15/35/50 ratio\n          <ul class=\"dash\">\n          <li><b>Poor:</b> Alot of junk, sugary food and alcohol. Little to no vegetables or fruit. Very unbalanced ratios </li>\n          <li><b>Fair:</b> Some notion of vegetables or fruit. Still some junk and alchohol but overall improved ratios </li>\n          <li><b>Good:</b> Good amount of fruit and veg, junk food cut out and sensible drinking. Overall, a balanced diet</li>\n        </ul>\n        <h4>Exercise Level:</h4>\n        The recommended exercise guidelines are 150 minutes moderate activiy such as walking, jogging etc. or 75 minutes of vigorous such as football, running etc. or a balance of both, per week. At least two days out of the week should include strength exercises such as the ones shown in exercise suggestions.\n        <ul class=\"dash\">\n            <li><b>Poor:</b> No attempt to exercise whether it be through activities such as cycling or strength exercises</li>\n            <li><b>Fair:</b> Some moderate exercise and an attempt at some strength exercises</li>\n            <li><b>Good:</b> A mix of both moderate and vigorous activities with ample strenth training for all major muscle groups</li>\n        </ul>\n    </div>\n  </div>\n</div>\n\n\n<div class=\"text-center\">\n  <ul class=\"moods col-md-12 shadow\">\n    <h2 align=\"center\">How are you feeling ?</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <div *ngIf=!filled>\n      <h3 align=\"center\">How much sleep did you get last night ?</h3>\n      <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n      <br>\n\n      <h3 align=\"center\">What was your diet like today ?</h3>\n      <br>\n      <div class=\"btn-group\" data-toggle=\"buttons\">\n        <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n        </label>\n        <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" class=\"hideRadio\"> Fair\n        </label>\n        <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" class=\"hideRadio\"> Good\n        </label>\n      </div>\n\n      <br>\n      <br>\n\n      <h3 align=\"center\">How was your level of exercise today ?</h3>\n      <br>\n      <div class=\"btn-group\" data-toggle=\"buttons\">\n        <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n        </label>\n        <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n        </label>\n        <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n        </label>\n      </div>\n      <br>\n      <br>\n    </div>\n\n\n    <div align=\"center\" style=\"padding: 10px 0 20px 0;\">\n      <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n      <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n    </div>\n\n  </form>\n</div>\n"
+module.exports = "<script type=\"text/javascript\" src=\"assets/js/jquery-2.1.1.min.js\"></script>\n\n<div class=\"container\">\n  <span class=\"expandButton\" (click)=\"expand()\">Info</span>\n  <div class=\"content\">\n    <div class=\"body\">\n      <h4>Diet Level:</h4>\n      A balanced diet has Protein/Fat/Carb values in 15/35/50 ratio\n      <ul class=\"dash\">\n        <li>\n          <b>Poor:</b> Alot of junk, sugary food and alcohol. Little to no vegetables or fruit. Very unbalanced ratios </li>\n        <li>\n          <b>Fair:</b> Some notion of vegetables or fruit. Still some junk and alchohol but overall improved ratios </li>\n        <li>\n          <b>Good:</b> Good amount of fruit and veg, junk food cut out and sensible drinking. Overall, a balanced diet</li>\n      </ul>\n      <h4>Exercise Level:</h4>\n      The recommended exercise guidelines are 150 minutes moderate activiy such as walking, jogging etc. or 75 minutes of vigorous\n      such as football, running etc. or a balance of both, per week. At least two days out of the week should include strength\n      exercises such as the ones shown in exercise suggestions.\n      <ul class=\"dash\">\n        <li>\n          <b>Poor:</b> No attempt to exercise whether it be through activities such as cycling or strength exercises</li>\n        <li>\n          <b>Fair:</b> Some moderate exercise and an attempt at some strength exercises</li>\n        <li>\n          <b>Good:</b> A mix of both moderate and vigorous activities with ample strenth training for all major muscle groups</li>\n      </ul>\n    </div>\n  </div>\n</div>\n\n\n<div class=\"text-center\">\n  <ul class=\"moods col-md-12 shadow\">\n    <h2 align=\"center\">How are you feeling ?</h2>\n    <br>\n    <li>\n      <a (click)=\"setMood(1)\">\n        <img class=\"logo\" src=\"assets/emojis/1.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(2)\">\n        <img class=\"logo\" src=\"assets/emojis/2.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(3)\">\n        <img class=\"logo\" src=\"assets/emojis/3.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(4)\">\n        <img class=\"logo\" src=\"assets/emojis/4.png\" />\n      </a>\n    </li>\n    <li>\n      <a (click)=\"setMood(5)\">\n        <img class=\"logo\" src=\"assets/emojis/5.png\" />\n      </a>\n    </li>\n  </ul>\n\n  <form class=\"form-signin\" (submit)=\"onInfoSubmit()\">\n\n    <div *ngIf=!sleepFilled>\n      <h3 align=\"center\">How much sleep did you get last night ?</h3>\n      <input type=\"number\" min=\"0\" class=\"form-control\" name=\"sleep\" [(ngModel)]=\"sleep\">\n\n      <br>\n    </div>\n   \n    <div *ngIf=!dietFilled>\n      <h3 align=\"center\">What was your diet like today ?</h3>\n      <br>\n      <div class=\"btn-group\" data-toggle=\"buttons\">\n        <label (click)=\"setDiet('poor')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" (change)=\"test(1)\" class=\"hideRadio\"> Poor\n        </label>\n        <label (click)=\"setDiet('fair')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" class=\"hideRadio\"> Fair\n        </label>\n        <label (click)=\"setDiet('good')\" class=\"btn btn-lg btn-primary\">\n          <input type=\"radio\" class=\"hideRadio\"> Good\n        </label>\n      </div>\n\n      <br>\n      <br>\n    </div>\n\n    <div *ngIf=!exerciseFilled>\n\n      <h3 align=\"center\">How was your level of exercise today ?</h3>\n      <br>\n      <div class=\"btn-group\" data-toggle=\"buttons\">\n        <label (click)=\"setExercise('poor')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Poor\n        </label>\n        <label (click)=\"setExercise('fair')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Fair\n        </label>\n        <label (click)=\"setExercise('good')\" class=\"btn btn-lg btn-primary\">\n          <input class=\"hideRadio\" type=\"radio\" autocomplete=\"off\"> Good\n        </label>\n      </div>\n      <br>\n      <br>\n    </div>\n\n<div align=\"center\" style=\"padding: 10px 0 20px 0;\">\n  <button class=\"btn btn-lg btn-primary\" type=\"submit\">Submit</button>\n  <button (click)=\"reset()\" type=\"reset\" class=\"btn btn-lg btn-primary\">Reset</button>\n</div>\n\n</form>\n</div>\n"
 
 /***/ }),
 
@@ -1048,11 +1061,9 @@ var InputsComponent = (function () {
         this.router = router;
         this.UserID = (JSON.parse(localStorage.getItem('user'))).id;
         this.date = Date.now;
-        this.mood = null;
-        this.diet = null;
-        this.exercise = null;
-        this.sleep = null;
-        this.filled = true;
+        this.sleepFilled = false;
+        this.dietFilled = false;
+        this.exerciseFilled = false;
     }
     InputsComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -1063,17 +1074,19 @@ var InputsComponent = (function () {
         this.authService.getMood().subscribe(function (moodDocs) {
             moodDocs = moodDocs.reverse();
             if (moodDocs[0] == null) {
-                _this.filled = false;
+                _this.sleepFilled = false;
+                _this.dietFilled = false;
+                _this.exerciseFilled = false;
             }
-            else {
-                var lastCreated = moodDocs[moodDocs.length - 1];
-                var today = new Date();
-                if (new Date(lastCreated.date).getDay() == today.getDay() && lastCreated.exercise != null && lastCreated.diet != null) {
-                    _this.filled = true;
-                }
-                else {
-                    _this.filled = false;
-                }
+            _this.lastCreated = moodDocs[moodDocs.length - 1];
+            if (_this.lastCreated.sleep != null) {
+                _this.sleepFilled = true;
+            }
+            if (_this.lastCreated.diet != null) {
+                _this.dietFilled = true;
+            }
+            if (_this.lastCreated.exercise != null) {
+                _this.exerciseFilled = true;
             }
         }, function (err) {
             console.log(err);
@@ -1103,9 +1116,17 @@ var InputsComponent = (function () {
     };
     InputsComponent.prototype.onInfoSubmit = function () {
         var _this = this;
-        var moodInfo;
-        if (!this.filled) {
-            moodInfo = {
+        if (this.mood || this.sleep || this.diet || this.exercise) {
+            if (this.sleep == null) {
+                this.sleep = this.lastCreated.sleep;
+            }
+            if (this.exercise == null) {
+                this.exercise = this.lastCreated.exercise;
+            }
+            if (this.diet == null) {
+                this.diet = this.lastCreated.diet;
+            }
+            var moodInfo = {
                 userId: this.UserID,
                 date: Date.now,
                 sleep: this.sleep,
@@ -1113,26 +1134,19 @@ var InputsComponent = (function () {
                 exercise: this.exercise,
                 moodData: [{ currMood: this.mood, date: Date.now() }]
             };
+            this.authService.setMood(moodInfo).subscribe(function (data) {
+                if (data.success) {
+                    _this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
+                }
+                else {
+                    _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
+                }
+            });
+            this.router.navigate(['dashboard']);
         }
         else {
-            moodInfo = {
-                userId: this.UserID,
-                date: Date.now,
-                sleep: 0,
-                diet: "",
-                exercise: "",
-                moodData: [{ currMood: this.mood, date: Date.now() }]
-            };
+            this.flashMessage.show('Please fill in some data', { cssClass: 'alert-danger text-center', timeout: 3000 });
         }
-        this.authService.setMood(moodInfo).subscribe(function (data) {
-            if (data.success) {
-                _this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
-            }
-            else {
-                _this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
-            }
-        });
-        this.router.navigate(['dashboard']);
     };
     InputsComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -2294,7 +2308,7 @@ var AuthService = (function () {
     function AuthService(http, weatherServ) {
         this.http = http;
         this.weatherServ = weatherServ;
-        this.isDev = true; // Change to true before deployment
+        this.isDev = false; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();

@@ -119,6 +119,7 @@ router.get('/weatherGET',passport.authenticate('jwt', {session: false}), (req, r
 
 router.post('/mood', (req, res, next) => {
 
+  console.log(req.body);
   let newMood = new Mood({
     userId: req.body.userId,
     date: req.body.date,
@@ -127,9 +128,11 @@ router.post('/mood', (req, res, next) => {
     exercise: req.body.exercise,
     moodData: req.body.moodData
   });
+  console.log(newMood)
 
   Mood.addMood(newMood, (err, user) => {
     if(err){
+      console.log(err);
       res.json({success: false, msg:'Failed to register user'});
     } else {
       res.json({success: true, msg:'User registered'});

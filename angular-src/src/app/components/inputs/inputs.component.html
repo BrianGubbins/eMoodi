@@ -4,20 +4,28 @@
   <span class="expandButton" (click)="expand()">Info</span>
   <div class="content">
     <div class="body">
-        <h4>Diet Level:</h4>
-          A balanced diet has Protein/Fat/Carb values in 15/35/50 ratio
-          <ul class="dash">
-          <li><b>Poor:</b> Alot of junk, sugary food and alcohol. Little to no vegetables or fruit. Very unbalanced ratios </li>
-          <li><b>Fair:</b> Some notion of vegetables or fruit. Still some junk and alchohol but overall improved ratios </li>
-          <li><b>Good:</b> Good amount of fruit and veg, junk food cut out and sensible drinking. Overall, a balanced diet</li>
-        </ul>
-        <h4>Exercise Level:</h4>
-        The recommended exercise guidelines are 150 minutes moderate activiy such as walking, jogging etc. or 75 minutes of vigorous such as football, running etc. or a balance of both, per week. At least two days out of the week should include strength exercises such as the ones shown in exercise suggestions.
-        <ul class="dash">
-            <li><b>Poor:</b> No attempt to exercise whether it be through activities such as cycling or strength exercises</li>
-            <li><b>Fair:</b> Some moderate exercise and an attempt at some strength exercises</li>
-            <li><b>Good:</b> A mix of both moderate and vigorous activities with ample strenth training for all major muscle groups</li>
-        </ul>
+      <h4>Diet Level:</h4>
+      A balanced diet has Protein/Fat/Carb values in 15/35/50 ratio
+      <ul class="dash">
+        <li>
+          <b>Poor:</b> Alot of junk, sugary food and alcohol. Little to no vegetables or fruit. Very unbalanced ratios </li>
+        <li>
+          <b>Fair:</b> Some notion of vegetables or fruit. Still some junk and alchohol but overall improved ratios </li>
+        <li>
+          <b>Good:</b> Good amount of fruit and veg, junk food cut out and sensible drinking. Overall, a balanced diet</li>
+      </ul>
+      <h4>Exercise Level:</h4>
+      The recommended exercise guidelines are 150 minutes moderate activiy such as walking, jogging etc. or 75 minutes of vigorous
+      such as football, running etc. or a balance of both, per week. At least two days out of the week should include strength
+      exercises such as the ones shown in exercise suggestions.
+      <ul class="dash">
+        <li>
+          <b>Poor:</b> No attempt to exercise whether it be through activities such as cycling or strength exercises</li>
+        <li>
+          <b>Fair:</b> Some moderate exercise and an attempt at some strength exercises</li>
+        <li>
+          <b>Good:</b> A mix of both moderate and vigorous activities with ample strenth training for all major muscle groups</li>
+      </ul>
     </div>
   </div>
 </div>
@@ -56,12 +64,14 @@
 
   <form class="form-signin" (submit)="onInfoSubmit()">
 
-    <div *ngIf=!filled>
+    <div *ngIf=!sleepFilled>
       <h3 align="center">How much sleep did you get last night ?</h3>
       <input type="number" min="0" class="form-control" name="sleep" [(ngModel)]="sleep">
 
       <br>
-
+    </div>
+   
+    <div *ngIf=!dietFilled>
       <h3 align="center">What was your diet like today ?</h3>
       <br>
       <div class="btn-group" data-toggle="buttons">
@@ -78,6 +88,9 @@
 
       <br>
       <br>
+    </div>
+
+    <div *ngIf=!exerciseFilled>
 
       <h3 align="center">How was your level of exercise today ?</h3>
       <br>
@@ -96,11 +109,10 @@
       <br>
     </div>
 
+<div align="center" style="padding: 10px 0 20px 0;">
+  <button class="btn btn-lg btn-primary" type="submit">Submit</button>
+  <button (click)="reset()" type="reset" class="btn btn-lg btn-primary">Reset</button>
+</div>
 
-    <div align="center" style="padding: 10px 0 20px 0;">
-      <button class="btn btn-lg btn-primary" type="submit">Submit</button>
-      <button (click)="reset()" type="reset" class="btn btn-lg btn-primary">Reset</button>
-    </div>
-
-  </form>
+</form>
 </div>

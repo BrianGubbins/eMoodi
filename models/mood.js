@@ -13,13 +13,12 @@ const MoodSchema = mongoose.Schema({
         default: Date.now
     },
     sleep: {
-        type: Number,
     },
     diet: {
-        type: String,
+        type: String
     },
     exercise: {
-        type: String,
+        type: String
     },
     moodData: [{
         currMood: Number,
@@ -44,7 +43,7 @@ module.exports.addMood = function (newMood, callback) {
             },
             userId: newMood.userId
         }, {
-            $setOnInsert: {
+            $set: {
                 userId: newMood.userId,
                 date: newMood.date,
                 sleep: newMood.sleep,

@@ -359,30 +359,43 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       for (var i = 0, len = this.data.length; i < len; i++) {
 
         // sleep value
-        this.sleep.push(this.data[i].sleep);
+        if(this.data[i].sleep != null){
+        this.sleep.push(this.data[i].sleep);          
+        }
 
         // date corresponding to the document's creation date
-        this.dates.push(this.dateFormat(this.data[i].date));
+        if(this.data[i].date != null){        
+        this.dates.push(this.dateFormat(this.data[i].date));   
+        }   
 
         /* score function converts the string values of exercise and diet 
         i.e. "Poor", "Fair" and "Good" to numbers values 1, 2 and 3 respectively
         for graphing purposes */
-        this.score(this.data[i].diet, this.data[i].exercise);
+        if(this.data[i].diet != null){
+        this.score(this.data[i].diet,0);          
+        }      
+
+        if(this.data[i].exercise != null){
+          this.score(0,this.data[i].exercise);          
+        }   
 
         this.sleepGraph.update();
         this.exerciseDietGraph.update();
 
         // looping through mood objects in the moodData array
+        if(this.data[i].moodData.length >= 1){      
         for (var j = 0, c = this.data[i].moodData.length; j < c; j++) {
 
+          if(this.data[i].moodData[j].currMood != null){
           // mood value 1-5
           this.moods.push(this.data[i].moodData[j].currMood);
-
           // date corresponding to the object's creation date
           this.moodDates.push(this.data[i].moodData[j].date);
+        
           this.moodGraph.update();
-
+          }
         }
+      }
       }
     }
     else{
