@@ -1117,14 +1117,16 @@ var InputsComponent = (function () {
     InputsComponent.prototype.onInfoSubmit = function () {
         var _this = this;
         if (this.mood || this.sleep || this.diet || this.exercise) {
-            if (this.sleep == null) {
-                this.sleep = this.lastCreated.sleep;
-            }
-            if (this.exercise == null) {
-                this.exercise = this.lastCreated.exercise;
-            }
-            if (this.diet == null) {
-                this.diet = this.lastCreated.diet;
+            if (this.lastCreated != null) {
+                if (this.sleep == null) {
+                    this.sleep = this.lastCreated.sleep;
+                }
+                if (this.exercise == null) {
+                    this.exercise = this.lastCreated.exercise;
+                }
+                if (this.diet == null) {
+                    this.diet = this.lastCreated.diet;
+                }
             }
             var moodInfo = {
                 userId: this.UserID,
@@ -1310,13 +1312,13 @@ var LoginComponent = (function () {
                 _this.authService.storeUserData(data.token, data.user);
                 _this.flashMessage.show('You are now logged in', {
                     cssClass: 'alert-success text-center',
-                    timeout: 5000 });
+                    timeout: 3000 });
                 _this.router.navigate(['home']);
             }
             else {
                 _this.flashMessage.show(data.msg, {
                     cssClass: 'alert-danger text-center',
-                    timeout: 5000 });
+                    timeout: 3000 });
                 _this.router.navigate(['login']);
             }
         });
@@ -2308,7 +2310,7 @@ var AuthService = (function () {
     function AuthService(http, weatherServ) {
         this.http = http;
         this.weatherServ = weatherServ;
-        this.isDev = true; // Change to true before deployment
+        this.isDev = false; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();

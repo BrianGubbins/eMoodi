@@ -99,6 +99,7 @@ export class InputsComponent implements OnInit {
  
     if (this.mood || this.sleep || this.diet || this.exercise){
 
+      if(this.lastCreated !=null){
       if(this.sleep == null){
         this.sleep = this.lastCreated.sleep
       }
@@ -110,6 +111,7 @@ export class InputsComponent implements OnInit {
       if(this.diet == null){
         this.diet = this.lastCreated.diet
       }
+    }
   let moodInfo = {
       userId: this.UserID,
       date: Date.now,

@@ -12,7 +12,7 @@ export class AuthService {
   isDev: boolean;
 
   constructor(private http: Http, private weatherServ: WeatherService) {
-    this.isDev = true; // Change to true before deployment
+    this.isDev = false; // Change to true before deployment
   }
 
   registerUser(user) {
