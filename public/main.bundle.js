@@ -2320,7 +2320,7 @@ var AuthService = (function () {
     function AuthService(http, weatherServ) {
         this.http = http;
         this.weatherServ = weatherServ;
-        this.isDev = false; // Change to true before deployment
+        this.isDev = true; // Change to true before deployment
     }
     AuthService.prototype.registerUser = function (user) {
         var headers = new __WEBPACK_IMPORTED_MODULE_1__angular_http__["Headers"]();
