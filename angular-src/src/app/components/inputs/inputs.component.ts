@@ -29,7 +29,7 @@ export class InputsComponent implements OnInit {
     private authService: AuthService,
     private flashMessage: FlashMessagesService,
     private router: Router
-      ) { }
+  ) { }
 
   ngOnInit() {
     $('img').click(function () {
@@ -37,29 +37,41 @@ export class InputsComponent implements OnInit {
       $(this).addClass('selected');
     });
 
-   this.authService.getMood().subscribe(moodDocs => {
-    moodDocs = moodDocs.reverse()
-    if(moodDocs[0] == null){ // to handle a new user with no info
-      this.sleepFilled = false;
-      this.dietFilled = false;
-      this.exerciseFilled = false;
-    }
-    
-    this.lastCreated = moodDocs[moodDocs.length-1];
+    this.authService.getMood().subscribe(moodDocs => {
+      moodDocs = moodDocs.reverse()
+      if (moodDocs[0] == null) { // to handle a new user with no info
+        this.sleepFilled = false;
+        this.dietFilled = false;
+        this.exerciseFilled = false;
+      }
 
-    if(this.lastCreated.sleep != null){
-      this.sleepFilled = true;      
-    }
-    
-    if(this.lastCreated.diet != null){
-      this.dietFilled = true;      
-    }
-    
-    if(this.lastCreated.exercise != null){
-      this.exerciseFilled = true;      
-    }
+      // get the most recent document in collection for user
+      this.lastCreated = moodDocs[moodDocs.length - 1];
 
-       },
+      // if the newest doc wasn't created today then set fill values to false
+      var today = new Date();
+      if (new Date(this.lastCreated.date).getDay() != today.getDay()) {
+        this.sleepFilled = false;
+        this.dietFilled = false;
+        this.exerciseFilled = false;
+      }
+
+      //else check the last created to see if values filled or not 
+      else {
+        if (this.lastCreated.sleep != null) {
+          this.sleepFilled = true;
+        }
+
+        if (this.lastCreated.diet != null) {
+          this.dietFilled = true;
+        }
+
+        if (this.lastCreated.exercise != null) {
+          this.exerciseFilled = true;
+        }
+      }
+
+    },
       err => {
         console.log(err);
         return false;
@@ -78,8 +90,8 @@ export class InputsComponent implements OnInit {
 
   }
 
-  expand(){
-    $('.container').toggleClass('expand');    
+  expand() {
+    $('.container').toggleClass('expand');
 
   }
 
@@ -96,48 +108,49 @@ export class InputsComponent implements OnInit {
   }
 
   onInfoSubmit() {
- 
-    if (this.mood || this.sleep || this.diet || this.exercise){
 
-      if(this.lastCreated !=null){
-      if(this.sleep == null){
-        this.sleep = this.lastCreated.sleep
+    if (this.mood || this.sleep || this.diet || this.exercise) {
+
+      if (this.lastCreated != null && new Date(this.lastCreated.date).getDay() == new Date().getDay()) {
+        if (this.sleep == null) {
+          this.sleep = this.lastCreated.sleep
+        }
+
+        if (this.exercise == null) {
+          this.exercise = this.lastCreated.exercise
+        }
+
+        if (this.diet == null) {
+          this.diet = this.lastCreated.diet
+        }
       }
 
-      if(this.exercise == null){
-        this.exercise = this.lastCreated.exercise
+      let moodInfo = {
+        userId: this.UserID,
+        date: Date.now,
+        sleep: this.sleep,
+        diet: this.diet,
+        exercise: this.exercise,
+        moodData: [{ currMood: this.mood, date: Date.now() }]
       }
 
-      if(this.diet == null){
-        this.diet = this.lastCreated.diet
-      }
+      this.authService.setMood(moodInfo).subscribe(data => {
+        if (data.success) {
+          this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
+        } else {
+          this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
+        }
+      });
+
+      this.router.navigate(['dashboard']);
     }
-  let moodInfo = {
-      userId: this.UserID,
-      date: Date.now,
-      sleep: this.sleep,
-      diet: this.diet,
-      exercise: this.exercise,
-      moodData: [{currMood: this.mood, date: Date.now()}]
+    else {
+      this.flashMessage.show('Please fill in some data', { cssClass: 'alert-danger text-center', timeout: 3000 });
+
     }
-
-    this.authService.setMood(moodInfo).subscribe(data => {
-      if (data.success) {
-        this.flashMessage.show('Info added !', { cssClass: 'alert-success text-center', timeout: 3000 });
-      } else {
-        this.flashMessage.show('Something went wrong', { cssClass: 'alert-danger text-center', timeout: 3000 });
-      }
-    });
-
-    this.router.navigate(['dashboard']);
-  }
-  else{
-    this.flashMessage.show('Please fill in some data', { cssClass: 'alert-danger text-center', timeout: 3000 });
-    
-  }
   }
 
-  }
+}
 
 
 

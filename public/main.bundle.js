@@ -1078,15 +1078,25 @@ var InputsComponent = (function () {
                 _this.dietFilled = false;
                 _this.exerciseFilled = false;
             }
+            // get the most recent document in collection for user
             _this.lastCreated = moodDocs[moodDocs.length - 1];
-            if (_this.lastCreated.sleep != null) {
-                _this.sleepFilled = true;
+            // if the newest doc wasn't created today then set fill values to false
+            var today = new Date();
+            if (new Date(_this.lastCreated.date).getDay() != today.getDay()) {
+                _this.sleepFilled = false;
+                _this.dietFilled = false;
+                _this.exerciseFilled = false;
             }
-            if (_this.lastCreated.diet != null) {
-                _this.dietFilled = true;
-            }
-            if (_this.lastCreated.exercise != null) {
-                _this.exerciseFilled = true;
+            else {
+                if (_this.lastCreated.sleep != null) {
+                    _this.sleepFilled = true;
+                }
+                if (_this.lastCreated.diet != null) {
+                    _this.dietFilled = true;
+                }
+                if (_this.lastCreated.exercise != null) {
+                    _this.exerciseFilled = true;
+                }
             }
         }, function (err) {
             console.log(err);
@@ -1117,7 +1127,7 @@ var InputsComponent = (function () {
     InputsComponent.prototype.onInfoSubmit = function () {
         var _this = this;
         if (this.mood || this.sleep || this.diet || this.exercise) {
-            if (this.lastCreated != null) {
+            if (this.lastCreated != null && new Date(this.lastCreated.date).getDay() == new Date().getDay()) {
                 if (this.sleep == null) {
                     this.sleep = this.lastCreated.sleep;
                 }
