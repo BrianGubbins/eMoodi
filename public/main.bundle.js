@@ -395,7 +395,7 @@ var AppComponent = (function () {
             req.end();
         };
         // displays affirmation every 10 minutes
-        var affirmationMessage = cron.scheduleJob('*/10 * * * *', function () {
+        var affirmationMessage = cron.scheduleJob('*/5 * * * *', function () {
             var message = __WEBPACK_IMPORTED_MODULE_2__affirmations__["a" /* affirmations */][Math.floor(Math.random() * __WEBPACK_IMPORTED_MODULE_2__affirmations__["a" /* affirmations */].length)];
             flashMessage.show(message, { cssClass: 'text-center alert-info', timeout: 15000 });
         });

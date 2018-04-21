@@ -46,7 +46,7 @@ export class AppComponent {
     };
 
     // displays affirmation every 10 minutes
-    var affirmationMessage = cron.scheduleJob('*/10 * * * *', function () {
+    var affirmationMessage = cron.scheduleJob('*/5 * * * *', function () {
       var message = affirmation.affirmations[Math.floor(Math.random() * affirmation.affirmations.length)];
       flashMessage.show(message, { cssClass: 'text-center alert-info', timeout: 15000 });
     });
@@ -55,7 +55,6 @@ export class AppComponent {
     var weather = cron.scheduleJob('00 00 * * *', function () {
       this.authService.setWeather();
     });
-
 
     // sending reminder notification at 12 noon day. Note "test" segment are users who havent used the app in the last 4 hours
     var noonNotification = cron.scheduleJob('0 12 */1 * *', function () {
@@ -89,7 +88,9 @@ export class AppComponent {
           
           sendNotification(message);
       });
+      
 };
+
 
 }
 
